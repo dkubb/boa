@@ -1,0 +1,8 @@
+name: Boa Gem CI
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Fetch current branch
+      uses: actions/checkout@v4
