@@ -1,0 +1,25 @@
+PATH
+  remote: .
+  specs:
+    boa (0.1.0)
+      ice_nine (~> 0.11.2)
+      sorbet-runtime (~> 0.5.11066)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ice_nine (0.11.2)
+    sorbet-runtime (0.5.11104)
+
+PLATFORMS
+  arm64-darwin-22
+  x86_64-linux
+
+DEPENDENCIES
+  boa!
+
+RUBY VERSION
+   ruby 3.2.2p53
+
+BUNDLED WITH
+   2.4.21
