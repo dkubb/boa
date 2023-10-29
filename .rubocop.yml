@@ -1,0 +1,105 @@
+inherit_from: .rubocop_todo.yml
+
+require:
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-sorbet
+  - rubocop-yard
+
+AllCops:
+  NewCops: enable
+  EnabledByDefault: true
+  Exclude:
+    - vendor/**/*
+
+Layout/ExtraSpacing:
+  ForceEqualSignAlignment: true
+
+Layout/FirstArgumentIndentation:
+  EnforcedStyle: consistent
+
+Layout/HashAlignment:
+  EnforcedColonStyle: table
+
+Layout/IndentationWidth:
+  Width: 2
+
+Layout/LineLength:
+  Max: 132
+
+Layout/RedundantLineBreak:
+  Enabled: false
+
+Lint/ConstantResolution:
+  Enabled: false
+
+Metrics/AbcSize:
+  Exclude:
+    - test/support/**/*.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - test/**/*.rb
+
+Metrics/MethodLength:
+  Max: 10
+  Exclude:
+    - test/support/**/*.rb
+
+Naming/BlockForwarding:
+  EnforcedStyle: explicit
+
+Sorbet/RedundantExtendTSig:
+  Enabled: false
+
+Sorbet/StrictSigil:
+  Exclude:
+    - sorbet/tapioca/require.rb
+    - test/**/*.rb
+
+Sorbet/StrongSigil:
+  Exclude:
+    - sorbet/tapioca/require.rb
+    - test/**/*.rb
+
+Sorbet/TrueSigil:
+  Exclude:
+    - test/**/*.rb
+
+Style/AccessorGrouping:
+  Enabled: false
+
+Style/ArgumentsForwarding:
+  UseAnonymousForwarding: false
+
+Style/Attr:
+  Enabled: false
+
+Style/Copyright:
+  Enabled: false
+
+Style/DocumentationMethod:
+  Enabled: false
+
+Style/InlineComment:
+  Enabled: false
+
+Style/MethodCallWithArgsParentheses:
+  AllowedMethods:
+    - describe
+    - it
+    - require
+  EnforcedStyle: require_parentheses
+  Exclude:
+    - .simplecov
+    - Gemfile
+  IgnoreMacros: false
+
+Style/RequireOrder:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+  Exclude:
+    - sorbet/rbi/*.rbi

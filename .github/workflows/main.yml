@@ -4,5 +4,123 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-    - name: Fetch current branch
+    - name: Fetch main branch
       uses: actions/checkout@v4
+      with:
+        ref: main
+
+    - name: Fetch current branch
+      if: github.ref != 'refs/heads/main'
+      run: |
+        main_id=$(git rev-parse HEAD)
+        branch_name=${{ github.head_ref || github.ref_name }}
+
+        # Fetch the commits between the main and current branch HEAD
+        echo "$main_id" >> .git/shallow
+
+        git fetch --quiet -- origin "$branch_name"
+        git switch -- "$branch_name"
+
+        # Check that the current branch is an ancestor of main
+        git merge-base --is-ancestor -- "$main_id" HEAD
+
+    - name: Cache Ruby Advisory Database
+      uses: actions/cache@v3
+      with:
+        path: ~/.local/share/ruby-advisory-db
+        key: ruby-advisory-db-${{ hashFiles('Gemfile.lock') }}
+        restore-keys: ruby-advisory-db-
+
+    - name: Cache sorbet files
+      uses: actions/cache@v3
+      with:
+        path: |
+          sorbet/rbi
+          sorbet/tapioca
+        key: sorbet-${{ hashFiles('Gemfile.lock', 'sorbet/config') }}
+        restore-keys: sorbet-
+
+    - uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+
+    - name: Check for vulnerabilities
+      run: bundle exec bundler-audit check --update
+
+    - name: Check Gemfile for up-to-date gems
+      run: |
+        bundle config unset deployment
+        bundle outdated
+
+    - name: Lint code
+      run: bundle exec rubocop --fail-fast
+
+    - name: Build sorbet rbi files
+      run: |
+        bundle exec tapioca init
+        rm -r -- bin
+
+    - name: Check types
+      run: bundle exec srb tc
+
+    - name: Run unit tests
+      run: bundle exec rake test
+
+    - name: Run mutation tests
+      run: |
+        if [ -d lib ]; then
+          bundle exec mutant run --since main
+        fi
+
+    - name: Run docs tests
+      run: bundle exec yard doctest
+
+    - name: Check YARD doc coverage
+      run: bundle exec yardstick -- lib
+
+    - name: Generate YARD docs
+      run: bundle exec yard
+
+    - name: Regenerate RuboCop todo
+      run: bundle exec rubocop --auto-gen-config --no-auto-gen-timestamp --no-exclude-limit
+
+    - name: Regenerate Gemfile.lock
+      run: |
+        # Upgrade rubygems and bundler to latest versions
+        gem update --no-document --silent --system
+        gem update bundler --no-document --silent
+
+        # Regenerate Gemfile.lock
+        rm -- Gemfile.lock
+        bundle config set --local frozen false
+        bundle lock --add-platform arm64-darwin-22
+        bundle lock --add-platform x86_64-linux
+        bundle --quiet
+
+    - name: Check for unexpected file changes
+      run: |
+        set +o errexit
+
+        # Check for unexpected file changes or deletions
+        git diff --exit-code
+        diff_exit_code=$?
+
+        # Check for untracked files
+        git ls-files --exclude-standard --others | grep .
+        status_exit_code=$?
+
+        set -o errexit
+
+        test $diff_exit_code -eq 0 -a $status_exit_code -eq 1
+
+    - name: Save YARD docs
+      uses: actions/upload-artifact@v3
+      with:
+        name: yard-docs
+        path: doc
+
+    - name: Save Code Coverage
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage
+        path: coverage
