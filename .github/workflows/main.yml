@@ -6,3 +6,19 @@ jobs:
     steps:
     - name: Fetch current branch
       uses: actions/checkout@v4
+
+    - name: Check for unexpected file changes
+      run: |
+        set +o errexit
+
+        # Check for unexpected file changes or deletions
+        git diff --exit-code
+        diff_exit_code=$?
+
+        # Check for untracked files
+        git ls-files --exclude-standard --others | grep .
+        status_exit_code=$?
+
+        set -o errexit
+
+        test $diff_exit_code -eq 0 -a $status_exit_code -eq 1
