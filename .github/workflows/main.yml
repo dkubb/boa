@@ -16,6 +16,19 @@ jobs:
         bundle config unset deployment
         bundle outdated
 
+    - name: Regenerate Gemfile.lock
+      run: |
+        # Upgrade rubygems and bundler to latest versions
+        gem update --no-document --silent --system
+        gem update bundler --no-document --silent
+
+        # Regenerate Gemfile.lock
+        rm -- Gemfile.lock
+        bundle config set --local frozen false
+        bundle lock --add-platform arm64-darwin-22
+        bundle lock --add-platform x86_64-linux
+        bundle --quiet
+
     - name: Check for unexpected file changes
       run: |
         set +o errexit
