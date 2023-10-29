@@ -80,3 +80,9 @@ jobs:
         set -o errexit
 
         test $diff_exit_code -eq 0 -a $status_exit_code -eq 1
+
+    - name: Save Code Coverage
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage
+        path: coverage

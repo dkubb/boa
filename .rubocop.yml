@@ -91,6 +91,7 @@ Style/MethodCallWithArgsParentheses:
     - require
   EnforcedStyle: require_parentheses
   Exclude:
+    - .simplecov
     - Gemfile
   IgnoreMacros: false
 
