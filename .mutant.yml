@@ -1,0 +1,10 @@
+---
+integration:
+  name: minitest
+includes:
+  - test
+mutation:
+  operators: full
+matcher:
+  subjects:
+    - Boa*

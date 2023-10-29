@@ -4,4 +4,5 @@
 require 'simplecov'
 
 require 'minitest/autorun'
+require 'mutant/minitest/coverage'
 require 'sorbet-runtime'

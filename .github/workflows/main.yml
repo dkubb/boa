@@ -4,8 +4,25 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-    - name: Fetch current branch
+    - name: Fetch main branch
       uses: actions/checkout@v4
+      with:
+        ref: main
+
+    - name: Fetch current branch
+      if: github.ref != 'refs/heads/main'
+      run: |
+        main_id=$(git rev-parse HEAD)
+        branch_name=${{ github.head_ref || github.ref_name }}
+
+        # Fetch the commits between the main and current branch HEAD
+        echo "$main_id" >> .git/shallow
+
+        git fetch --quiet -- origin "$branch_name"
+        git switch -- "$branch_name"
+
+        # Check that the current branch is an ancestor of main
+        git merge-base --is-ancestor -- "$main_id" HEAD
 
     - name: Cache Ruby Advisory Database
       uses: actions/cache@v3
@@ -48,6 +65,12 @@ jobs:
 
     - name: Run unit tests
       run: bundle exec rake test
+
+    - name: Run mutation tests
+      run: |
+        if [ -d lib ]; then
+          bundle exec mutant run --since main
+        fi
 
     - name: Run docs tests
       run: bundle exec yard doctest
