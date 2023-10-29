@@ -8,8 +8,12 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    bundler-audit (0.9.1)
+      bundler (>= 1.2.0, < 3)
+      thor (~> 1.0)
     ice_nine (0.11.2)
     sorbet-runtime (0.5.11104)
+    thor (1.3.0)
 
 PLATFORMS
   arm64-darwin-22
@@ -17,6 +21,7 @@ PLATFORMS
 
 DEPENDENCIES
   boa!
+  bundler-audit (~> 0.9.1)
 
 RUBY VERSION
    ruby 3.2.2p53
