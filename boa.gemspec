@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'lib/boa/version'
+
 Gem::Specification.new do |spec|
   spec.name        = 'boa'
-  spec.version     = '0.1.0'
+  spec.version     = Boa::VERSION
   spec.authors     = ['Dan Kubb']
   spec.email       = %w[github@dan.kubb.ca]
   spec.summary     = 'A Ruby gem for defining immutable, strongly-typed data structures with built-in validation.'
@@ -10,7 +12,8 @@ Gem::Specification.new do |spec|
   spec.homepage    = 'https://github.com/dkubb/boa'
   spec.license     = 'MIT'
 
-  spec.files = %w[LICENSE README.md]
+  spec.files         = Dir['lib/**/*'] | %w[LICENSE README.md]
+  spec.require_paths = %w[lib]
 
   spec.metadata['rubygems_mfa_required'] = 'true'
 

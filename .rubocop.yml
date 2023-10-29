@@ -89,7 +89,9 @@ Style/MethodCallWithArgsParentheses:
   AllowedMethods:
     - describe
     - it
+    - public_constant
     - require
+    - require_relative
   EnforcedStyle: require_parentheses
   Exclude:
     - .simplecov
