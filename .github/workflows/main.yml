@@ -67,10 +67,7 @@ jobs:
       run: bundle exec rake test
 
     - name: Run mutation tests
-      run: |
-        if [ -d lib ]; then
-          bundle exec mutant run --since main
-        fi
+      run: bundle exec mutant run --since main
 
     - name: Run docs tests
       run: bundle exec yard doctest

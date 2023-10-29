@@ -1,6 +1,8 @@
 ---
 integration:
   name: minitest
+requires:
+  - boa
 includes:
   - test
 mutation:
@@ -8,3 +10,8 @@ mutation:
 matcher:
   subjects:
     - Boa*
+  ignore:
+    - Boa#model                     # T.unsafe is removed, but is required by sorbet
+    - Boa::ClassMethods#properties  # T.nilable is removed, but is required by sorbet
+    - Boa::Equality#eql?            # T.nilable is removed, but is required by sorbet
+    - Boa::Type#initialize          # T.nilable is removed, but is required by sorbet
