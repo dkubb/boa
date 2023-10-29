@@ -1,0 +1,62 @@
+AllCops:
+  NewCops: enable
+  EnabledByDefault: true
+  Exclude:
+    - vendor/**/*
+
+Layout/ExtraSpacing:
+  ForceEqualSignAlignment: true
+
+Layout/FirstArgumentIndentation:
+  EnforcedStyle: consistent
+
+Layout/HashAlignment:
+  EnforcedColonStyle: table
+
+Layout/IndentationWidth:
+  Width: 2
+
+Layout/LineLength:
+  Max: 132
+
+Layout/RedundantLineBreak:
+  Enabled: false
+
+Lint/ConstantResolution:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 10
+
+Naming/BlockForwarding:
+  EnforcedStyle: explicit
+
+Style/AccessorGrouping:
+  Enabled: false
+
+Style/ArgumentsForwarding:
+  UseAnonymousForwarding: false
+
+Style/Attr:
+  Enabled: false
+
+Style/Copyright:
+  Enabled: false
+
+Style/DocumentationMethod:
+  Enabled: false
+
+Style/InlineComment:
+  Enabled: false
+
+Style/MethodCallWithArgsParentheses:
+  EnforcedStyle: require_parentheses
+  Exclude:
+    - Gemfile
+  IgnoreMacros: false
+
+Style/RequireOrder:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes

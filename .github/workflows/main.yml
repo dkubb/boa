@@ -26,6 +26,9 @@ jobs:
         bundle config unset deployment
         bundle outdated
 
+    - name: Lint code
+      run: bundle exec rubocop --fail-fast
+
     - name: Regenerate Gemfile.lock
       run: |
         # Upgrade rubygems and bundler to latest versions
