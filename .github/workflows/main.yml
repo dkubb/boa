@@ -29,6 +29,9 @@ jobs:
     - name: Lint code
       run: bundle exec rubocop --fail-fast
 
+    - name: Regenerate RuboCop todo
+      run: bundle exec rubocop --auto-gen-config --no-auto-gen-timestamp --no-exclude-limit
+
     - name: Regenerate Gemfile.lock
       run: |
         # Upgrade rubygems and bundler to latest versions
