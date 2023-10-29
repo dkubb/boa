@@ -14,6 +14,15 @@ jobs:
         key: ruby-advisory-db-${{ hashFiles('Gemfile.lock') }}
         restore-keys: ruby-advisory-db-
 
+    - name: Cache sorbet files
+      uses: actions/cache@v3
+      with:
+        path: |
+          sorbet/rbi
+          sorbet/tapioca
+        key: sorbet-${{ hashFiles('Gemfile.lock', 'sorbet/config') }}
+        restore-keys: sorbet-
+
     - uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
@@ -28,6 +37,17 @@ jobs:
 
     - name: Lint code
       run: bundle exec rubocop --fail-fast
+
+    - name: Build sorbet rbi files
+      run: |
+        bundle exec tapioca init
+        rm -r -- bin
+
+    - name: Check types
+      run: |
+        if [ -d lib ]; then
+          bundle exec srb tc
+        fi
 
     - name: Regenerate RuboCop todo
       run: bundle exec rubocop --auto-gen-config --no-auto-gen-timestamp --no-exclude-limit

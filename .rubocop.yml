@@ -2,6 +2,7 @@ inherit_from: .rubocop_todo.yml
 
 require:
   - rubocop-performance
+  - rubocop-sorbet
 
 AllCops:
   NewCops: enable
@@ -36,6 +37,17 @@ Metrics/MethodLength:
 Naming/BlockForwarding:
   EnforcedStyle: explicit
 
+Sorbet/RedundantExtendTSig:
+  Enabled: false
+
+Sorbet/StrictSigil:
+  Exclude:
+    - sorbet/tapioca/require.rb
+
+Sorbet/StrongSigil:
+  Exclude:
+    - sorbet/tapioca/require.rb
+
 Style/AccessorGrouping:
   Enabled: false
 
@@ -65,3 +77,5 @@ Style/RequireOrder:
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes
+  Exclude:
+    - sorbet/rbi/*.rbi
