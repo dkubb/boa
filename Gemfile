@@ -8,8 +8,12 @@ gemspec
 
 group :development, :test do
   gem 'bundler-audit',       '~> 0.9.1'                   # Audit dependencies in Gemfile for vulnerabilities
+  gem 'minitest',            '~> 5.20.0'                  # Ruby testing framework
+  gem 'rake',                '~> 13.1.0'                  # Scripting utility similar to Make
   gem 'rubocop',             '~> 1.57.2'                  # Linter for enforcing Ruby coding style
+  gem 'rubocop-minitest',    '~> 0.33.0'                  # RuboCop extension specific to Minitest
   gem 'rubocop-performance', '~> 1.19.1'                  # RuboCop extension for enforcing performance best practices
+  gem 'rubocop-rake',        '~> 0.6.0'                   # RuboCop rules for Rake tasks
   gem 'rubocop-sorbet',      '~> 0.7.4', require: false   # Add Sorbet support to RuboCop
   gem 'sorbet',              '~> 0.5.11066'               # Type checker for Ruby
   gem 'tapioca',             '~> 0.11.9', require: false  # Generate RBI files for gems and standard library

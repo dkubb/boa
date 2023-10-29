@@ -44,10 +44,10 @@ jobs:
         rm -r -- bin
 
     - name: Check types
-      run: |
-        if [ -d lib ]; then
-          bundle exec srb tc
-        fi
+      run: bundle exec srb tc
+
+    - name: Run unit tests
+      run: bundle exec rake test
 
     - name: Regenerate RuboCop todo
       run: bundle exec rubocop --auto-gen-config --no-auto-gen-timestamp --no-exclude-limit

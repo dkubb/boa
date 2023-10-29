@@ -1,7 +1,9 @@
 inherit_from: .rubocop_todo.yml
 
 require:
+  - rubocop-minitest
   - rubocop-performance
+  - rubocop-rake
   - rubocop-sorbet
 
 AllCops:
@@ -31,8 +33,18 @@ Layout/RedundantLineBreak:
 Lint/ConstantResolution:
   Enabled: false
 
+Metrics/AbcSize:
+  Exclude:
+    - test/support/**/*.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - test/**/*.rb
+
 Metrics/MethodLength:
   Max: 10
+  Exclude:
+    - test/support/**/*.rb
 
 Naming/BlockForwarding:
   EnforcedStyle: explicit
@@ -43,10 +55,16 @@ Sorbet/RedundantExtendTSig:
 Sorbet/StrictSigil:
   Exclude:
     - sorbet/tapioca/require.rb
+    - test/**/*.rb
 
 Sorbet/StrongSigil:
   Exclude:
     - sorbet/tapioca/require.rb
+    - test/**/*.rb
+
+Sorbet/TrueSigil:
+  Exclude:
+    - test/**/*.rb
 
 Style/AccessorGrouping:
   Enabled: false
@@ -67,6 +85,10 @@ Style/InlineComment:
   Enabled: false
 
 Style/MethodCallWithArgsParentheses:
+  AllowedMethods:
+    - describe
+    - it
+    - require
   EnforcedStyle: require_parentheses
   Exclude:
     - Gemfile
