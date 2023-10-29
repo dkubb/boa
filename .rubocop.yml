@@ -5,6 +5,7 @@ require:
   - rubocop-performance
   - rubocop-rake
   - rubocop-sorbet
+  - rubocop-yard
 
 AllCops:
   NewCops: enable

@@ -1,0 +1,7 @@
+--fail-on-warning
+--plugin yard-doctest
+--plugin yard-sorbet
+--private
+--protected
+--
+lib/**/*.rb

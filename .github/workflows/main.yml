@@ -49,6 +49,15 @@ jobs:
     - name: Run unit tests
       run: bundle exec rake test
 
+    - name: Run docs tests
+      run: bundle exec yard doctest
+
+    - name: Check YARD doc coverage
+      run: bundle exec yardstick -- lib
+
+    - name: Generate YARD docs
+      run: bundle exec yard
+
     - name: Regenerate RuboCop todo
       run: bundle exec rubocop --auto-gen-config --no-auto-gen-timestamp --no-exclude-limit
 
@@ -80,6 +89,12 @@ jobs:
         set -o errexit
 
         test $diff_exit_code -eq 0 -a $status_exit_code -eq 1
+
+    - name: Save YARD docs
+      uses: actions/upload-artifact@v3
+      with:
+        name: yard-docs
+        path: doc
 
     - name: Save Code Coverage
       uses: actions/upload-artifact@v3
