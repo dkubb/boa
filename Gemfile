@@ -16,11 +16,11 @@ group :development, :test do
   gem 'rubocop-minitest',    '~> 0.33.0'                  # RuboCop extension specific to Minitest
   gem 'rubocop-performance', '~> 1.19.1'                  # RuboCop extension for enforcing performance best practices
   gem 'rubocop-rake',        '~> 0.6.0'                   # RuboCop rules for Rake tasks
-  gem 'rubocop-sorbet',      '~> 0.7.4', require: false   # Add Sorbet support to RuboCop
+  gem 'rubocop-sorbet',      '~> 0.7.5', require: false   # Add Sorbet support to RuboCop
   gem 'rubocop-yard',        '~> 0.7.0'                   # RuboCop extension for YARD
   gem 'simplecov',           '~> 0.22.0'                  # Code coverage analysis for Ruby
-  gem 'sorbet',              '~> 0.5.11105'               # Type checker for Ruby
-  gem 'tapioca',             '~> 0.11.9', require: false  # Generate RBI files for gems and standard library
+  gem 'sorbet',              '~> 0.5.11109'               # Type checker for Ruby
+  gem 'tapioca',             '~> 0.11.10', require: false # Generate RBI files for gems and standard library
   gem 'unparser',            '~> 0.6.10', require: false  # Library for unparsing Ruby expressions
   gem 'yard-doctest',        '~> 0.1.17'                  # Run doctests via YARD
   gem 'yard-sorbet',         '~> 0.8.1'                   # Add Sorbet support to YARD
