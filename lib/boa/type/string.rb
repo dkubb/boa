@@ -10,10 +10,10 @@ module Boa
       # @example
       #   type.length  # => 1..
       #
-      # @return [Range<Integer>] the length of the string
+      # @return [Range<::Integer>] the length of the string
       #
       # @api public
-      sig { returns(T::Range[Integer]) }
+      sig { returns(T::Range[::Integer]) }
       attr_reader :length
 
       # Initialize the string type
@@ -43,17 +43,17 @@ module Boa
       #   String.new(:name, length: nil..50)  # => raise ArgumentError, 'length.begin cannot be nil'
       #
       # @param name [Symbol] the name of the type
-      # @param length [Range<Integer>] the length of the string
+      # @param length [Range<::Integer>] the length of the string
       # @param options [Hash{Symbol => Object}] the options for the type
       #
       # @return [void]
       #
       # @api public
-      sig { params(name: Symbol, required: T::Boolean, length: T::Range[Integer], options: ::Object).void }
+      sig { params(name: Symbol, required: T::Boolean, length: T::Range[::Integer], options: ::Object).void }
       def initialize(name, required: true, length: 1.., **options)
         raise(ArgumentError, 'length.begin cannot be nil') if length.begin.nil?
 
-        @length = T.let(length, T::Range[Integer])
+        @length = T.let(length, T::Range[::Integer])
 
         super(name, required:, **options)
       end
@@ -64,10 +64,10 @@ module Boa
       #   type = String.new(:name)
       #   type.min_length  # => 1
       #
-      # @return [Integer] the minimum length of the string
+      # @return [::Integer] the minimum length of the string
       #
       # @api public
-      sig { returns(Integer) }
+      sig { returns(::Integer) }
       def min_length
         length.begin
       end
@@ -82,12 +82,12 @@ module Boa
       #   type = String.new(:name, length: 1..50)
       #   type.max_length  # => 50
       #
-      # @return [Integer, nil] the maximum length of the string
+      # @return [::Integer, nil] the maximum length of the string
       #
       # @api public
-      sig { returns(T.nilable(Integer)) }
+      sig { returns(T.nilable(::Integer)) }
       def max_length
-        max_length = T.assert_type!(length.end, T.nilable(Integer))
+        max_length = T.assert_type!(length.end, T.nilable(::Integer))
         length.exclude_end? && max_length ? max_length - 1 : max_length
       end
     end
