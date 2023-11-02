@@ -9,6 +9,7 @@ require_relative 'boa/class_methods'
 require_relative 'boa/type'
 require_relative 'boa/type/object'
 require_relative 'boa/type/boolean'
+require_relative 'boa/type/integer'
 require_relative 'boa/type/string'
 require_relative 'boa/version'
 

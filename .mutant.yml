@@ -15,3 +15,4 @@ matcher:
     - Boa::ClassMethods#properties  # T.nilable is removed, but is required by sorbet
     - Boa::Equality#eql?            # T.nilable is removed, but is required by sorbet
     - Boa::Type#initialize          # T.nilable is removed, but is required by sorbet
+    - Boa::Type::String#initialize  # T::Range[::Integer] is mutated to T::Range[Integer] which is wrong
