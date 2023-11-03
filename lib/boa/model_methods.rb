@@ -7,7 +7,7 @@ module Boa
     extend T::Sig
     extend T::Helpers
 
-    requires_ancestor { Module }
+    requires_ancestor { Object }
 
     abstract!
 
