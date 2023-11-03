@@ -81,8 +81,6 @@ module Boa
     # @param includes [Object] the object to check inclusion against
     # @param ivar_name [Symbol] the name of the instance variable
     #
-    # @yield [] the block to instance_eval
-    #
     # @return [void]
     #
     # @api private
