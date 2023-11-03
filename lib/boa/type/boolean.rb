@@ -4,7 +4,7 @@
 module Boa
   class Type
     # A boolean type
-    class Boolean < Object
+    class Boolean < self
       # Initialize the boolean type
       #
       # @example
