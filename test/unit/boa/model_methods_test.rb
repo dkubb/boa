@@ -3,19 +3,19 @@
 
 require 'test_helper'
 
-describe Boa::ClassMethods do
+describe Boa::ModelMethods do
   extend T::Sig
 
   subject do
     Class.new do
-      extend Boa::ClassMethods
+      extend Boa::ModelMethods
 
       prop :name, Boa::Type::String
     end
   end
 
   describe '#inherited' do
-    cover 'Boa::ClassMethods#inherited'
+    cover 'Boa::ModelMethods#inherited'
 
     it 'copies the properties' do
       subclass = Class.new(subject)
@@ -38,7 +38,7 @@ describe Boa::ClassMethods do
   end
 
   describe '#properties' do
-    cover 'Boa::ClassMethods#properties'
+    cover 'Boa::ModelMethods#properties'
 
     it 'returns the properties' do
       assert_equal({ name: Boa::Type::String.new(:name) }, subject.properties)
@@ -46,7 +46,7 @@ describe Boa::ClassMethods do
   end
 
   describe '#prop' do
-    cover 'Boa::ClassMethods#prop'
+    cover 'Boa::ModelMethods#prop'
 
     sig { returns(T::Hash[Symbol, Object]) }
     def options
@@ -65,7 +65,7 @@ describe Boa::ClassMethods do
   end
 
   describe '#finalize' do
-    cover 'Boa::ClassMethods#finalize'
+    cover 'Boa::ModelMethods#finalize'
 
     it 'adds the methods to the class' do
       refute_respond_to(subject.new, :name)
@@ -104,7 +104,7 @@ describe Boa::ClassMethods do
   end
 
   describe '#freeze' do
-    cover 'Boa::ClassMethods#freeze'
+    cover 'Boa::ModelMethods#freeze'
 
     before do
       subject.class_eval { @ivar = +'value' }

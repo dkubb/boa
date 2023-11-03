@@ -33,7 +33,7 @@ module Boa
       #   type.add_methods(descendant)          # => type
       #   descendant.new.respond_to?(:author?)  # => true
       #
-      # @param descendant [ClassMethods] the class to add methods to
+      # @param descendant [ModelMethods] the class to add methods to
       #
       # @return [Type] the type
       #

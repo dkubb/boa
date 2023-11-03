@@ -5,7 +5,7 @@ require 'ice_nine'
 require 'sorbet-runtime'
 
 require_relative 'boa/equality'
-require_relative 'boa/class_methods'
+require_relative 'boa/model_methods'
 require_relative 'boa/type'
 require_relative 'boa/type/object'
 require_relative 'boa/type/boolean'
@@ -36,7 +36,7 @@ module Boa
     end
   end
 
-  mixes_in_class_methods(ClassMethods)
+  mixes_in_class_methods(ModelMethods)
 
   abstract!
 
@@ -65,13 +65,13 @@ module Boa
 
   # The model of the object
   #
-  # @return [ClassMethods] the model of the object
+  # @return [ModelMethods] the model of the object
   #
   # @api private
-  sig { returns(ClassMethods) }
+  sig { returns(ModelMethods) }
   def model
     # self.class extends the class methods module
-    T.let(T.unsafe(self.class), ClassMethods) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Sorbet/ForbidTUnsafe
+    T.let(T.unsafe(self.class), ModelMethods) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Sorbet/ForbidTUnsafe
   end
 
   # Assert that the attributes are known
