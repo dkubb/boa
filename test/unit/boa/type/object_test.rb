@@ -52,6 +52,25 @@ describe Boa::Type::Object do
     def non_nil_default
       @non_nil_default ||= Object.new
     end
+
+    describe 'when a block is provided' do
+      it 'executes the block' do
+        executed = false
+
+        described_class.new(type_name) { executed = true }
+
+        assert_same(true, executed)
+      end
+
+      it 'can call prop to set the properties' do
+        subject =
+          described_class.new(type_name) do
+            prop :name, Boa::Type::String
+          end
+
+        assert_equal(Boa::Type::String.new(:name), subject.properties[:name])
+      end
+    end
   end
 
   describe '#init' do
