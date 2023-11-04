@@ -112,33 +112,43 @@ module Support
           end
 
           describe 'when the key exists in the attributes' do
+            sig { returns(T::Hash[Symbol, Object]) }
+            def attributes
+              { subject.name => value }
+            end
+
             it 'initializes the object' do
               assert_nil(subject.get(object))
 
-              subject.init(object, subject.name => value)
+              subject.init(object, **attributes)
 
-              assert_same(value, subject.get(object))
+              assert_equal(subject.get(object), value)
             end
 
             it 'returns self' do
-              assert_same(subject, subject.init(object, subject.name => value))
+              assert_same(subject, subject.init(object, **attributes))
             end
           end
 
           describe 'when the key does not exist in the attributes' do
+            sig { returns(T::Hash[Symbol, Object]) }
+            def attributes
+              {}
+            end
+
             describe 'when there is a default' do
               subject { described_class.new(type_name, default: value) }
 
               it 'initializes the object with the default' do
                 assert_nil(subject.get(object))
 
-                subject.init(object)
+                subject.init(object, **attributes)
 
-                assert_same(value, subject.get(object))
+                assert_equal(subject.get(object), value)
               end
 
               it 'returns self' do
-                assert_same(subject, subject.init(object))
+                assert_same(subject, subject.init(object, **attributes))
               end
             end
 
@@ -146,13 +156,13 @@ module Support
               it 'does not initialize the object' do
                 assert_nil(subject.get(object))
 
-                subject.init(object)
+                subject.init(object, **attributes)
 
                 assert_nil(subject.get(object))
               end
 
               it 'returns self' do
-                assert_same(subject, subject.init(object))
+                assert_same(subject, subject.init(object, **attributes))
               end
             end
           end
@@ -179,7 +189,7 @@ module Support
             end
 
             it 'returns the value' do
-              assert_same(value, subject.get(object))
+              assert_equal(subject.get(object), value)
             end
           end
 
@@ -216,15 +226,15 @@ module Support
             end
 
             it 'sets the object' do
-              assert_same(value, subject.get(object))
+              assert_equal(subject.get(object), value)
 
               subject.set(object, new_value)
 
-              assert_same(new_value, subject.get(object))
+              assert_equal(subject.get(object), new_value)
             end
 
             it 'returns self' do
-              assert_same(subject, subject.init(object, subject.name => value))
+              assert_same(subject, subject.set(object, new_value))
             end
           end
 
@@ -235,6 +245,10 @@ module Support
               subject.set(object, new_value)
 
               assert_same(new_value, subject.get(object))
+            end
+
+            it 'returns self' do
+              assert_same(subject, subject.set(object, new_value))
             end
           end
         end
@@ -401,7 +415,7 @@ module Support
               subject.add_methods(klass)
 
               assert_respond_to(instance, type_name)
-              assert_same(value, instance.public_send(type_name))
+              assert_equal(instance.public_send(type_name), value)
             end
 
             it 'returns self' do

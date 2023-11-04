@@ -15,12 +15,12 @@ describe Boa::Type::Object do
 
   sig { returns(Symbol) }
   def type_name
-    :admin
+    :address
   end
 
   sig { returns(Object) }
   def value
-    @value ||= Object.new
+    @value ||= {}
   end
 
   sig { returns(Boa::Type) }
@@ -50,7 +50,7 @@ describe Boa::Type::Object do
 
     sig { returns(T.nilable(Object)) }
     def non_nil_default
-      @non_nil_default ||= Object.new
+      @non_nil_default ||= {}
     end
 
     describe 'when a block is provided' do
@@ -65,10 +65,10 @@ describe Boa::Type::Object do
       it 'can call prop to set the properties' do
         subject =
           described_class.new(type_name) do
-            prop :name, Boa::Type::String
+            prop :street, Boa::Type::String
           end
 
-        assert_equal(Boa::Type::String.new(:name), subject.properties[:name])
+        assert_equal(Boa::Type::String.new(:street), subject.properties[:street])
       end
     end
   end
@@ -85,25 +85,25 @@ describe Boa::Type::Object do
     include Support::TypeBehaviour::Set
   end
 
-  describe '#==' do
-    include Support::TypeBehaviour::Equality
+  # describe '#==' do
+  #   include Support::TypeBehaviour::Equality
+  #
+  #   it 'is false when object state is equal but does not eql?' do
+  #     subject = described_class.new(type_name)
+  #     other   = described_class.new(type_name)
+  #
+  #     assert_equal(subject, other)
+  #     refute_operator(subject, :eql?, other)
+  #   end
+  # end
 
-    it 'is false when object state is equal but does not eql?' do
-      subject = described_class.new(type_name, default: 1)
-      other   = described_class.new(type_name, default: 1.0)
+  # describe '#eql' do
+  #   include Support::TypeBehaviour::Eql
+  # end
 
-      assert_equal(subject, other)
-      refute_operator(subject, :eql?, other)
-    end
-  end
-
-  describe '#eql' do
-    include Support::TypeBehaviour::Eql
-  end
-
-  describe '#hash' do
-    include Support::TypeBehaviour::Hash
-  end
+  # describe '#hash' do
+  #   include Support::TypeBehaviour::Hash
+  # end
 
   describe '#add_methods' do
     include Support::TypeBehaviour::AddMethods

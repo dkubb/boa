@@ -45,6 +45,7 @@ Metrics/BlockLength:
 Metrics/MethodLength:
   Max: 10
   Exclude:
+    - lib/boa/type/object.rb
     - test/support/**/*.rb
 
 Naming/BlockForwarding:
