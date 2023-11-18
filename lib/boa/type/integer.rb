@@ -4,7 +4,7 @@
 module Boa
   class Type
     # An integer type
-    class Integer < Object
+    class Integer < self
     end
   end
 end

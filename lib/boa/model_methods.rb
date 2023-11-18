@@ -3,11 +3,11 @@
 
 module Boa
   # A module for class methods
-  module ClassMethods
+  module ModelMethods
     extend T::Sig
     extend T::Helpers
 
-    requires_ancestor { Module }
+    requires_ancestor { Object }
 
     abstract!
 
@@ -45,7 +45,7 @@ module Boa
     # @param name [Symbol] the name of the property
     # @param type [Type] the type of the property
     #
-    # @return [ClassMethods] the class method module
+    # @return [ModelMethods] the class method module
     #
     # @api public
     sig { params(name: Symbol, type: T::Class[Type], required: T::Boolean, options: Object).returns(T.self_type) }
@@ -60,7 +60,7 @@ module Boa
     #   klass = Class.new { include Boa }
     #   klass.finalize.frozen?             # => true
     #
-    # @return [ClassMethods] the class method module
+    # @return [ModelMethods] the class method module
     #
     # @api public
     sig { returns(T.self_type) }
@@ -79,7 +79,7 @@ module Boa
     #   klass.freeze
     #   klass.frozen? # => true
     #
-    # @return [ClassMethods] the class method module
+    # @return [ModelMethods] the class method module
     #
     # @api public
     sig { returns(T.self_type) }
@@ -90,7 +90,7 @@ module Boa
         T.let(instance_variable_get(ivar_name), Object).freeze
       end
 
-      T.let(super(), ClassMethods)
+      T.let(super(), ModelMethods)
     end
   end
 end

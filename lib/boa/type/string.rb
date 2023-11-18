@@ -4,7 +4,7 @@
 module Boa
   class Type
     # A string type
-    class String < Object
+    class String < self
       # The length of the string
       #
       # @example
