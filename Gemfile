@@ -9,8 +9,8 @@ gemspec
 group :development, :test do
   gem 'bundler-audit',       '~> 0.9.1'                   # Audit dependencies in Gemfile for vulnerabilities
   gem 'minitest',            '~> 5.20.0'                  # Ruby testing framework
-  gem 'mutant',              '~> 0.11.24'                 # Mutation testing for Ruby
-  gem 'mutant-minitest',     '~> 0.11.24'                 # Minitest integration for Mutant
+  gem 'mutant',              '~> 0.11.25'                 # Mutation testing for Ruby
+  gem 'mutant-minitest',     '~> 0.11.25'                 # Minitest integration for Mutant
   gem 'rake',                '~> 13.1.0'                  # Scripting utility similar to Make
   gem 'rubocop',             '~> 1.57.2'                  # Linter for enforcing Ruby coding style
   gem 'rubocop-minitest',    '~> 0.33.0'                  # RuboCop extension specific to Minitest
@@ -19,7 +19,7 @@ group :development, :test do
   gem 'rubocop-sorbet',      '~> 0.7.5', require: false   # Add Sorbet support to RuboCop
   gem 'rubocop-yard',        '~> 0.8.0'                   # RuboCop extension for YARD
   gem 'simplecov',           '~> 0.22.0'                  # Code coverage analysis for Ruby
-  gem 'sorbet',              '~> 0.5.11120'               # Type checker for Ruby
+  gem 'sorbet',              '~> 0.5.11139'               # Type checker for Ruby
   gem 'tapioca',             '~> 0.11.12', require: false # Generate RBI files for gems and standard library
   gem 'unparser',            '~> 0.6.10', require: false  # Library for unparsing Ruby expressions
   gem 'yard-doctest',        '~> 0.1.17'                  # Run doctests via YARD
