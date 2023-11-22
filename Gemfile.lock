@@ -70,8 +70,8 @@ GEM
       rubocop (~> 1.0)
     rubocop-sorbet (0.7.5)
       rubocop (>= 0.90.0)
-    rubocop-yard (0.8.0)
-      rubocop
+    rubocop-yard (0.8.1)
+      rubocop (~> 1.21)
       yard
     ruby-progressbar (1.13.0)
     simplecov (0.22.0)
@@ -136,7 +136,7 @@ DEPENDENCIES
   rubocop-performance (~> 1.19.1)
   rubocop-rake (~> 0.6.0)
   rubocop-sorbet (~> 0.7.5)
-  rubocop-yard (~> 0.8.0)
+  rubocop-yard (~> 0.8.1)
   simplecov (~> 0.22.0)
   sorbet (~> 0.5.11139)
   tapioca (~> 0.11.12)
