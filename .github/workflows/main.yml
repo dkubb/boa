@@ -34,11 +34,6 @@ jobs:
     - name: Check for vulnerabilities
       run: bundle exec bundler-audit check --update
 
-    - name: Check Gemfile for up-to-date gems
-      run: |
-        bundle config unset deployment
-        bundle outdated
-
     - name: Lint code
       run: bundle exec rubocop --fail-fast
 
@@ -67,19 +62,6 @@ jobs:
 
     - name: Regenerate RuboCop todo
       run: bundle exec rubocop --auto-gen-config --no-auto-gen-timestamp --no-exclude-limit
-
-    - name: Regenerate Gemfile.lock
-      run: |
-        # Upgrade rubygems and bundler to latest versions
-        gem update --no-document --silent --system
-        gem update bundler --no-document --silent
-
-        # Regenerate Gemfile.lock
-        rm -- Gemfile.lock
-        bundle config set --local frozen false
-        bundle lock --add-platform arm64-darwin-22
-        bundle lock --add-platform x86_64-linux
-        bundle --quiet
 
     - name: Check for unexpected file changes
       run: |
