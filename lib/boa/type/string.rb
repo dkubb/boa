@@ -51,13 +51,13 @@ module Boa
       # @return [void]
       #
       # @api public
-      sig { params(name: Symbol, required: T::Boolean, length: T::Range[::Integer], options: ::Object).void }
-      def initialize(name, required: true, length: 1.., **options)
+      sig { params(name: Symbol, length: T::Range[::Integer], options: ::Object).void }
+      def initialize(name, length: 1.., **options)
         raise(ArgumentError, 'length.begin cannot be nil') if length.begin.nil?
 
         @length = T.let(length, T::Range[::Integer])
 
-        super(name, required:, **options)
+        super(name, **options)
       end
 
       # The minimum length of the string

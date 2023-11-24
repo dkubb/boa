@@ -28,18 +28,18 @@ gem install boa
 class Person
   include Boa
 
-  prop :id,    UUID,                    key: true           # required by default
-  prop :name,  String, required: true,  length: 1..50
-  prop :email, Email,  required: false, key: :unique_email
-  prop :admin, Boolean                  default: false
+  prop :id,    UUID
+  prop :name,  String, length: 1..50
+  prop :email, T.nilable(Email)
+  prop :admin, T.nilable(T::Boolean
 
-  prop :birth_date, Date, required: false do
+  prop :birth_date, T.nilable(Date) do
     # Checks the value is within range
     includes Date.new(1900)..Date.today
   end
 
   # creates nested Person::Address Boa class
-  prop :address, Object, required: false do
+  prop :address, T.nilable(Object) do
     prop :street_address, String, length: 1..100
     prop :city,           String, length: 1..50
     prop :state,          String, in: STATE_CODES   # alpha2 subdivision codes
@@ -48,7 +48,7 @@ class Person
   end
 
   # same as:
-  # prop :created_at, DateTime, default: -> { DateTime.now }, private: true, required: true
+  # prop :created_at, DateTime, default: -> { DateTime.now }, private: true
   prop :created_at, DateTime do
     # override the initializer to set the default, or normalization
     def initialize(created_at)

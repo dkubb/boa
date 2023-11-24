@@ -36,11 +36,6 @@ describe Boa::Type::Object do
     { default: Object.new }
   end
 
-  sig { returns(Object) }
-  def value
-    @value ||= Object.new
-  end
-
   describe '.new' do
     include Support::TypeBehaviour::New
 
@@ -55,18 +50,6 @@ describe Boa::Type::Object do
     def non_nil_default
       @non_nil_default ||= Object.new
     end
-  end
-
-  describe '#init' do
-    include Support::TypeBehaviour::Init
-  end
-
-  describe '#get' do
-    include Support::TypeBehaviour::Get
-  end
-
-  describe '#set' do
-    include Support::TypeBehaviour::Set
   end
 
   describe '#==' do
@@ -87,13 +70,5 @@ describe Boa::Type::Object do
 
   describe '#hash' do
     include Support::TypeBehaviour::Hash
-  end
-
-  describe '#add_methods' do
-    include Support::TypeBehaviour::AddMethods
-  end
-
-  describe '#finalize' do
-    include Support::TypeBehaviour::Finalize
   end
 end

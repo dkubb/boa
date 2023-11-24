@@ -11,10 +11,8 @@ require_relative 'support/type_behaviour'
 
 require 'boa'
 
-class Person
+class Person < T::Struct
   include Boa
 
   prop :name, String
-
-  finalize
 end
