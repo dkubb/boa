@@ -1,7 +1,6 @@
 # typed: strong
 # frozen_string_literal: true
 
-require 'ice_nine'
 require 'sorbet-runtime'
 
 require_relative 'boa/equality'
