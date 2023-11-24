@@ -8,7 +8,54 @@ module Boa
     extend T::Helpers
     include Equality
 
+    # The base type alias
+    Base = T.type_alias { T.any(Module, T::Types::Base) }
+    public_constant(:Base)
+
     abstract!
+
+    # Lookup the type for a base type
+    #
+    # @example
+    #   Boa::Type[::String]  # => Boa::Type::String
+    #
+    # @param base_type [Base] the base type
+    #
+    # @return [Class<Type>] the type for the base type
+    #
+    # @api public
+    sig { params(base_type: Base).returns(T.class_of(Type)) }
+    def self.[](base_type)
+      base_types.fetch(base_type, Object)
+    end
+
+    # Set the type for a base type
+    #
+    # @example
+    #   Boa::Type[::String] = Boa::Type::String
+    #   Boa::Type[::String]  # => Boa::Type::String
+    #
+    # @param base_type [Base] the base type
+    # @param descendant [Class<Type>] the type for the base type
+    #
+    # @return [Class<Type>] the type for the base type
+    #
+    # @api public
+    sig { params(base_type: Base, descendant: T.class_of(Type)).returns(T.class_of(Type)) }
+    def self.[]=(base_type, descendant)
+      base_types[base_type] = descendant
+    end
+
+    # The base types
+    #
+    # @return [Hash{Base => Class<Type>}] the base types
+    #
+    # @api private
+    sig { returns(T::Hash[Base, T.class_of(Type)]) }
+    def self.base_types
+      @base_types ||= T.let({}, T.nilable(T::Hash[Base, T.class_of(Type)]))
+    end
+    private_class_method(:base_types)
 
     # The name of the instance variable
     #
