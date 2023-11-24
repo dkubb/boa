@@ -19,6 +19,5 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '~> 3.2.2'
 
-  spec.add_dependency('ice_nine',       '~> 0.11.2')
-  spec.add_dependency('sorbet-runtime', '~> 0.5.11066')
+  spec.add_dependency('sorbet-runtime', '~> 0.5.11142')
 end
