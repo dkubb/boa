@@ -22,15 +22,6 @@ describe Boa::Type do
         String
       end
 
-      before do
-        described_class[base_type] = Boa::Type::String
-      end
-
-      after do
-        # Remove the type class from the registry
-        described_class.send(:base_types).delete(base_type) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/Send
-      end
-
       it 'returns the expected type class' do
         assert_same(Boa::Type::String, subject)
       end

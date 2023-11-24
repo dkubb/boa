@@ -5,6 +5,7 @@ module Boa
   class Type
     # An integer type
     class Integer < self
+      Type[::Integer] = self
     end
   end
 end
