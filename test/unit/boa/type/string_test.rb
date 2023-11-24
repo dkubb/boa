@@ -36,11 +36,6 @@ describe Boa::Type::String do
     { default: 'Other Name' }
   end
 
-  sig { returns(String) }
-  def value
-    'value'
-  end
-
   describe '.new' do
     include Support::TypeBehaviour::New
 
@@ -54,22 +49,6 @@ describe Boa::Type::String do
     sig { returns(T.nilable(Object)) }
     def non_nil_default
       'Jon'
-    end
-
-    describe 'with no required option' do
-      subject { described_class.new(type_name) }
-
-      it 'sets the required attribute to true' do
-        assert_operator(subject, :required?)
-      end
-    end
-
-    describe 'with required option' do
-      subject { described_class.new(type_name, required: false) }
-
-      it 'sets the required attribute to false' do
-        refute_operator(subject, :required?)
-      end
     end
 
     describe 'with default option' do
@@ -127,18 +106,6 @@ describe Boa::Type::String do
         end
       end
     end
-  end
-
-  describe '#init' do
-    include Support::TypeBehaviour::Init
-  end
-
-  describe '#get' do
-    include Support::TypeBehaviour::Get
-  end
-
-  describe '#set' do
-    include Support::TypeBehaviour::Set
   end
 
   describe '#min_length' do
@@ -210,13 +177,5 @@ describe Boa::Type::String do
 
   describe '#hash' do
     include Support::TypeBehaviour::Hash
-  end
-
-  describe '#add_methods' do
-    include Support::TypeBehaviour::AddMethods
-  end
-
-  describe '#finalize' do
-    include Support::TypeBehaviour::Finalize
   end
 end

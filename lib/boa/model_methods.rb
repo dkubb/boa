@@ -7,23 +7,9 @@ module Boa
     extend T::Sig
     extend T::Helpers
 
-    requires_ancestor { Object }
+    requires_ancestor { T.class_of(T::Struct) }
 
     abstract!
-
-    # Hook called when the module is included
-    #
-    # @param descendant [Module] the module or class including this module
-    #
-    # @return [void]
-    #
-    # @api private
-    sig { params(descendant: Module).void }
-    def inherited(descendant)
-      descendant.instance_variable_set(:@properties, properties.dup)
-
-      super
-    end
 
     # The properties for this type
     #
@@ -38,38 +24,22 @@ module Boa
     # A DSL method to set up the properties
     #
     # @example
-    #   klass  = Class.new { include Boa }
-    #   result = klass.prop :last_name, Boa::Type::String
-    #   klass.equal?(result)                               # => true
+    #   klass  = Class.new(T::Struct) { include Boa }
+    #   result = klass.prop :last_name, String
+    #   klass.equal?(result)                    # => true
     #
     # @param name [Symbol] the name of the property
-    # @param type [Type] the type of the property
+    # @param base_type [Class] the type of the property
+    # @param options [Hash] the options for the property
     #
     # @return [ModelMethods] the class method module
     #
     # @api public
-    sig { params(name: Symbol, type: T.class_of(Type), required: T::Boolean, options: Object).returns(T.self_type) }
-    def prop(name, type, required: true, **options)
-      properties[name] = type.new(name, required:, **options)
+    sig { params(name: Symbol, base_type: Type::Base, options: Object).returns(T.self_type) }
+    def prop(name, base_type, **options)
+      property = properties[name] = Type[base_type].new(name, **options)
+      super(name, base_type, **property.prop_options)
       self
-    end
-
-    # Finalize the class methods
-    #
-    # @example
-    #   klass = Class.new { include Boa }
-    #   klass.finalize.frozen?             # => true
-    #
-    # @return [ModelMethods] the class method module
-    #
-    # @api public
-    sig { returns(T.self_type) }
-    def finalize
-      properties.each_value do |type|
-        type.add_methods(T.bind(self, Module)).finalize
-      end
-
-      freeze
     end
 
     # Deep freeze the class state

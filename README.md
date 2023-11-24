@@ -28,28 +28,28 @@ gem install boa
 class Person
   include Boa
 
-  prop :id,    Type::UUID,                    key: true           # required by default
-  prop :name,  Type::String, required: true,  length: 1..50
-  prop :email, Type::Email,  required: false, key: :unique_email
-  prop :admin, Type::Boolean                  default: false
+  prop :id,    UUID
+  prop :name,  String, length: 1..50
+  prop :email, T.nilable(Email)
+  prop :admin, T.nilable(T::Boolean
 
-  prop :birth_date, Type::Date, required: false do
+  prop :birth_date, T.nilable(Date) do
     # Checks the value is within range
     includes Date.new(1900)..Date.today
   end
 
   # creates nested Person::Address Boa class
-  prop :address, Type::Object, required: false do
-    prop :street_address, Type::String, length: 1..100
-    prop :city,           Type::String, length: 1..50
-    prop :state,          Type::String, in: STATE_CODES   # alpha2 subdivision codes
-    prop :country,        Type::String, in: COUNTRY_CODES # alpha2 country codes
-    prop :postal_code,    Type::String, length: 1..20
+  prop :address, T.nilable(Object) do
+    prop :street_address, String, length: 1..100
+    prop :city,           String, length: 1..50
+    prop :state,          String, in: STATE_CODES   # alpha2 subdivision codes
+    prop :country,        String, in: COUNTRY_CODES # alpha2 country codes
+    prop :postal_code,    String, length: 1..20
   end
 
   # same as:
-  # prop :created_at, Type::DateTime, default: -> { DateTime.now }, private: true, required: true
-  prop :created_at, Type::DateTime do
+  # prop :created_at, DateTime, default: -> { DateTime.now }, private: true
+  prop :created_at, DateTime do
     # override the initializer to set the default, or normalization
     def initialize(created_at)
       fail Private.new(:created_at), 'must not be set' if created_at

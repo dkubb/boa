@@ -54,6 +54,9 @@ Security/CompoundHash:
   Exclude:
     - lib/boa/equality.rb
 
+Sorbet/ForbidTStruct:
+  Enabled: false
+
 Sorbet/RedundantExtendTSig:
   Enabled: false
 

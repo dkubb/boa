@@ -8,19 +8,17 @@ require 'boa'
 
 extend T::Sig
 
-class Person
+class Person < T::Struct
   include Boa
 
-  prop :name,  Type::String, default: 'Dan Kubb', length: 1..50
-  prop :email, Type::String
-  prop :admin, Type::Boolean, default: false
-
-  finalize
+  prop :name,  String, default: 'Dan Kubb', length: 1..50
+  prop :email, String
+  prop :admin, T::Boolean, default: false
 end
 
 sig { returns(Boa) }
 def instance
-  @instance ||= T.assert_type!(Person.new, T.nilable(Person))
+  @instance ||= T.assert_type!(Person.new(email: '', admin: true), T.nilable(Person))
 end
 
 sig { returns(Boa::Type) }
@@ -30,7 +28,7 @@ end
 
 sig { returns(T::Class[Boa]) }
 def descendant
-  @descendant ||= T.assert_type!(Class.new { include Boa }, T.nilable(T::Class[Boa]))
+  @descendant ||= T.assert_type!(Class.new(T::Struct) { include Boa }, T.nilable(T::Class[Boa]))
 end
 
 sig { returns(T.class_of(Boa::Equality)) }

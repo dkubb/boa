@@ -36,11 +36,6 @@ describe Boa::Type::Integer do
     { default: 1 }
   end
 
-  sig { returns(Integer) }
-  def value
-    @value ||= 1
-  end
-
   describe '.new' do
     include Support::TypeBehaviour::New
 
@@ -57,18 +52,6 @@ describe Boa::Type::Integer do
     end
   end
 
-  describe '#init' do
-    include Support::TypeBehaviour::Init
-  end
-
-  describe '#get' do
-    include Support::TypeBehaviour::Get
-  end
-
-  describe '#set' do
-    include Support::TypeBehaviour::Set
-  end
-
   describe '#==' do
     include Support::TypeBehaviour::Equality
   end
@@ -79,13 +62,5 @@ describe Boa::Type::Integer do
 
   describe '#hash' do
     include Support::TypeBehaviour::Hash
-  end
-
-  describe '#add_methods' do
-    include Support::TypeBehaviour::AddMethods
-  end
-
-  describe '#finalize' do
-    include Support::TypeBehaviour::Finalize
   end
 end
