@@ -52,7 +52,8 @@ module Boa
     # @api public
     sig { params(name: Symbol, base_type: Type::Base, required: T::Boolean, options: Object).returns(T.self_type) }
     def prop(name, base_type, required: true, **options)
-      properties[name] = Type[base_type].new(name, required:, **options)
+      property = properties[name] = Type[base_type].new(name, required:, **options)
+      super(name, base_type, **property.prop_options) if defined?(super)
       self
     end
 

@@ -16,37 +16,83 @@ describe Boa do
   describe '.new' do
     cover 'Boa#initialize'
 
-    describe 'with no attributes' do
-      it 'initializes the object' do
-        assert_kind_of(described_class, subject)
+    describe 'with a T::Struct object' do
+      sig { returns(T::Class[Boa]) }
+      def described_class
+        @described_class ||=
+          Class.new(T::Struct) do
+            include Boa
+
+            prop :name, String
+
+            finalize
+          end
       end
 
-      it 'does not set the name' do
-        assert_nil(subject.name)
+      describe 'with no attributes' do
+        it 'raises an error' do
+          assert_raises(ArgumentError) { subject }
+        end
+      end
+
+      describe 'with attributes' do
+        subject { described_class.new(name: 'Dan Kubb') }
+
+        it 'initializes the object' do
+          assert_kind_of(described_class, subject)
+        end
+
+        it 'sets the name' do
+          assert_equal('Dan Kubb', subject.name)
+        end
+      end
+
+      describe 'with unknown attributes' do
+        # provide attributes in reverse order to ensure that the error
+        # message sorts the attributes
+        subject { described_class.new(unknown_b: nil, unknown_a: nil) }
+
+        it 'raises an error' do
+          error = assert_raises(Boa::UnknownAttributeError) { subject }
+
+          assert_equal('Unknown attributes: unknown_a, unknown_b', error.message)
+        end
       end
     end
 
-    describe 'with attributes' do
-      subject { described_class.new(name: 'Dan Kubb') }
+    describe 'with a non-T::Struct object' do
+      describe 'with no attributes' do
+        it 'initializes the object' do
+          assert_kind_of(described_class, subject)
+        end
 
-      it 'initializes the object' do
-        assert_kind_of(described_class, subject)
+        it 'does not set the name' do
+          assert_nil(subject.name)
+        end
       end
 
-      it 'sets the name' do
-        assert_equal('Dan Kubb', subject.name)
+      describe 'with attributes' do
+        subject { described_class.new(name: 'Dan Kubb') }
+
+        it 'initializes the object' do
+          assert_kind_of(described_class, subject)
+        end
+
+        it 'sets the name' do
+          assert_equal('Dan Kubb', subject.name)
+        end
       end
-    end
 
-    describe 'with unknown attributes' do
-      # provide attributes in reverse order to ensure that the error
-      # message sorts the attributes
-      subject { described_class.new(unknown_b: nil, unknown_a: nil) }
+      describe 'with unknown attributes' do
+        # provide attributes in reverse order to ensure that the error
+        # message sorts the attributes
+        subject { described_class.new(unknown_b: nil, unknown_a: nil) }
 
-      it 'raises an error' do
-        error = assert_raises(Boa::UnknownAttributeError) { subject }
+        it 'raises an error' do
+          error = assert_raises(Boa::UnknownAttributeError) { subject }
 
-        assert_equal('Unknown attributes: unknown_a, unknown_b', error.message)
+          assert_equal('Unknown attributes: unknown_a, unknown_b', error.message)
+        end
       end
     end
   end

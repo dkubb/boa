@@ -120,24 +120,36 @@ module Boa
     sig { returns(Symbol) }
     attr_reader :ivar_name
 
+    # The options for the T::Struct.prop method
+    #
+    # @example
+    #   type.prop_options  # => { default: 'Jon' }
+    #
+    # @return [Hash{Symbol => Object}] the options for the type
+    #
+    # @api private
+    sig { returns(T::Hash[Symbol, ::Object]) }
+    attr_reader :prop_options
+
     # Initialize the type
     #
     # @param name [Symbol] the name of the type
     # @param required [Boolean] whether the type is required
-    # @param default [Object] the default value of the type
     # @param includes [Object] the object to check inclusion against
     # @param ivar_name [Symbol] the name of the instance variable
+    # @param options [Hash{Symbol => Object}] the options for the type
     #
     # @return [void]
     #
     # @api private
-    sig { params(name: Symbol, required: T::Boolean, default: ::Object, includes: ::Object, ivar_name: Symbol).void }
-    def initialize(name, required: true, default: nil, includes: nil, ivar_name: :"@#{name}")
-      @name      = name
-      @required  = required
-      @default   = T.let(default, T.nilable(::Object))
-      @includes  = T.let(includes, T.nilable(::Object))
-      @ivar_name = ivar_name
+    sig { params(name: Symbol, required: T::Boolean, includes: ::Object, ivar_name: Symbol, options: ::Object).void }
+    def initialize(name, required: true, includes: nil, ivar_name: :"@#{name}", **options)
+      @name         = name
+      @required     = required
+      @default      = T.let(options[:default], T.nilable(::Object))
+      @includes     = T.let(includes, T.nilable(::Object))
+      @ivar_name    = ivar_name
+      @prop_options = options
     end
 
     # Initialize the attribute in the instance

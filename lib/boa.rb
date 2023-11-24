@@ -58,6 +58,8 @@ module Boa
     model.properties.each_value do |type|
       type.init(T.bind(self, Object), **attributes)
     end
+
+    super if is_a?(T::Struct)
   end
 
   private

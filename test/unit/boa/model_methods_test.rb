@@ -48,19 +48,58 @@ describe Boa::ModelMethods do
   describe '#prop' do
     cover 'Boa::ModelMethods#prop'
 
-    sig { returns(T::Hash[Symbol, Object]) }
-    def options
-      { required: false, default: false }
+    sig { returns(T::Hash[Symbol, Boa::Type]) }
+    def expected
+      {
+        name: Boa::Type::String.new(:name, default: 'Default Name'),
+        age:  Boa::Type::Integer.new(:age, required: false, default: nil)
+      }
     end
 
-    it 'sets the property' do
-      subject.prop(:admin, T::Boolean, **options)
+    describe 'with a T::Struct object' do
+      subject do
+        Class.new(T::Struct) do
+          extend Boa::ModelMethods
 
-      assert_equal({ name: Boa::Type::String.new(:name), admin: Boa::Type::Boolean.new(:admin, **options) }, subject.properties)
+          prop :name, String, default: 'Default Name'
+          prop :age,  Integer, required: false, default: nil
+        end
+      end
+
+      it 'sets the property' do
+        subject
+
+        assert_equal(expected, subject.properties)
+      end
+
+      it 'returns self' do
+        assert_same(subject, subject.prop(:admin, Boa::Type::Boolean))
+      end
+
+      it 'passes through the default option' do
+        assert_same('Default Name', subject.new.name)
+      end
     end
 
-    it 'returns self' do
-      assert_same(subject, subject.prop(:admin, T::Boolean, **options))
+    describe 'with an non-T::Struct object' do
+      subject do
+        Class.new do
+          extend Boa::ModelMethods
+
+          prop :name, String, default: 'Default Name'
+          prop :age,  Integer, required: false, default: nil
+        end
+      end
+
+      it 'sets the property' do
+        subject
+
+        assert_equal(expected, subject.properties)
+      end
+
+      it 'returns self' do
+        assert_same(subject, subject.prop(:admin, Boa::Type::Boolean))
+      end
     end
   end
 
