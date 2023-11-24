@@ -9,7 +9,7 @@ module Boa
     include Equality
 
     # The base type alias
-    Base = T.type_alias { T.any(Module, T::Types::Base) }
+    Base = T.type_alias { T.untyped } # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Sorbet/ForbidTUntyped
     public_constant(:Base)
 
     abstract!
