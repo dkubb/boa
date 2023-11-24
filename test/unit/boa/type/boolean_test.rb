@@ -44,6 +44,8 @@ describe Boa::Type::Boolean do
   describe '.new' do
     include Support::TypeBehaviour::New
 
+    cover 'Boa::Type::Boolean#initialize'
+
     sig { returns(T.nilable(Object)) }
     def default_includes
       [true, false]
@@ -82,9 +84,9 @@ describe Boa::Type::Boolean do
   describe '#add_methods' do
     include Support::TypeBehaviour::AddMethods
 
-    describe 'when the ivar is true' do
-      cover 'Boa::Type::Boolean#add_methods'
+    cover 'Boa::Type::Boolean#add_methods'
 
+    describe 'when the ivar is true' do
       sig { returns(T::Boolean) }
       def value
         true
@@ -107,8 +109,6 @@ describe Boa::Type::Boolean do
     end
 
     describe 'when the ivar is false' do
-      cover 'Boa::Type::Boolean#add_methods'
-
       sig { returns(T::Boolean) }
       def value
         false
@@ -131,8 +131,6 @@ describe Boa::Type::Boolean do
     end
 
     describe 'when the ivar is nil' do
-      cover 'Boa::Type::Boolean#add_methods'
-
       it 'adds a query method' do
         instance = klass.new
 
