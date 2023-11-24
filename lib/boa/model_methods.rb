@@ -48,7 +48,7 @@ module Boa
     # @return [ModelMethods] the class method module
     #
     # @api public
-    sig { params(name: Symbol, type: T::Class[Type], required: T::Boolean, options: Object).returns(T.self_type) }
+    sig { params(name: Symbol, type: T.class_of(Type), required: T::Boolean, options: Object).returns(T.self_type) }
     def prop(name, type, required: true, **options)
       properties[name] = type.new(name, required:, **options)
       self
@@ -84,7 +84,7 @@ module Boa
     # @api public
     sig { returns(T.self_type) }
     def freeze
-      T.let(properties.each_value(&:freeze), T::Hash[Symbol, Type])
+      properties.each_value(&:freeze)
 
       instance_variables.each do |ivar_name|
         T.let(instance_variable_get(ivar_name), Object).freeze

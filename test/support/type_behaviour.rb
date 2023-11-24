@@ -257,7 +257,7 @@ module Support
 
           describe 'when the types have different names and same options' do
             sig { returns(Symbol) }
-            def other_type_name
+            def other_name
               :other
             end
 
@@ -267,25 +267,31 @@ module Support
           end
 
           describe 'when the types have the same name and options, but one is subclass' do
-            it 'returns true' do
-              subclass = Class.new(described_class)
+            sig { returns(T.class_of(Boa::Type)) }
+            def other_class
+              Class.new(described_class)
+            end
 
-              assert_equal(subject, subclass.new(other_type_name, **other_options))
+            it 'returns true' do
+              assert_equal(subject, other)
             end
           end
 
           describe 'when the types have the same name and options, but one is not a subclass' do
-            it 'returns true' do
-              sibling_class = Class.new(Boa::Type)
+            sig { returns(T.class_of(Boa::Type)) }
+            def other_class
+              Class.new(Boa::Type)
+            end
 
-              refute_equal(subject, sibling_class.new(other_type_name, **other_options))
+            it 'returns true' do
+              refute_equal(subject, other)
             end
           end
 
           describe 'when the types have the same name and different options' do
             sig { returns(T::Hash[Symbol, Object]) }
             def other_options
-              { required: false }
+              different_options
             end
 
             it 'returns false' do
@@ -312,7 +318,7 @@ module Support
 
           describe 'when the types have different names and same options' do
             sig { returns(Symbol) }
-            def other_type_name
+            def other_name
               :other
             end
 
@@ -321,10 +327,10 @@ module Support
             end
           end
 
-          describe 'when the types have the same name and different options' do
-            sig { returns(T::Hash[Symbol, Object]) }
-            def other_options
-              { required: false }
+          describe 'when the types have the same name and options, but one is subclass' do
+            sig { returns(T.class_of(Boa::Type)) }
+            def other_class
+              Class.new(described_class)
             end
 
             it 'returns false' do
@@ -332,11 +338,25 @@ module Support
             end
           end
 
-          describe 'when the types have the same name and options, but one is subclass' do
-            it 'returns false' do
-              subclass = Class.new(described_class)
+          describe 'when the types have the same name and options, but one is not a subclass' do
+            sig { returns(T.class_of(Boa::Type)) }
+            def other_class
+              Class.new(Boa::Type)
+            end
 
-              refute_operator(subject, :eql?, subclass.new(other_type_name, **other_options))
+            it 'returns true' do
+              refute_operator(subject, :eql?, other)
+            end
+          end
+
+          describe 'when the types have the same name and different options' do
+            sig { returns(T::Hash[Symbol, Object]) }
+            def other_options
+              different_options
+            end
+
+            it 'returns false' do
+              refute_operator(subject, :eql?, other)
             end
           end
         end
@@ -360,14 +380,14 @@ module Support
           end
 
           it 'returns the different values for different objects' do
-            other = described_class.new(type_name, required: false)
+            other = described_class.new(other_name, **different_options)
 
             refute_equal(subject.hash, other.hash)
           end
 
           it 'returns different values for objects with the same name and options, but one is subclass' do
             subclass = Class.new(described_class)
-            other    = subclass.new(other_type_name)
+            other    = subclass.new(type_name, **options)
 
             refute_equal(subject.hash, other.hash)
           end

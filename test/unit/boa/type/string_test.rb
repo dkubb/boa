@@ -6,36 +6,39 @@ require 'test_helper'
 describe Boa::Type::String do
   extend T::Sig
 
-  subject { described_class.new(type_name) }
+  subject { described_class.new(type_name, **options) }
 
-  sig { returns(T::Class[Boa::Type]) }
+  sig { returns(T.class_of(Boa::Type)) }
   def described_class
     Boa::Type::String
   end
+  alias_method(:other_class, :described_class)
 
   sig { returns(Symbol) }
   def type_name
     :name
   end
+  alias_method(:other_name, :type_name)
+
+  sig { returns(T::Hash[Symbol, Object]) }
+  def options
+    {}
+  end
+  alias_method(:other_options, :options)
+
+  sig { returns(Boa::Type) }
+  def other
+    other_class.new(other_name, **other_options)
+  end
+
+  sig { returns(T::Hash[Symbol, Object]) }
+  def different_options
+    { default: 'Other Name' }
+  end
 
   sig { returns(String) }
   def value
     'value'
-  end
-
-  sig { returns(Boa::Type) }
-  def other
-    described_class.new(other_type_name, **other_options)
-  end
-
-  sig { returns(Symbol) }
-  def other_type_name
-    type_name
-  end
-
-  sig { returns(T::Hash[Symbol, Object]) }
-  def other_options
-    {}
   end
 
   describe '.new' do
@@ -72,36 +75,46 @@ describe Boa::Type::String do
     end
 
     describe 'with default option' do
-      cover 'Boa::Type::String#initialize'
-
       subject { described_class.new(type_name, default: 'default') }
 
-      it 'sets the required attribute' do
+      it 'sets the default attribute' do
         assert_same('default', subject.default)
       end
     end
 
     describe 'with no length option' do
-      cover 'Boa::Type::String#initialize'
-
       it 'sets the length attribute to the default' do
         assert_equal(1.., subject.length)
+      end
+
+      it 'has the expected default minimum length' do
+        assert_equal(1, subject.min_length)
+      end
+
+      it 'has the expected default maximum length' do
+        assert_nil(subject.max_length)
       end
     end
 
     describe 'with length option' do
-      cover 'Boa::Type::String#initialize'
-
       subject { described_class.new(type_name, length: min_length..10) }
 
       describe 'with a non-nil minimum length' do
         sig { returns(T.nilable(Integer)) }
         def min_length
-          1
+          2
         end
 
         it 'sets the length attribute' do
-          assert_equal(1..10, subject.length)
+          assert_equal(2..10, subject.length)
+        end
+
+        it 'has the expected minimum length' do
+          assert_equal(2, subject.min_length)
+        end
+
+        it 'has the expected default maximum length' do
+          assert_equal(10, subject.max_length)
         end
       end
 

@@ -143,7 +143,7 @@ describe Boa::ModelMethods do
     end
 
     it 'returns the class' do
-      assert_same(subject, subject.finalize)
+      assert_same(subject, subject.freeze)
     end
   end
 end
