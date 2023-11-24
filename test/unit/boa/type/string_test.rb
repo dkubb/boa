@@ -44,6 +44,8 @@ describe Boa::Type::String do
   describe '.new' do
     include Support::TypeBehaviour::New
 
+    cover 'Boa::Type::String#initialize'
+
     sig { returns(T.nilable(Object)) }
     def default_includes
       nil
@@ -55,8 +57,6 @@ describe Boa::Type::String do
     end
 
     describe 'with no required option' do
-      cover 'Boa::Type::String#initialize'
-
       subject { described_class.new(type_name) }
 
       it 'sets the required attribute to true' do
@@ -65,8 +65,6 @@ describe Boa::Type::String do
     end
 
     describe 'with required option' do
-      cover 'Boa::Type::String#initialize'
-
       subject { described_class.new(type_name, required: false) }
 
       it 'sets the required attribute to false' do

@@ -49,7 +49,7 @@ jobs:
       run: bundle exec rake test
 
     - name: Run mutation tests
-      run: bundle exec mutant run --since origin/main
+      run: bundle exec mutant run
 
     - name: Run docs tests
       run: bundle exec yard doctest
