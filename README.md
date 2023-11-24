@@ -2,26 +2,6 @@
 
 This is a work in progress. It is not ready for production use.
 
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'boa'
-```
-
-And then execute:
-
-```bash
-bundle
-```
-
-Or install it yourself as:
-
-```bash
-gem install boa
-```
-
 ## Usage
 
 ```ruby
@@ -58,4 +38,24 @@ valid_person =
   in Person::Invalid                                    # could also use else here
     fail "person is invalid: #{person.errors.inspect}"  # person is invalid
   end
+```
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'boa'
+```
+
+And then execute:
+
+```bash
+bundle
+```
+
+Or install it yourself as:
+
+```bash
+gem install boa
 ```
