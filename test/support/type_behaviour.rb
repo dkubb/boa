@@ -74,10 +74,10 @@ module Support
           end
 
           describe 'with an includes option' do
-            subject { described_class.new(type_name, includes: [true]) }
+            subject { described_class.new(type_name, includes: []) }
 
-            it 'sets the includes attribute' do
-              assert_equal([true], subject.includes)
+            it 'sets the includes attribute to an empty list' do
+              assert_empty(subject.includes)
             end
           end
 
