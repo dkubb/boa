@@ -76,7 +76,7 @@ describe Boa::Type::String do
 
       subject { described_class.new(type_name, default: 'default') }
 
-      it 'sets the required attribute' do
+      it 'sets the default attribute' do
         assert_same('default', subject.default)
       end
     end
