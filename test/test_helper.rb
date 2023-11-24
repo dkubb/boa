@@ -14,7 +14,7 @@ require 'boa'
 class Person
   include Boa
 
-  prop :name, Boa::Type::String
+  prop :name, String
 
   finalize
 end

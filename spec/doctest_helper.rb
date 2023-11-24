@@ -11,9 +11,9 @@ extend T::Sig
 class Person
   include Boa
 
-  prop :name,  Type::String, default: 'Dan Kubb', length: 1..50
-  prop :email, Type::String
-  prop :admin, Type::Boolean, default: false
+  prop :name,  String, default: 'Dan Kubb', length: 1..50
+  prop :email, String
+  prop :admin, T::Boolean, default: false
 
   finalize
 end

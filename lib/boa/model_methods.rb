@@ -39,18 +39,20 @@ module Boa
     #
     # @example
     #   klass  = Class.new { include Boa }
-    #   result = klass.prop :last_name, Boa::Type::String
-    #   klass.equal?(result)                               # => true
+    #   result = klass.prop :last_name, String
+    #   klass.equal?(result)                    # => true
     #
     # @param name [Symbol] the name of the property
-    # @param type [Type] the type of the property
+    # @param base_type [Class] the type of the property
+    # @param required [Boolean] whether the property is required
+    # @param options [Hash] the options for the property
     #
     # @return [ModelMethods] the class method module
     #
     # @api public
-    sig { params(name: Symbol, type: T.class_of(Type), required: T::Boolean, options: Object).returns(T.self_type) }
-    def prop(name, type, required: true, **options)
-      properties[name] = type.new(name, required:, **options)
+    sig { params(name: Symbol, base_type: Type::Base, required: T::Boolean, options: Object).returns(T.self_type) }
+    def prop(name, base_type, required: true, **options)
+      properties[name] = Type[base_type].new(name, required:, **options)
       self
     end
 

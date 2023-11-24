@@ -10,7 +10,7 @@ describe Boa::ModelMethods do
     Class.new do
       extend Boa::ModelMethods
 
-      prop :name, Boa::Type::String
+      prop :name, String
     end
   end
 
@@ -54,13 +54,13 @@ describe Boa::ModelMethods do
     end
 
     it 'sets the property' do
-      subject.prop(:admin, Boa::Type::Boolean, **options)
+      subject.prop(:admin, T::Boolean, **options)
 
       assert_equal({ name: Boa::Type::String.new(:name), admin: Boa::Type::Boolean.new(:admin, **options) }, subject.properties)
     end
 
     it 'returns self' do
-      assert_same(subject, subject.prop(:admin, Boa::Type::Boolean, **options))
+      assert_same(subject, subject.prop(:admin, T::Boolean, **options))
     end
   end
 
