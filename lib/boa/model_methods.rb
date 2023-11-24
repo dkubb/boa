@@ -48,7 +48,7 @@ module Boa
     # @return [ModelMethods] the class method module
     #
     # @api public
-    sig { params(name: Symbol, type: T::Class[Type], required: T::Boolean, options: Object).returns(T.self_type) }
+    sig { params(name: Symbol, type: T.class_of(Type), required: T::Boolean, options: Object).returns(T.self_type) }
     def prop(name, type, required: true, **options)
       properties[name] = type.new(name, required:, **options)
       self

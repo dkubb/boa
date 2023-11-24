@@ -8,7 +8,7 @@ describe Boa::Type::Object do
 
   subject { described_class.new(type_name) }
 
-  sig { returns(T::Class[Boa::Type]) }
+  sig { returns(T.class_of(Boa::Type)) }
   def described_class
     Boa::Type::Object
   end

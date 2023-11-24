@@ -8,7 +8,7 @@ describe Boa::Type::Boolean do
 
   subject { described_class.new(type_name, **options) }
 
-  sig { returns(T::Class[Boa::Type]) }
+  sig { returns(T.class_of(Boa::Type)) }
   def described_class
     Boa::Type::Boolean
   end

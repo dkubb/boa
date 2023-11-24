@@ -33,7 +33,7 @@ def descendant
   @descendant ||= T.assert_type!(Class.new { include Boa }, T.nilable(T::Class[Boa]))
 end
 
-sig { returns(T::Class[Boa::Equality]) }
+sig { returns(T.class_of(Boa::Equality)) }
 def equality_class
   @equality_class ||=
     Class.new do
