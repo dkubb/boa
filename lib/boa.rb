@@ -3,6 +3,7 @@
 
 require 'sorbet-runtime'
 
+require_relative 'boa/util'
 require_relative 'boa/equality'
 require_relative 'boa/model_methods'
 require_relative 'boa/type'
