@@ -15,7 +15,7 @@ module Boa
       # @return [Range<::Integer>] the length of the string
       #
       # @api public
-      sig { returns(T::Range[::Integer]) }
+      sig { returns(T::Range[T.nilable(::Integer)]) }
       attr_reader :length
 
       # Initialize the string type
@@ -51,11 +51,11 @@ module Boa
       # @return [void]
       #
       # @api public
-      sig { params(name: Symbol, length: T::Range[::Integer], options: ::Object).void }
+      sig { params(name: Symbol, length: T::Range[T.nilable(::Integer)], options: ::Object).void }
       def initialize(name, length: 1.., **options)
         raise(ArgumentError, 'length.begin cannot be nil') if length.begin.nil?
 
-        @length = T.let(length, T::Range[::Integer])
+        @length = T.let(length, T::Range[T.nilable(::Integer)])
 
         super(name, **options)
       end
@@ -71,7 +71,7 @@ module Boa
       # @api public
       sig { returns(::Integer) }
       def min_length
-        length.begin
+        T.must(length.begin)
       end
 
       # The maximum length of the string
