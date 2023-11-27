@@ -38,7 +38,7 @@ def equality_class
       extend T::Sig
       include Boa::Equality
 
-      protected
+    protected
 
       sig { override.returns(T::Hash[Symbol, Object]) }
       def object_state

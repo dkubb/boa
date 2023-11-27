@@ -38,7 +38,7 @@ module Boa
     sig { params(name: Symbol, base_type: Type::Base, options: Object).returns(T.self_type) }
     def prop(name, base_type, **options)
       property = properties[name] = Type[base_type].new(name, **options)
-      super(name, base_type, **property.prop_options)
+      super(name, base_type, **property.options)
       self
     end
 

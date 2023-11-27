@@ -68,17 +68,6 @@ module Boa
     sig { returns(Symbol) }
     attr_reader :name
 
-    # The default value of the type
-    #
-    # @example
-    #   type.default  # => 'Jon'
-    #
-    # @return [Object] the default value of the type
-    #
-    # @api public
-    sig { returns(::Object) }
-    attr_reader :default
-
     # The object to check inclusion against
     #
     # @example
@@ -93,13 +82,13 @@ module Boa
     # The options for the T::Struct.prop method
     #
     # @example
-    #   type.prop_options  # => { default: 'Jon' }
+    #   type.options  # => { default: 'Jon' }
     #
     # @return [Hash{Symbol => Object}] the options for the type
     #
     # @api private
     sig { returns(T::Hash[Symbol, ::Object]) }
-    attr_reader :prop_options
+    attr_reader :options
 
     # Initialize the type
     #
@@ -112,10 +101,22 @@ module Boa
     # @api private
     sig { params(name: Symbol, includes: ::Object, options: ::Object).void }
     def initialize(name, includes: nil, **options)
-      @name         = name
-      @default      = T.let(options[:default], T.nilable(::Object))
-      @includes     = T.let(includes, T.nilable(::Object))
-      @prop_options = options
+      @name     = name
+      @includes = T.let(includes, T.nilable(::Object))
+      @options  = options
+    end
+
+    # The default value of the type
+    #
+    # @example
+    #   type.default  # => 'Jon'
+    #
+    # @return [Object] the default value of the type
+    #
+    # @api public
+    sig { returns(T.nilable(::Object)) }
+    def default
+      options[:default]
     end
   end
 end

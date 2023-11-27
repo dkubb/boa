@@ -61,11 +61,11 @@ describe Boa::Type::String do
 
     describe 'with no length option' do
       it 'sets the length attribute to the default' do
-        assert_equal(1.., subject.length)
+        assert_equal(0.., subject.length)
       end
 
       it 'has the expected default minimum length' do
-        assert_equal(1, subject.min_length)
+        assert_equal(0, subject.min_length)
       end
 
       it 'has the expected default maximum length' do
@@ -99,10 +99,16 @@ describe Boa::Type::String do
         sig { returns(T.nilable(Integer)) }
         def min_length; end
 
-        it 'raises an argument error' do
-          error = assert_raises(ArgumentError) { subject }
+        it 'sets the length attribute' do
+          assert_equal(0..10, subject.length)
+        end
 
-          assert_equal('length.begin cannot be nil', error.message)
+        it 'has the expected minimum length' do
+          assert_same(0, subject.min_length)
+        end
+
+        it 'has the expected default maximum length' do
+          assert_same(10, subject.max_length)
         end
       end
     end
@@ -112,7 +118,7 @@ describe Boa::Type::String do
     cover 'Boa::Type::String#min_length'
 
     it 'returns the minimum length' do
-      assert_equal(1, subject.min_length)
+      assert_equal(0, subject.min_length)
     end
   end
 
