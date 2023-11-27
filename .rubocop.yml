@@ -13,6 +13,9 @@ AllCops:
   Exclude:
     - vendor/**/*
 
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
 Layout/ExtraSpacing:
   ForceEqualSignAlignment: true
 

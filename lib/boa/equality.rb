@@ -62,7 +62,7 @@ module Boa
       self.class.hash ^ T.let(object_state.hash, Integer)
     end
 
-    protected
+  protected
 
     # The state of the object
     #
