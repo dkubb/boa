@@ -68,17 +68,6 @@ module Boa
     sig { returns(Symbol) }
     attr_reader :name
 
-    # The default value of the type
-    #
-    # @example
-    #   type.default  # => 'Jon'
-    #
-    # @return [Object] the default value of the type
-    #
-    # @api public
-    sig { returns(::Object) }
-    attr_reader :default
-
     # The object to check inclusion against
     #
     # @example
@@ -113,9 +102,21 @@ module Boa
     sig { params(name: Symbol, includes: ::Object, options: ::Object).void }
     def initialize(name, includes: nil, **options)
       @name     = name
-      @default  = T.let(options[:default], T.nilable(::Object))
       @includes = T.let(includes, T.nilable(::Object))
       @options  = options
+    end
+
+    # The default value of the type
+    #
+    # @example
+    #   type.default  # => 'Jon'
+    #
+    # @return [Object] the default value of the type
+    #
+    # @api public
+    sig { returns(T.nilable(::Object)) }
+    def default
+      options[:default]
     end
   end
 end
