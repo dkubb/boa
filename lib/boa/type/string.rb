@@ -20,7 +20,7 @@ module Boa
 
       # Initialize the string type
       #
-      # @example with the default length and default
+      # @example with the default length
       #   type = String.new(:name)
       #   type.class   # => String
       #   type.name    # => :name
