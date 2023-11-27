@@ -10,7 +10,7 @@ module Boa
       # The length of the string
       #
       # @example
-      #   type.length  # => 1..
+      #   type.length  # => 0..
       #
       # @return [Range<::Integer>] the length of the string
       #
@@ -24,7 +24,7 @@ module Boa
       #   type = String.new(:name)
       #   type.class   # => String
       #   type.name    # => :name
-      #   type.length  # => 1..
+      #   type.length  # => 0..
       #   type.default # => nil
       #
       # @example with a custom length
@@ -38,14 +38,14 @@ module Boa
       #   type = String.new(:name, default: 'Dan Kubb')
       #   type.class   # => String
       #   type.name    # => :name
-      #   type.length  # => 1..
+      #   type.length  # => 0..
       #   type.default # => 'Dan Kubb'
       #
       # @example with a nil minimum length
       #   type = String.new(:name, length: ..50, default: 'Dan Kubb')
       #   type.class   # => String
       #   type.name    # => :name
-      #   type.length  # => 1..50
+      #   type.length  # => 0..50
       #   type.default # => 'Dan Kubb'
       #
       # @param name [Symbol] the name of the type
@@ -56,7 +56,7 @@ module Boa
       #
       # @api public
       sig { params(name: Symbol, length: T::Range[T.nilable(::Integer)], options: ::Object).void }
-      def initialize(name, length: 1.., **options)
+      def initialize(name, length: 0.., **options)
         @length = T.let(normalize_integer_range(length), T::Range[T.nilable(::Integer)])
 
         super(name, **options)
@@ -66,7 +66,7 @@ module Boa
       #
       # @example
       #   type = String.new(:name)
-      #   type.min_length  # => 1
+      #   type.min_length  # => 0
       #
       # @return [::Integer] the minimum length of the string
       #
@@ -108,7 +108,7 @@ module Boa
         range_end  = range.end
         range_end -= 1 if range_end && range.exclude_end?
 
-        Range.new(range.begin || 1, range_end)
+        Range.new(range.begin || 0, range_end)
       end
     end
   end
