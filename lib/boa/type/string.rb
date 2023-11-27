@@ -42,7 +42,11 @@ module Boa
       #   type.default # => 'Dan Kubb'
       #
       # @example with a nil minimum length
-      #   String.new(:name, length: nil..50)  # => raise ArgumentError, 'length.begin cannot be nil'
+      #   type = String.new(:name, length: ..50, default: 'Dan Kubb')
+      #   type.class   # => String
+      #   type.name    # => :name
+      #   type.length  # => 1..50
+      #   type.default # => 'Dan Kubb'
       #
       # @param name [Symbol] the name of the type
       # @param length [Range<::Integer>] the length of the string
@@ -53,9 +57,7 @@ module Boa
       # @api public
       sig { params(name: Symbol, length: T::Range[T.nilable(::Integer)], options: ::Object).void }
       def initialize(name, length: 1.., **options)
-        raise(ArgumentError, 'length.begin cannot be nil') if length.begin.nil?
-
-        @length = T.let(length, T::Range[T.nilable(::Integer)])
+        @length = T.let(normalize_integer_range(length), T::Range[T.nilable(::Integer)])
 
         super(name, **options)
       end
@@ -89,8 +91,24 @@ module Boa
       # @api public
       sig { returns(T.nilable(::Integer)) }
       def max_length
-        max_length = T.assert_type!(length.end, T.nilable(::Integer))
-        length.exclude_end? && max_length ? max_length - 1 : max_length
+        length.end
+      end
+
+    private
+
+      # Normalize an integer range
+      #
+      # @param range [Range<::Integer>] an integer range
+      #
+      # @return [Range<::Integer>] the normalized integer range
+      #
+      # @api private
+      sig { params(range: T::Range[T.nilable(::Integer)]).returns(T::Range[T.nilable(::Integer)]) }
+      def normalize_integer_range(range)
+        range_end  = range.end
+        range_end -= 1 if range_end && range.exclude_end?
+
+        Range.new(range.begin || 1, range_end)
       end
     end
   end
