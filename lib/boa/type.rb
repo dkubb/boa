@@ -93,13 +93,13 @@ module Boa
     # The options for the T::Struct.prop method
     #
     # @example
-    #   type.prop_options  # => { default: 'Jon' }
+    #   type.options  # => { default: 'Jon' }
     #
     # @return [Hash{Symbol => Object}] the options for the type
     #
     # @api private
     sig { returns(T::Hash[Symbol, ::Object]) }
-    attr_reader :prop_options
+    attr_reader :options
 
     # Initialize the type
     #
@@ -112,10 +112,10 @@ module Boa
     # @api private
     sig { params(name: Symbol, includes: ::Object, options: ::Object).void }
     def initialize(name, includes: nil, **options)
-      @name         = name
-      @default      = T.let(options[:default], T.nilable(::Object))
-      @includes     = T.let(includes, T.nilable(::Object))
-      @prop_options = options
+      @name     = name
+      @default  = T.let(options[:default], T.nilable(::Object))
+      @includes = T.let(includes, T.nilable(::Object))
+      @options  = options
     end
   end
 end
