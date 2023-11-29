@@ -46,7 +46,9 @@ module Boa
     # @api public
     sig { params(other: Equality).returns(T::Boolean) }
     def eql?(other)
-      T.let(object_state.eql?(other.object_state), T::Boolean) && other.instance_of?(self.class)
+      return false unless other.instance_of?(self.class)
+
+      T.let(object_state.eql?(other.object_state), T::Boolean)
     end
 
     # The hash value of the object
