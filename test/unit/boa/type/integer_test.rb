@@ -6,7 +6,7 @@ require 'test_helper'
 describe Boa::Type::Integer do
   extend T::Sig
 
-  subject { described_class.new(type_name) }
+  subject { described_class.new(type_name, **options) }
 
   sig { returns(T.class_of(Boa::Type)) }
   def described_class
@@ -16,7 +16,7 @@ describe Boa::Type::Integer do
 
   sig { returns(Symbol) }
   def type_name
-    :version
+    :age
   end
   alias_method(:other_name, :type_name)
 
@@ -33,22 +33,118 @@ describe Boa::Type::Integer do
 
   sig { returns(T::Hash[Symbol, Object]) }
   def different_options
-    { default: 1 }
+    { default: 42 }
   end
 
   describe '.new' do
     include Support::TypeBehaviour::New
 
-    cover 'Boa::Type::Integer#initiaize'
+    cover 'Boa::Type::Integer#initialize'
 
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(Object)) }
     def default_includes
       nil
     end
 
     sig { returns(T.nilable(Integer)) }
     def non_nil_default
-      @non_nil_default ||= 0
+      100
+    end
+
+    describe 'with default option' do
+      subject { described_class.new(type_name, default: 42) }
+
+      it 'sets the default attribute' do
+        assert_same(42, subject.default)
+      end
+    end
+
+    describe 'with no range option' do
+      it 'sets the range attribute to the default' do
+        assert_equal(nil.., subject.range)
+      end
+    end
+
+    describe 'with a range option' do
+      subject { described_class.new(type_name, range:) }
+
+      describe 'with a minimum range' do
+        sig { returns(T::Range[T.nilable(Integer)]) }
+        def range
+          0..10
+        end
+
+        it 'sets the range attribute' do
+          assert_equal(0..10, subject.range)
+        end
+      end
+
+      describe 'with no minimum range' do
+        sig { returns(T::Range[T.nilable(Integer)]) }
+        def range
+          (..10)
+        end
+
+        it 'sets the range attribute' do
+          assert_equal(..10, subject.range)
+        end
+      end
+    end
+  end
+
+  describe '#min_range' do
+    cover 'Boa::Type::Integer#min_range'
+
+    subject { described_class.new(type_name, range:) }
+
+    describe 'with no minimum range' do
+      sig { returns(T::Range[Integer]) }
+      def range
+        (..100)
+      end
+
+      it 'returns nil' do
+        assert_nil(subject.min_range)
+      end
+    end
+
+    describe 'with a minimum range' do
+      sig { returns(T::Range[Integer]) }
+      def range
+        1..100
+      end
+
+      it 'returns the minimum range' do
+        assert_same(1, subject.min_range)
+      end
+    end
+  end
+
+  describe '#max_range' do
+    cover 'Boa::Type::Integer#max_range'
+
+    subject { described_class.new(type_name, range:) }
+
+    describe 'with no maximum range' do
+      sig { returns(T::Range[Integer]) }
+      def range
+        1..
+      end
+
+      it 'returns nil' do
+        assert_nil(subject.max_range)
+      end
+    end
+
+    describe 'with a maximum range' do
+      sig { returns(T::Range[Integer]) }
+      def range
+        1..100
+      end
+
+      it 'returns the maximum range' do
+        assert_same(100, subject.max_range)
+      end
     end
   end
 
@@ -56,7 +152,7 @@ describe Boa::Type::Integer do
     include Support::TypeBehaviour::Equality
   end
 
-  describe '#eql' do
+  describe '#eql?' do
     include Support::TypeBehaviour::Eql
   end
 

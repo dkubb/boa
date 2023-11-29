@@ -16,5 +16,6 @@ matcher:
     - Boa::ModelMethods#properties  # T.nilable is removed, but is required by sorbet
     - Boa::Type#initialize          # T.nilable is removed, but is required by sorbet
     - Boa::Type.base_types          # T.let is removed, but is required by sorbet
+    - Boa::Type::Integer#initialize # T.let is mutated, but is required by sorbet
     - Boa::Type::String#initialize  # T::Range[::Integer] is mutated to T::Range[Integer] which is wrong
     - Boa::Type::String#min_length  # T.must is removed, but is required by sorbet
