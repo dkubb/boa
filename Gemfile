@@ -17,7 +17,7 @@ group :development, :test do
   gem 'rubocop-performance', '~> 1.19.1'                  # RuboCop extension for enforcing performance best practices
   gem 'rubocop-rake',        '~> 0.6.0'                   # RuboCop rules for Rake tasks
   gem 'rubocop-sorbet',      '~> 0.7.5', require: false   # Add Sorbet support to RuboCop
-  gem 'rubocop-yard',        '~> 0.8.2'                   # RuboCop extension for YARD
+  gem 'rubocop-yard',        '~> 0.9.0'                   # RuboCop extension for YARD
   gem 'simplecov',           '~> 0.22.0'                  # Code coverage analysis for Ruby
   gem 'sorbet',              '~> 0.5.11144'               # Type checker for Ruby
   gem 'tapioca',             '~> 0.11.12', require: false # Generate RBI files for gems and standard library
