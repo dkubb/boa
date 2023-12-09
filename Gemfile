@@ -27,6 +27,6 @@ group :development, :test do
   gem 'yardstick',           '~> 0.9.9'                   # Measure YARD documentation coverage
 
   source 'https://oss:sxCL1o1navkPi2XnGB5WYBrhpY9iKIPL@gem.mutant.dev' do
-    gem 'mutant-license', '~> 0.1.1'  # Mutant license
+    gem 'mutant-license', '~> 0.1.1' # Mutant license
   end
 end
