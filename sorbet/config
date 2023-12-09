@@ -1,5 +1,4 @@
 --dir=.
 --enable-experimental-requires-ancestor
---ignore=spec/
 --ignore=tmp/
 --ignore=vendor/
