@@ -1,6 +1,5 @@
 --dir=.
 --enable-experimental-requires-ancestor
---ignore=sorbet/
 --ignore=spec/
 --ignore=tmp/
 --ignore=vendor/
