@@ -12,7 +12,7 @@ group :development, :test do
   gem 'mutant',              '~> 0.11.26'                 # Mutation testing for Ruby
   gem 'mutant-minitest',     '~> 0.11.26'                 # Minitest integration for Mutant
   gem 'rake',                '~> 13.1.0'                  # Scripting utility similar to Make
-  gem 'rubocop',             '~> 1.57.2'                  # Linter for enforcing Ruby coding style
+  gem 'rubocop',             '~> 1.58.0'                  # Linter for enforcing Ruby coding style
   gem 'rubocop-minitest',    '~> 0.33.0'                  # RuboCop extension specific to Minitest
   gem 'rubocop-performance', '~> 1.19.1'                  # RuboCop extension for enforcing performance best practices
   gem 'rubocop-rake',        '~> 0.6.0'                   # RuboCop rules for Rake tasks
@@ -27,6 +27,6 @@ group :development, :test do
   gem 'yardstick',           '~> 0.9.9'                   # Measure YARD documentation coverage
 
   source 'https://oss:sxCL1o1navkPi2XnGB5WYBrhpY9iKIPL@gem.mutant.dev' do
-    gem 'mutant-license', '~> 0.1.1'  # Mutant license
+    gem 'mutant-license', '~> 0.1.1' # Mutant license
   end
 end
