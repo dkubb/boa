@@ -48,6 +48,7 @@ Metrics/BlockLength:
 Metrics/MethodLength:
   Max: 10
   Exclude:
+    - spec/doctest_helper.rb
     - test/support/**/*.rb
 
 Naming/BlockForwarding:
@@ -71,6 +72,7 @@ Sorbet/StrictSigil:
 Sorbet/StrongSigil:
   Exclude:
     - sorbet/tapioca/require.rb
+    - spec/doctest_helper.rb
     - test/**/*.rb
 
 Sorbet/TrueSigil:
