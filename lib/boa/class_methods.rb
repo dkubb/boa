@@ -3,7 +3,7 @@
 
 module Boa
   # A module for class methods
-  module ModelMethods
+  module ClassMethods
     extend T::Helpers
     extend T::Sig
 
@@ -32,7 +32,7 @@ module Boa
     # @param base_type [Class] the type of the property
     # @param options [Hash] the options for the property
     #
-    # @return [ModelMethods] the class method module
+    # @return [ClassMethods] the class method module
     #
     # @api public
     sig { params(name: Symbol, base_type: Type::Base, options: Object).returns(T.self_type) }
@@ -49,7 +49,7 @@ module Boa
     #   klass.freeze
     #   klass.frozen? # => true
     #
-    # @return [ModelMethods] the class method module
+    # @return [ClassMethods] the class method module
     #
     # @api public
     sig { returns(T.self_type) }
@@ -60,7 +60,7 @@ module Boa
         T.let(instance_variable_get(ivar_name), Object).freeze
       end
 
-      T.let(super(), ModelMethods)
+      T.let(super(), ClassMethods)
     end
   end
 end
