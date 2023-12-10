@@ -3,12 +3,12 @@
 
 require 'test_helper'
 
-describe Boa::ModelMethods do
+describe Boa::ClassMethods do
   extend T::Sig
 
   subject do
     Class.new(T::Struct) do
-      extend Boa::ModelMethods
+      extend Boa::ClassMethods
 
       prop :name,  String
       prop :admin, T::Boolean
@@ -16,7 +16,7 @@ describe Boa::ModelMethods do
   end
 
   describe '#properties' do
-    cover 'Boa::ModelMethods#properties'
+    cover 'Boa::ClassMethods#properties'
 
     it 'returns the properties' do
       assert_equal({ name: Boa::Type::String.new(:name), admin: Boa::Type::Boolean.new(:admin) }, subject.properties)
@@ -24,11 +24,11 @@ describe Boa::ModelMethods do
   end
 
   describe '#prop' do
-    cover 'Boa::ModelMethods#prop'
+    cover 'Boa::ClassMethods#prop'
 
     subject do
       Class.new(T::Struct) do
-        extend Boa::ModelMethods
+        extend Boa::ClassMethods
 
         prop :name, String, default: 'Default Name'
       end
@@ -50,7 +50,7 @@ describe Boa::ModelMethods do
   end
 
   describe '#freeze' do
-    cover 'Boa::ModelMethods#freeze'
+    cover 'Boa::ClassMethods#freeze'
 
     before do
       subject.class_eval { @ivar = +'value' }

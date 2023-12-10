@@ -4,8 +4,8 @@
 module Boa
   # A module for comparing objects for equality
   module Equality
-    extend T::Sig
     extend T::Helpers
+    extend T::Sig
 
     requires_ancestor { Object }
 
@@ -71,7 +71,7 @@ module Boa
     # @return [Hash{Symbol => Object}] the state of the object
     #
     # @api private
-    sig { overridable.returns(T::Hash[Symbol, ::Object]) }
+    sig { overridable.returns(T::Hash[Symbol, Object]) }
     def object_state
       instance_variables.to_h do |ivar_name|
         [ivar_name, instance_variable_get(ivar_name)]
