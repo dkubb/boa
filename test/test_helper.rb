@@ -1,7 +1,7 @@
 # typed: strong
 # frozen_string_literal: true
 
-require 'simplecov'
+require 'simplecov' unless defined?(Mutant)
 
 require 'minitest/autorun'
 require 'mutant/minitest/coverage'
