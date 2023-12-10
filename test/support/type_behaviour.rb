@@ -6,7 +6,7 @@ module Support
     module New
       extend T::Sig
 
-      sig { params(descendant: Module).void }
+      sig { params(descendant: T.class_of(Minitest::Spec)).void }
       def self.included(descendant)
         descendant.class_eval do
           cover 'Boa::Type#initialize'
@@ -55,7 +55,7 @@ module Support
     module Equality
       extend T::Sig
 
-      sig { params(descendant: Module).void }
+      sig { params(descendant: T.class_of(Minitest::Spec)).void }
       def self.included(descendant)
         descendant.class_eval do
           cover 'Boa::Equality#=='
@@ -116,7 +116,7 @@ module Support
     module Eql
       extend T::Sig
 
-      sig { params(descendant: Module).void }
+      sig { params(descendant: T.class_of(Minitest::Spec)).void }
       def self.included(descendant)
         descendant.class_eval do
           cover 'Boa::Equality#eql?'
@@ -177,7 +177,7 @@ module Support
     module Hash
       extend T::Sig
 
-      sig { params(descendant: Module).void }
+      sig { params(descendant: T.class_of(Minitest::Spec)).void }
       def self.included(descendant)
         descendant.class_eval do
           cover 'Boa::Equality#hash'
