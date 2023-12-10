@@ -7,7 +7,7 @@ module Boa
     extend T::Helpers
     extend T::Sig
 
-    requires_ancestor { T.class_of(T::Struct) }
+    requires_ancestor { T.class_of(T::InexactStruct) }
 
     abstract!
 
