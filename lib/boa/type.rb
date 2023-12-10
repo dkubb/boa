@@ -4,8 +4,8 @@
 module Boa
   # Abstract class for types
   class Type
-    extend T::Sig
     extend T::Helpers
+    extend T::Sig
     include Equality
 
     # The base type alias

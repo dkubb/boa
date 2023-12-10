@@ -4,8 +4,8 @@
 module Boa
   # A module for comparing objects for equality
   module Equality
-    extend T::Sig
     extend T::Helpers
+    extend T::Sig
 
     requires_ancestor { Object }
 

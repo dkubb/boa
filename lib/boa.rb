@@ -15,8 +15,8 @@ require_relative 'boa/version'
 
 # The Boa base module
 module Boa
-  extend T::Sig
   extend T::Helpers
+  extend T::Sig
   include Equality
 
   mixes_in_class_methods(ModelMethods)

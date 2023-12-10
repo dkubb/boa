@@ -4,8 +4,8 @@
 module Boa
   # A module for class methods
   module ModelMethods
-    extend T::Sig
     extend T::Helpers
+    extend T::Sig
 
     requires_ancestor { T.class_of(T::Struct) }
 
