@@ -11,6 +11,7 @@ AllCops:
   NewCops: enable
   EnabledByDefault: true
   Exclude:
+    - sorbet/tapioca/require.rb
     - vendor/**/*
 
 Layout/AccessModifierIndentation:
@@ -66,12 +67,10 @@ Sorbet/RedundantExtendTSig:
 
 Sorbet/StrictSigil:
   Exclude:
-    - sorbet/tapioca/require.rb
     - test/**/*.rb
 
 Sorbet/StrongSigil:
   Exclude:
-    - sorbet/tapioca/require.rb
     - spec/doctest_helper.rb
     - test/**/*.rb
 
