@@ -30,7 +30,7 @@ describe Boa::Type do
     describe 'when type class is not registered' do
       sig { returns(Module) }
       def base_type
-        Object
+        @base_type ||= Class.new
       end
 
       it 'returns the default type class' do
