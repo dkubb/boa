@@ -15,8 +15,12 @@ module Boa
 
     # Lookup the type for a class type
     #
-    # @example
+    # @example when type class type is registered
     #   Boa::Type[::String]  # => Boa::Type::String
+    #
+    # @example when type class type is unknown
+    #   OtherClass = Class.new
+    #   Boa::Type[OtherClass] # => raise ArgumentError, 'type class for Boa::Type::OtherClass is unknown'
     #
     # @param class_type [ClassType] the class type
     #
@@ -25,7 +29,9 @@ module Boa
     # @api public
     sig { overridable.params(class_type: ClassType).returns(T.class_of(Type)) }
     def self.[](class_type)
-      class_types.fetch(class_type, Object)
+      class_types.fetch(class_type) do
+        raise(ArgumentError, "type class for #{class_type} is unknown")
+      end
     end
 
     # Set the type for a class type

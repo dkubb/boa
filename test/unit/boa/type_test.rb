@@ -34,7 +34,13 @@ describe Boa::Type do
       end
 
       it 'returns the default type class' do
-        assert_same(Boa::Type::Object, subject)
+        # assert there is no explict mapping for the class type
+        error =
+          assert_raises(ArgumentError) do
+            described_class[class_type]
+          end
+
+        assert_equal("type class for #{class_type} is unknown", error.message)
       end
     end
   end
@@ -61,7 +67,9 @@ describe Boa::Type do
 
     it 'sets the class type' do
       # assert there is no explict mapping for the class type
-      assert_same(Boa::Type::Object, described_class[class_type])
+      assert_raises(ArgumentError) do
+        described_class[class_type]
+      end
 
       subject
 
@@ -90,7 +98,9 @@ describe Boa::Type do
 
     it 'sets the class type' do
       # assert there is no explict mapping for the class type
-      assert_same(Boa::Type::Object, described_class[class_type])
+      assert_raises(ArgumentError) do
+        described_class[class_type]
+      end
 
       subject
 
