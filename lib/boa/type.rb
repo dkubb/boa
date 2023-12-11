@@ -56,6 +56,22 @@ module Boa
     end
     private_class_method(:class_types)
 
+    # Hook called when a descendant inherits from this class
+    #
+    # @param descendant [Class<Type>] the class inheriting from this class
+    #
+    # @return [void]
+    #
+    # @api private
+    sig { overridable.params(descendant: T.class_of(Type)).void }
+    def self.inherited(descendant)
+      # Share class_types with descendants
+      descendant.instance_variable_set(:@class_types, class_types)
+
+      super
+    end
+    private_class_method(:inherited)
+
     # The name of the instance variable
     #
     # @example

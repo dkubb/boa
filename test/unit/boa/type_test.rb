@@ -68,4 +68,56 @@ describe Boa::Type do
       assert_same(type_class, described_class[class_type])
     end
   end
+
+  describe '.inherited' do
+    cover 'Boa::Type.inherited'
+
+    subject { Class.new(described_class) }
+
+    sig do
+      params(klass: T.class_of(Object), method_name: Symbol, block: T.proc.params(descendant: T.class_of(Boa::Type)).void).void
+    end
+    def replace_method(klass, method_name, &block)
+      original_verbose = $VERBOSE
+      $VERBOSE         = nil
+
+      # Replace the singleton method without warnings
+      klass.define_singleton_method(method_name, &block)
+
+      $VERBOSE = original_verbose
+    end
+
+    it 'set the class types' do
+      assert_same(described_class.send(:class_types), subject.send(:class_types)) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/Send
+    end
+
+    it 'calls super' do
+      superclass           = Boa::Type.superclass
+      superclass_inherited = superclass.method(:inherited)
+      original_inherited   = Boa::Type.method(:inherited)
+      inherited            = []
+
+      # Override Boa::Type.inherited
+      replace_method(Boa::Type, :inherited) do |descendant|
+        inherited << Boa::Type
+        original_inherited.call(descendant)
+      end
+
+      # Override superclass.inherited
+      replace_method(superclass, :inherited) do |descendant|
+        inherited << superclass
+        superclass_inherited.call(descendant)
+      end
+
+      subject
+
+      assert_equal([Boa::Type, superclass], inherited)
+
+      # Restore superclass.inherited
+      replace_method(superclass, :inherited, &superclass_inherited)
+
+      # Restore Boa::Type.inherited
+      replace_method(Boa::Type, :inherited, &original_inherited)
+    end
+  end
 end
