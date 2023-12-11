@@ -62,6 +62,9 @@ Security/CompoundHash:
 Sorbet/ForbidTStruct:
   Enabled: false
 
+Sorbet/ForbidTypeAliasedShapes:
+  Enabled: false
+
 Sorbet/RedundantExtendTSig:
   Enabled: false
 
@@ -107,12 +110,16 @@ Style/MethodCallWithArgsParentheses:
     - describe
     - extend
     - include
+    - include_context
+    - include_examples
     - it
     - prop
     - protected
     - public_constant
     - require
     - require_relative
+    - shared_context
+    - shared_examples
   EnforcedStyle: require_parentheses
   Exclude:
     - .simplecov
