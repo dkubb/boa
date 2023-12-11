@@ -5,7 +5,7 @@ module Boa
   class Type
     # A string type
     class String < self
-      Type[::String] = self
+      class_type(::String)
 
       # The length of the string
       #

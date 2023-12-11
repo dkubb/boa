@@ -69,6 +69,35 @@ describe Boa::Type do
     end
   end
 
+  describe '.class_type' do
+    cover 'Boa::Type.class_type'
+
+    subject { described_class.class_type(class_type) }
+
+    sig { returns(Module) }
+    def class_type
+      @class_type ||= Class.new
+    end
+
+    after do
+      # Remove the type class from the registry
+      described_class.send(:class_types).delete(class_type) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/Send
+    end
+
+    it 'returns the type class' do
+      assert_same(described_class, subject)
+    end
+
+    it 'sets the class type' do
+      # assert there is no explict mapping for the class type
+      assert_same(Boa::Type::Object, described_class[class_type])
+
+      subject
+
+      assert_same(described_class, described_class[class_type])
+    end
+  end
+
   describe '.inherited' do
     cover 'Boa::Type.inherited'
 

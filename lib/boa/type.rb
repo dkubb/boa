@@ -45,6 +45,22 @@ module Boa
       class_types[class_type] = descendant
     end
 
+    # Set the class type for the type
+    #
+    # @example
+    #   Boa::Type::String.class_type(::String)  # => Boa::Type::String
+    #   Boa::Type[::String]                     # => Boa::Type::String
+    #
+    # @param class_type [ClassType] the class type
+    #
+    # @return [Type] the type
+    #
+    # @api public
+    sig { overridable.params(class_type: ClassType).returns(T.class_of(Type)) }
+    def self.class_type(class_type)
+      self[class_type] = self
+    end
+
     # The class types
     #
     # @return [Hash{ClassType => Class<Type>}] the class types
