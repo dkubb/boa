@@ -24,7 +24,7 @@ module Boa
     # @return [Class<Type>] the type for the base type
     #
     # @api public
-    sig { params(base_type: Base).returns(T.class_of(Type)) }
+    sig { overridable.params(base_type: Base).returns(T.class_of(Type)) }
     def self.[](base_type)
       base_types.fetch(base_type, Object)
     end
@@ -41,7 +41,7 @@ module Boa
     # @return [Class<Type>] the type for the base type
     #
     # @api public
-    sig { params(base_type: Base, descendant: T.class_of(Type)).returns(T.class_of(Type)) }
+    sig { overridable.params(base_type: Base, descendant: T.class_of(Type)).returns(T.class_of(Type)) }
     def self.[]=(base_type, descendant)
       base_types[base_type] = descendant
     end
@@ -51,7 +51,7 @@ module Boa
     # @return [Hash{Base => Class<Type>}] the base types
     #
     # @api private
-    sig { returns(T::Hash[Base, T.class_of(Type)]) }
+    sig { overridable.returns(T::Hash[Base, T.class_of(Type)]) }
     def self.base_types
       @base_types ||= T.let({}, T.nilable(T::Hash[Base, T.class_of(Type)]))
     end
