@@ -5,6 +5,7 @@ require 'test_helper'
 
 describe Boa::Type::Integer do
   extend T::Sig
+  include Support::TypeBehaviour
 
   subject { described_class.new(type_name, **options) }
 
@@ -37,7 +38,7 @@ describe Boa::Type::Integer do
   end
 
   describe '.new' do
-    include Support::TypeBehaviour::New
+    include_examples 'Boa::Type.new'
 
     cover 'Boa::Type::Integer#initialize'
 
@@ -149,14 +150,14 @@ describe Boa::Type::Integer do
   end
 
   describe '#==' do
-    include Support::TypeBehaviour::Equality
+    include_examples 'Boa::Type#=='
   end
 
   describe '#eql?' do
-    include Support::TypeBehaviour::Eql
+    include_examples 'Boa::Type#eql?'
   end
 
   describe '#hash' do
-    include Support::TypeBehaviour::Hash
+    include_examples 'Boa::Type#hash'
   end
 end

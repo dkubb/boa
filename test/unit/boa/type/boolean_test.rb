@@ -5,6 +5,7 @@ require 'test_helper'
 
 describe Boa::Type::Boolean do
   extend T::Sig
+  include Support::TypeBehaviour
 
   subject { described_class.new(type_name, **options) }
 
@@ -37,7 +38,7 @@ describe Boa::Type::Boolean do
   end
 
   describe '.new' do
-    include Support::TypeBehaviour::New
+    include_examples 'Boa::Type.new'
 
     cover 'Boa::Type::Boolean#initialize'
 
@@ -53,14 +54,14 @@ describe Boa::Type::Boolean do
   end
 
   describe '#==' do
-    include Support::TypeBehaviour::Equality
+    include_examples 'Boa::Type#=='
   end
 
-  describe '#eql' do
-    include Support::TypeBehaviour::Eql
+  describe '#eql?' do
+    include_examples 'Boa::Type#eql?'
   end
 
   describe '#hash' do
-    include Support::TypeBehaviour::Hash
+    include_examples 'Boa::Type#hash'
   end
 end

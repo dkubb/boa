@@ -5,6 +5,7 @@ require 'test_helper'
 
 describe Boa::Type::Object do
   extend T::Sig
+  include Support::TypeBehaviour
 
   subject { described_class.new(type_name) }
 
@@ -37,7 +38,7 @@ describe Boa::Type::Object do
   end
 
   describe '.new' do
-    include Support::TypeBehaviour::New
+    include_examples 'Boa::Type.new'
 
     cover 'Boa::Type::Object#initiaize'
 
@@ -53,7 +54,7 @@ describe Boa::Type::Object do
   end
 
   describe '#==' do
-    include Support::TypeBehaviour::Equality
+    include_examples 'Boa::Type#=='
 
     it 'is false when object state is equal but does not eql?' do
       subject = described_class.new(type_name, default: 1)
@@ -65,10 +66,10 @@ describe Boa::Type::Object do
   end
 
   describe '#eql' do
-    include Support::TypeBehaviour::Eql
+    include_examples 'Boa::Type#eql?'
   end
 
   describe '#hash' do
-    include Support::TypeBehaviour::Hash
+    include_examples 'Boa::Type#hash'
   end
 end
