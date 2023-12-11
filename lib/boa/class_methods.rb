@@ -29,7 +29,7 @@ module Boa
     #   klass.equal?(result)                    # => true
     #
     # @param name [Symbol] the name of the property
-    # @param base_type [Class] the type of the property
+    # @param base_type [Type::Base] the type of the property
     # @param options [Hash] the options for the property
     #
     # @return [ClassMethods] the class method module
