@@ -59,7 +59,7 @@ describe Boa::Type do
       described_class.send(:base_types).delete(base_type) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/Send
     end
 
-    it 'sets the type class' do
+    it 'sets the base type' do
       # assert there is no explict mapping for the base type
       assert_same(Boa::Type::Object, described_class[base_type])
 
