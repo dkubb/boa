@@ -29,16 +29,16 @@ module Boa
     #   klass.equal?(result)                    # => true
     #
     # @param name [Symbol] the name of the property
-    # @param base_type [Type::Base] the type of the property
+    # @param class_type [Type::ClassType] the type of the property
     # @param options [Hash] the options for the property
     #
     # @return [ClassMethods] the class method module
     #
     # @api public
-    sig { params(name: Symbol, base_type: Type::Base, options: Object).returns(T.self_type) }
-    def prop(name, base_type, **options)
-      property = properties[name] = Type[base_type].new(name, **options)
-      super(name, base_type, **property.options)
+    sig { params(name: Symbol, class_type: Type::ClassType, options: Object).returns(T.self_type) }
+    def prop(name, class_type, **options)
+      property = properties[name] = Type[class_type].new(name, **options)
+      super(name, class_type, **property.options)
       self
     end
 

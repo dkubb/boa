@@ -14,11 +14,11 @@ describe Boa::Type do
   describe '.[]' do
     cover 'Boa::Type.[]'
 
-    subject { described_class[base_type] }
+    subject { described_class[class_type] }
 
-    describe 'when type class is registered' do
+    describe 'when class type is registered' do
       sig { returns(Module) }
-      def base_type
+      def class_type
         String
       end
 
@@ -27,10 +27,10 @@ describe Boa::Type do
       end
     end
 
-    describe 'when type class is not registered' do
+    describe 'when class type is not registered' do
       sig { returns(Module) }
-      def base_type
-        @base_type ||= Class.new
+      def class_type
+        @class_type ||= Class.new
       end
 
       it 'returns the default type class' do
@@ -42,11 +42,11 @@ describe Boa::Type do
   describe '.[]=' do
     cover 'Boa::Type.[]='
 
-    subject { described_class[base_type] = type_class }
+    subject { described_class[class_type] = type_class }
 
     sig { returns(Module) }
-    def base_type
-      @base_type ||= Class.new
+    def class_type
+      @class_type ||= Class.new
     end
 
     sig { returns(T.class_of(Boa::Type)) }
@@ -56,16 +56,16 @@ describe Boa::Type do
 
     after do
       # Remove the type class from the registry
-      described_class.send(:base_types).delete(base_type) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/Send
+      described_class.send(:class_types).delete(class_type) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/Send
     end
 
-    it 'sets the base type' do
-      # assert there is no explict mapping for the base type
-      assert_same(Boa::Type::Object, described_class[base_type])
+    it 'sets the class type' do
+      # assert there is no explict mapping for the class type
+      assert_same(Boa::Type::Object, described_class[class_type])
 
       subject
 
-      assert_same(type_class, described_class[base_type])
+      assert_same(type_class, described_class[class_type])
     end
   end
 end
