@@ -8,54 +8,91 @@ module Boa
     extend T::Sig
     include Equality
 
-    # The base type alias
-    Base = T.type_alias { T.untyped } # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Sorbet/ForbidTUntyped
-    public_constant(:Base)
+    # The class type alias
+    ClassType = T.type_alias { T.untyped } # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Sorbet/ForbidTUntyped
 
     abstract!
 
-    # Lookup the type for a base type
+    # Lookup the type for a class type
     #
-    # @example
+    # @example when type class type is registered
     #   Boa::Type[::String]  # => Boa::Type::String
     #
-    # @param base_type [Base] the base type
+    # @example when type class type is unknown
+    #   OtherClass = Class.new
+    #   Boa::Type[OtherClass] # => raise ArgumentError, 'type class for Boa::Type::OtherClass is unknown'
     #
-    # @return [Class<Type>] the type for the base type
+    # @param class_type [ClassType] the class type
+    #
+    # @return [Class<Type>] the type for the class type
     #
     # @api public
-    sig { params(base_type: Base).returns(T.class_of(Type)) }
-    def self.[](base_type)
-      base_types.fetch(base_type, Object)
+    sig { overridable.params(class_type: ClassType).returns(T.class_of(Type)) }
+    def self.[](class_type)
+      class_types.fetch(class_type) do
+        raise(ArgumentError, "type class for #{class_type} is unknown")
+      end
     end
 
-    # Set the type for a base type
+    # Set the type for a class type
     #
     # @example
     #   Boa::Type[::String] = Boa::Type::String
     #   Boa::Type[::String]  # => Boa::Type::String
     #
-    # @param base_type [Base] the base type
-    # @param descendant [Class<Type>] the type for the base type
+    # @param class_type [ClassType] the class type
+    # @param descendant [Class<Type>] the type for the class type
     #
-    # @return [Class<Type>] the type for the base type
+    # @return [Class<Type>] the type for the class type
     #
     # @api public
-    sig { params(base_type: Base, descendant: T.class_of(Type)).returns(T.class_of(Type)) }
-    def self.[]=(base_type, descendant)
-      base_types[base_type] = descendant
+    sig { overridable.params(class_type: ClassType, descendant: T.class_of(Type)).returns(T.class_of(Type)) }
+    def self.[]=(class_type, descendant)
+      class_types[class_type] = descendant
     end
 
-    # The base types
+    # Set the class type for the type
     #
-    # @return [Hash{Base => Class<Type>}] the base types
+    # @example
+    #   Boa::Type::String.class_type(::String)  # => Boa::Type::String
+    #   Boa::Type[::String]                     # => Boa::Type::String
+    #
+    # @param class_type [ClassType] the class type
+    #
+    # @return [Type] the type
+    #
+    # @api public
+    sig { overridable.params(class_type: ClassType).returns(T.class_of(Type)) }
+    def self.class_type(class_type)
+      self[class_type] = self
+    end
+
+    # The class types
+    #
+    # @return [Hash{ClassType => Class<Type>}] the class types
     #
     # @api private
-    sig { returns(T::Hash[Base, T.class_of(Type)]) }
-    def self.base_types
-      @base_types ||= T.let({}, T.nilable(T::Hash[Base, T.class_of(Type)]))
+    sig { overridable.returns(T::Hash[ClassType, T.class_of(Type)]) }
+    def self.class_types
+      @class_types ||= T.let({}, T.nilable(T::Hash[ClassType, T.class_of(Type)]))
     end
-    private_class_method(:base_types)
+    private_class_method(:class_types)
+
+    # Hook called when a descendant inherits from this class
+    #
+    # @param descendant [Class<Type>] the class inheriting from this class
+    #
+    # @return [void]
+    #
+    # @api private
+    sig { overridable.params(descendant: T.class_of(Type)).void }
+    def self.inherited(descendant)
+      # Share class_types with descendants
+      descendant.instance_variable_set(:@class_types, class_types)
+
+      super
+    end
+    private_class_method(:inherited)
 
     # The name of the instance variable
     #

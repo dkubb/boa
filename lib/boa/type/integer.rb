@@ -5,7 +5,7 @@ module Boa
   class Type
     # An integer type
     class Integer < self
-      Type[::Integer] = self
+      class_type(::Integer)
 
       # The range of the integer
       #

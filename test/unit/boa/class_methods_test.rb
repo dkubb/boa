@@ -41,7 +41,7 @@ describe Boa::ClassMethods do
     end
 
     it 'returns self' do
-      assert_same(subject, subject.prop(:admin, Boa::Type::Boolean))
+      assert_same(subject, subject.prop(:admin, T::Boolean))
     end
 
     it 'passes through the default option' do

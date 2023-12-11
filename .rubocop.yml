@@ -87,6 +87,9 @@ Style/ArgumentsForwarding:
 Style/Attr:
   Enabled: false
 
+Style/ConstantVisibility:
+  Enabled: false
+
 Style/Copyright:
   Enabled: false
 

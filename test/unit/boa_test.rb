@@ -28,9 +28,12 @@ describe Boa do
 
     describe 'with no attributes' do
       it 'raises an error' do
-        assert_raises(ArgumentError) do
-          described_class.new
-        end
+        error =
+          assert_raises(ArgumentError) do
+            described_class.new
+          end
+
+        assert_equal('Missing required prop `name` for class ``', error.message)
       end
     end
 

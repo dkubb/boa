@@ -5,7 +5,7 @@ module Boa
   class Type
     # A boolean type
     class Boolean < self
-      Type[T::Boolean] = self
+      class_type(T::Boolean)
 
       # Initialize the boolean type
       #
