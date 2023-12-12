@@ -196,6 +196,16 @@ module Support
       end
     end
 
+    shared_examples 'Boa::Type#includes' do
+      cover 'Boa::Type#incldues'
+
+      subject { described_class.new(type_name, includes:) }
+
+      it 'returns the includes' do
+        assert_same(includes, subject.includes)
+      end
+    end
+
     shared_examples 'Boa::Type#==' do
       cover 'Boa::Equality#=='
 

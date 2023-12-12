@@ -135,6 +135,15 @@ describe Boa::Type::String do
     include_examples 'Boa::Type#name'
   end
 
+  describe '#includes' do
+    include_examples 'Boa::Type#includes'
+
+    sig { returns(Object) }
+    def includes
+      @includes ||= %w[test]
+    end
+  end
+
   describe '#min_length' do
     cover 'Boa::Type::String#min_length'
 

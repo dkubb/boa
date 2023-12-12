@@ -113,6 +113,15 @@ describe Boa::Type::Integer do
     include_examples 'Boa::Type#name'
   end
 
+  describe '#includes' do
+    include_examples 'Boa::Type#includes'
+
+    sig { returns(Object) }
+    def includes
+      @includes ||= [1]
+    end
+  end
+
   describe '#min_range' do
     cover 'Boa::Type::Integer#min_range'
 

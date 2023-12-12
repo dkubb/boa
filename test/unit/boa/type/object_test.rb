@@ -73,6 +73,15 @@ describe Boa::Type::Object do
     include_examples 'Boa::Type#name'
   end
 
+  describe '#includes' do
+    include_examples 'Boa::Type#includes'
+
+    sig { returns(Object) }
+    def includes
+      @includes ||= [Object.new]
+    end
+  end
+
   describe '#==' do
     include_examples 'Boa::Type#=='
 
