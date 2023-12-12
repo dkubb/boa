@@ -82,6 +82,10 @@ describe Boa::Type::Object do
     end
   end
 
+  describe '#options' do
+    include_examples 'Boa::Type#options'
+  end
+
   describe '#==' do
     include_examples 'Boa::Type#=='
 

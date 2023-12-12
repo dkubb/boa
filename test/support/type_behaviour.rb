@@ -206,6 +206,21 @@ module Support
       end
     end
 
+    shared_examples 'Boa::Type#options' do
+      cover 'Boa::Type#options'
+
+      subject { described_class.new(type_name, **options) }
+
+      sig { returns(T::Hash[Symbol, Object]) }
+      def options
+        { default: nil }
+      end
+
+      it 'returns the options' do
+        assert_equal(options, subject.options)
+      end
+    end
+
     shared_examples 'Boa::Type#==' do
       cover 'Boa::Equality#=='
 

@@ -122,6 +122,10 @@ describe Boa::Type::Integer do
     end
   end
 
+  describe '#options' do
+    include_examples 'Boa::Type#options'
+  end
+
   describe '#min_range' do
     cover 'Boa::Type::Integer#min_range'
 

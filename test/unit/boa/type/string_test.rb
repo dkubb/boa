@@ -144,6 +144,10 @@ describe Boa::Type::String do
     end
   end
 
+  describe '#options' do
+    include_examples 'Boa::Type#options'
+  end
+
   describe '#min_length' do
     cover 'Boa::Type::String#min_length'
 
