@@ -126,6 +126,15 @@ describe Boa::Type::Integer do
     include_examples 'Boa::Type#options'
   end
 
+  describe '#default' do
+    include_examples 'Boa::Type#default'
+
+    sig { returns(Object) }
+    def default
+      1
+    end
+  end
+
   describe '#min_range' do
     cover 'Boa::Type::Integer#min_range'
 

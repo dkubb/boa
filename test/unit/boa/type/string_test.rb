@@ -148,6 +148,15 @@ describe Boa::Type::String do
     include_examples 'Boa::Type#options'
   end
 
+  describe '#default' do
+    include_examples 'Boa::Type#default'
+
+    sig { returns(Object) }
+    def default
+      'test'
+    end
+  end
+
   describe '#min_length' do
     cover 'Boa::Type::String#min_length'
 

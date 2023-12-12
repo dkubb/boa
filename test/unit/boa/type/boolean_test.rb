@@ -86,6 +86,15 @@ describe Boa::Type::Boolean do
     include_examples 'Boa::Type#options'
   end
 
+  describe '#default' do
+    include_examples 'Boa::Type#default'
+
+    sig { returns(Object) }
+    def default
+      false
+    end
+  end
+
   describe '#==' do
     include_examples 'Boa::Type#=='
   end

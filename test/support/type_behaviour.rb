@@ -221,6 +221,29 @@ module Support
       end
     end
 
+    shared_examples 'Boa::Type#default' do
+      cover 'Boa::Type#default'
+
+      subject { described_class.new(type_name, **options) }
+
+      describe 'with a default option' do
+        sig { returns(T::Hash[Symbol, Object]) }
+        def options
+          { default: }
+        end
+
+        it 'returns the default' do
+          assert_same(default, subject.default)
+        end
+      end
+
+      describe 'with no default option' do
+        it 'returns nil' do
+          assert_nil(subject.default)
+        end
+      end
+    end
+
     shared_examples 'Boa::Type#==' do
       cover 'Boa::Equality#=='
 

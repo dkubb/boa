@@ -86,6 +86,15 @@ describe Boa::Type::Object do
     include_examples 'Boa::Type#options'
   end
 
+  describe '#default' do
+    include_examples 'Boa::Type#default'
+
+    sig { returns(Object) }
+    def default
+      @default ||= Object.new
+    end
+  end
+
   describe '#==' do
     include_examples 'Boa::Type#=='
 
