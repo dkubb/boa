@@ -35,10 +35,7 @@ module Support
       subject { described_class[class_type] }
 
       describe 'when class type is registered' do
-        sig { returns(Module) }
-        def class_type
-          String
-        end
+        let(:class_type) { String }
 
         it 'returns the expected type class' do
           assert_same(Boa::Type::String, subject)
@@ -211,10 +208,7 @@ module Support
 
       subject { described_class.new(type_name, **options) }
 
-      sig { returns(T::Hash[Symbol, Object]) }
-      def options
-        { default: nil }
-      end
+      let(:options) { { default: nil } }
 
       it 'returns the options' do
         assert_equal(options, subject.options)
@@ -227,10 +221,7 @@ module Support
       subject { described_class.new(type_name, **options) }
 
       describe 'with a default option' do
-        sig { returns(T::Hash[Symbol, Object]) }
-        def options
-          { default: }
-        end
+        let(:options) { { default: } }
 
         it 'returns the default' do
           assert_same(default, subject.default)
@@ -254,10 +245,7 @@ module Support
       end
 
       describe 'when the types have different names and same options' do
-        sig { returns(Symbol) }
-        def other_name
-          :other
-        end
+        let(:other_name) { :other }
 
         it 'returns false' do
           refute_equal(subject, other)
@@ -265,10 +253,7 @@ module Support
       end
 
       describe 'when the types have the same name and options, but one is subclass' do
-        sig { returns(T.class_of(Boa::Type)) }
-        def other_class
-          Class.new(described_class)
-        end
+        let(:other_class) { Class.new(described_class) }
 
         it 'returns true' do
           assert_equal(subject, other)
@@ -276,10 +261,7 @@ module Support
       end
 
       describe 'when the types have the same name and options, but one is not a subclass' do
-        sig { returns(T.class_of(Boa::Type)) }
-        def other_class
-          Class.new(Boa::Type)
-        end
+        let(:other_class) { Class.new(Boa::Type) }
 
         it 'returns true' do
           refute_equal(subject, other)
@@ -287,10 +269,7 @@ module Support
       end
 
       describe 'when the types have the same name and different options' do
-        sig { returns(T::Hash[Symbol, Object]) }
-        def other_options
-          different_options
-        end
+        let(:other_options) { different_options }
 
         it 'returns false' do
           refute_equal(subject, other)
@@ -308,10 +287,7 @@ module Support
       end
 
       describe 'when the types have different names and same options' do
-        sig { returns(Symbol) }
-        def other_name
-          :other
-        end
+        let(:other_name) { :other }
 
         it 'returns false' do
           refute_operator(subject, :eql?, other)
@@ -319,10 +295,7 @@ module Support
       end
 
       describe 'when the types have the same name and options, but one is subclass' do
-        sig { returns(T.class_of(Boa::Type)) }
-        def other_class
-          Class.new(described_class)
-        end
+        let(:other_class) { Class.new(described_class) }
 
         it 'returns false' do
           refute_operator(subject, :eql?, other)
@@ -330,10 +303,7 @@ module Support
       end
 
       describe 'when the types have the same name and options, but one is not a subclass' do
-        sig { returns(T.class_of(Boa::Type)) }
-        def other_class
-          Class.new(Boa::Type)
-        end
+        let(:other_class) { Class.new(Boa::Type) }
 
         it 'returns true' do
           refute_operator(subject, :eql?, other)
@@ -341,10 +311,7 @@ module Support
       end
 
       describe 'when the types have the same name and different options' do
-        sig { returns(T::Hash[Symbol, Object]) }
-        def other_options
-          different_options
-        end
+        let(:other_options) { different_options }
 
         it 'returns false' do
           refute_operator(subject, :eql?, other)

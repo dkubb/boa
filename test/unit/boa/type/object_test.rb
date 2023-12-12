@@ -9,33 +9,14 @@ describe Boa::Type::Object do
 
   subject { described_class.new(type_name) }
 
-  sig { returns(T.class_of(Boa::Type)) }
-  def described_class
-    Boa::Type::Object
-  end
-  alias_method(:other_class, :described_class)
-
-  sig { returns(Symbol) }
-  def type_name
-    :state
-  end
-  alias_method(:other_name, :type_name)
-
-  sig { returns(T::Hash[Symbol, Object]) }
-  def options
-    {}
-  end
-  alias_method(:other_options, :options)
-
-  sig { returns(Boa::Type) }
-  def other
-    other_class.new(other_name, **other_options)
-  end
-
-  sig { returns(T::Hash[Symbol, Object]) }
-  def different_options
-    { default: Object.new }
-  end
+  let(:described_class)   { Boa::Type::Object                            }
+  let(:type_name)         { :object                                      }
+  let(:options)           { {}                                           }
+  let(:other)             { other_class.new(other_name, **other_options) }
+  let(:other_class)       { described_class                              }
+  let(:other_name)        { type_name                                    }
+  let(:other_options)     { options                                      }
+  let(:different_options) { { default: Object.new }                      }
 
   describe '.[]' do
     include_examples 'Boa::Type.[]'
@@ -58,15 +39,8 @@ describe Boa::Type::Object do
 
     cover 'Boa::Type::Object#initiaize'
 
-    sig { returns(T.nilable(Object)) }
-    def default_includes
-      nil
-    end
-
-    sig { returns(T.nilable(Object)) }
-    def non_nil_default
-      @non_nil_default ||= Object.new
-    end
+    let(:default_includes) { nil        }
+    let(:non_nil_default)  { Object.new }
   end
 
   describe '#name' do
@@ -76,10 +50,7 @@ describe Boa::Type::Object do
   describe '#includes' do
     include_examples 'Boa::Type#includes'
 
-    sig { returns(Object) }
-    def includes
-      @includes ||= [Object.new]
-    end
+    let(:includes) { [Object.new] }
   end
 
   describe '#options' do
@@ -89,10 +60,7 @@ describe Boa::Type::Object do
   describe '#default' do
     include_examples 'Boa::Type#default'
 
-    sig { returns(Object) }
-    def default
-      @default ||= Object.new
-    end
+    let(:default) { Object.new }
   end
 
   describe '#==' do

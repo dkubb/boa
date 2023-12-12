@@ -9,33 +9,14 @@ describe Boa::Type::String do
 
   subject { described_class.new(type_name, **options) }
 
-  sig { returns(T.class_of(Boa::Type)) }
-  def described_class
-    Boa::Type::String
-  end
-  alias_method(:other_class, :described_class)
-
-  sig { returns(Symbol) }
-  def type_name
-    :name
-  end
-  alias_method(:other_name, :type_name)
-
-  sig { returns(T::Hash[Symbol, Object]) }
-  def options
-    {}
-  end
-  alias_method(:other_options, :options)
-
-  sig { returns(Boa::Type) }
-  def other
-    other_class.new(other_name, **other_options)
-  end
-
-  sig { returns(T::Hash[Symbol, Object]) }
-  def different_options
-    { default: 'Other Name' }
-  end
+  let(:described_class)   { Boa::Type::String                            }
+  let(:type_name)         { :string                                      }
+  let(:options)           { {}                                           }
+  let(:other)             { other_class.new(other_name, **other_options) }
+  let(:other_class)       { described_class                              }
+  let(:other_name)        { type_name                                    }
+  let(:other_options)     { options                                      }
+  let(:different_options) { { default: 'other default' }                 }
 
   describe '.[]' do
     include_examples 'Boa::Type.[]'
@@ -58,15 +39,8 @@ describe Boa::Type::String do
 
     cover 'Boa::Type::String#initialize'
 
-    sig { returns(T.nilable(Object)) }
-    def default_includes
-      nil
-    end
-
-    sig { returns(T.nilable(Object)) }
-    def non_nil_default
-      'Jon'
-    end
+    let(:default_includes) { nil   }
+    let(:non_nil_default)  { 'Jon' }
 
     describe 'with default option' do
       subject { described_class.new(type_name, default: 'default') }
@@ -94,10 +68,7 @@ describe Boa::Type::String do
       subject { described_class.new(type_name, length: min_length..10) }
 
       describe 'with a non-nil minimum length' do
-        sig { returns(T.nilable(Integer)) }
-        def min_length
-          2
-        end
+        let(:min_length) { 2 }
 
         it 'sets the length attribute' do
           assert_equal(2..10, subject.length)
@@ -138,10 +109,7 @@ describe Boa::Type::String do
   describe '#includes' do
     include_examples 'Boa::Type#includes'
 
-    sig { returns(Object) }
-    def includes
-      @includes ||= %w[test]
-    end
+    let(:includes) { %w[test] }
   end
 
   describe '#options' do
@@ -151,10 +119,7 @@ describe Boa::Type::String do
   describe '#default' do
     include_examples 'Boa::Type#default'
 
-    sig { returns(Object) }
-    def default
-      'test'
-    end
+    let(:default) { 'test' }
   end
 
   describe '#min_length' do
@@ -178,10 +143,7 @@ describe Boa::Type::String do
       describe 'with an exclusive range' do
         subject { described_class.new(type_name, length:) }
 
-        sig { returns(T::Range[Integer]) }
-        def length
-          (1...)
-        end
+        let(:length) { 1... }
 
         it 'returns nil' do
           assert_nil(subject.max_length)
@@ -193,10 +155,7 @@ describe Boa::Type::String do
       subject { described_class.new(type_name, length:) }
 
       describe 'with an inclusive range' do
-        sig { returns(T::Range[Integer]) }
-        def length
-          1..10
-        end
+        let(:length) { 1..10 }
 
         it 'returns the maximum length' do
           assert_equal(10, subject.max_length)
@@ -204,10 +163,7 @@ describe Boa::Type::String do
       end
 
       describe 'with an exclusive range' do
-        sig { returns(T::Range[Integer]) }
-        def length
-          1...10
-        end
+        let(:length) { 1...10 }
 
         it 'returns the maximum length' do
           assert_equal(9, subject.max_length)

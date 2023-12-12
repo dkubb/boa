@@ -9,33 +9,14 @@ describe Boa::Type::Integer do
 
   subject { described_class.new(type_name, **options) }
 
-  sig { returns(T.class_of(Boa::Type)) }
-  def described_class
-    Boa::Type::Integer
-  end
-  alias_method(:other_class, :described_class)
-
-  sig { returns(Symbol) }
-  def type_name
-    :age
-  end
-  alias_method(:other_name, :type_name)
-
-  sig { returns(T::Hash[Symbol, Object]) }
-  def options
-    {}
-  end
-  alias_method(:other_options, :options)
-
-  sig { returns(Boa::Type) }
-  def other
-    other_class.new(other_name, **other_options)
-  end
-
-  sig { returns(T::Hash[Symbol, Object]) }
-  def different_options
-    { default: 42 }
-  end
+  let(:described_class)   { Boa::Type::Integer                           }
+  let(:type_name)         { :integer                                     }
+  let(:options)           { {}                                           }
+  let(:other)             { other_class.new(other_name, **other_options) }
+  let(:other_class)       { described_class                              }
+  let(:other_name)        { type_name                                    }
+  let(:other_options)     { options                                      }
+  let(:different_options) { { default: 42 }                              }
 
   describe '.[]' do
     include_examples 'Boa::Type.[]'
@@ -58,15 +39,8 @@ describe Boa::Type::Integer do
 
     cover 'Boa::Type::Integer#initialize'
 
-    sig { returns(T.nilable(Object)) }
-    def default_includes
-      nil
-    end
-
-    sig { returns(T.nilable(Integer)) }
-    def non_nil_default
-      100
-    end
+    let(:default_includes) { nil }
+    let(:non_nil_default)  { 100 }
 
     describe 'with default option' do
       subject { described_class.new(type_name, default: 42) }
@@ -86,10 +60,7 @@ describe Boa::Type::Integer do
       subject { described_class.new(type_name, range:) }
 
       describe 'with a minimum range' do
-        sig { returns(T::Range[T.nilable(Integer)]) }
-        def range
-          0..10
-        end
+        let(:range) { 0..10 }
 
         it 'sets the range attribute' do
           assert_equal(0..10, subject.range)
@@ -97,10 +68,7 @@ describe Boa::Type::Integer do
       end
 
       describe 'with no minimum range' do
-        sig { returns(T::Range[T.nilable(Integer)]) }
-        def range
-          (..10)
-        end
+        let(:range) { ..10 }
 
         it 'sets the range attribute' do
           assert_equal(..10, subject.range)
@@ -116,10 +84,7 @@ describe Boa::Type::Integer do
   describe '#includes' do
     include_examples 'Boa::Type#includes'
 
-    sig { returns(Object) }
-    def includes
-      @includes ||= [1]
-    end
+    let(:includes) { [1] }
   end
 
   describe '#options' do
@@ -129,10 +94,7 @@ describe Boa::Type::Integer do
   describe '#default' do
     include_examples 'Boa::Type#default'
 
-    sig { returns(Object) }
-    def default
-      1
-    end
+    let(:default) { 1 }
   end
 
   describe '#min_range' do
@@ -141,10 +103,7 @@ describe Boa::Type::Integer do
     subject { described_class.new(type_name, range:) }
 
     describe 'with no minimum range' do
-      sig { returns(T::Range[Integer]) }
-      def range
-        (..100)
-      end
+      let(:range) { (..100) }
 
       it 'returns nil' do
         assert_nil(subject.min_range)
@@ -152,10 +111,7 @@ describe Boa::Type::Integer do
     end
 
     describe 'with a minimum range' do
-      sig { returns(T::Range[Integer]) }
-      def range
-        1..100
-      end
+      let(:range) { 1..100 }
 
       it 'returns the minimum range' do
         assert_same(1, subject.min_range)
@@ -169,10 +125,7 @@ describe Boa::Type::Integer do
     subject { described_class.new(type_name, range:) }
 
     describe 'with no maximum range' do
-      sig { returns(T::Range[Integer]) }
-      def range
-        1..
-      end
+      let(:range) { 1.. }
 
       it 'returns nil' do
         assert_nil(subject.max_range)
@@ -180,10 +133,7 @@ describe Boa::Type::Integer do
     end
 
     describe 'with a maximum range' do
-      sig { returns(T::Range[Integer]) }
-      def range
-        1..100
-      end
+      let(:range) { 1..100 }
 
       it 'returns the maximum range' do
         assert_same(100, subject.max_range)

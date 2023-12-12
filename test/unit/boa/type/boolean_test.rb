@@ -9,33 +9,14 @@ describe Boa::Type::Boolean do
 
   subject { described_class.new(type_name, **options) }
 
-  sig { returns(T.class_of(Boa::Type)) }
-  def described_class
-    Boa::Type::Boolean
-  end
-  alias_method(:other_class, :described_class)
-
-  sig { returns(Symbol) }
-  def type_name
-    :admin
-  end
-  alias_method(:other_name, :type_name)
-
-  sig { returns(T::Hash[Symbol, Object]) }
-  def options
-    {}
-  end
-  alias_method(:other_options, :options)
-
-  sig { returns(Boa::Type) }
-  def other
-    other_class.new(other_name, **other_options)
-  end
-
-  sig { returns(T::Hash[Symbol, Object]) }
-  def different_options
-    { default: false }
-  end
+  let(:described_class)   { Boa::Type::Boolean                           }
+  let(:type_name)         { :boolean                                     }
+  let(:options)           { {}                                           }
+  let(:other)             { other_class.new(other_name, **other_options) }
+  let(:other_class)       { described_class                              }
+  let(:other_name)        { type_name                                    }
+  let(:other_options)     { options                                      }
+  let(:different_options) { { default: false }                           }
 
   describe '.[]' do
     include_examples 'Boa::Type.[]'
@@ -58,15 +39,8 @@ describe Boa::Type::Boolean do
 
     cover 'Boa::Type::Boolean#initialize'
 
-    sig { returns(T.nilable(Object)) }
-    def default_includes
-      [true, false]
-    end
-
-    sig { returns(T.nilable(Object)) }
-    def non_nil_default
-      true
-    end
+    let(:default_includes) { [true, false] }
+    let(:non_nil_default)  { true          }
   end
 
   describe '#name' do
@@ -76,10 +50,7 @@ describe Boa::Type::Boolean do
   describe '#includes' do
     include_examples 'Boa::Type#includes'
 
-    sig { returns(Object) }
-    def includes
-      @includes ||= [true]
-    end
+    let(:includes) { [true] }
   end
 
   describe '#options' do
@@ -89,10 +60,7 @@ describe Boa::Type::Boolean do
   describe '#default' do
     include_examples 'Boa::Type#default'
 
-    sig { returns(Object) }
-    def default
-      false
-    end
+    let(:default) { false }
   end
 
   describe '#==' do

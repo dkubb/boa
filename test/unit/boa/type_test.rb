@@ -7,10 +7,7 @@ describe Boa::Type do
   extend T::Sig
   include Support::TypeBehaviour
 
-  sig { returns(T.class_of(Boa::Type)) }
-  def described_class
-    Boa::Type
-  end
+  let(:described_class) { Boa::Type }
 
   describe '.[]' do
     include_examples 'Boa::Type.[]'
