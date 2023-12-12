@@ -188,6 +188,14 @@ module Support
       end
     end
 
+    shared_examples 'Boa::Type#name' do
+      cover 'Boa::Type#name'
+
+      it 'returns the name' do
+        assert_same(type_name, subject.name)
+      end
+    end
+
     shared_examples 'Boa::Type#==' do
       cover 'Boa::Equality#=='
 

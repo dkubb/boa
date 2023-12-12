@@ -109,6 +109,10 @@ describe Boa::Type::Integer do
     end
   end
 
+  describe '#name' do
+    include_examples 'Boa::Type#name'
+  end
+
   describe '#min_range' do
     cover 'Boa::Type::Integer#min_range'
 

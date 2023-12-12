@@ -131,6 +131,10 @@ describe Boa::Type::String do
     end
   end
 
+  describe '#name' do
+    include_examples 'Boa::Type#name'
+  end
+
   describe '#min_length' do
     cover 'Boa::Type::String#min_length'
 

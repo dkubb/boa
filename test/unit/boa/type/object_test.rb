@@ -69,6 +69,10 @@ describe Boa::Type::Object do
     end
   end
 
+  describe '#name' do
+    include_examples 'Boa::Type#name'
+  end
+
   describe '#==' do
     include_examples 'Boa::Type#=='
 
