@@ -5,6 +5,7 @@ require 'test_helper'
 
 describe Boa::Type::String do
   extend T::Sig
+  include Support::TypeBehaviour
 
   subject { described_class.new(type_name, **options) }
 
@@ -36,8 +37,24 @@ describe Boa::Type::String do
     { default: 'Other Name' }
   end
 
+  describe '.[]' do
+    include_examples 'Boa::Type.[]'
+  end
+
+  describe '.[]=' do
+    include_examples 'Boa::Type.[]='
+  end
+
+  describe '.class_type' do
+    include_examples 'Boa::Type.class_type'
+  end
+
+  describe '.inherited' do
+    include_examples 'Boa::Type.inherited'
+  end
+
   describe '.new' do
-    include Support::TypeBehaviour::New
+    include_examples 'Boa::Type.new'
 
     cover 'Boa::Type::String#initialize'
 
@@ -114,6 +131,32 @@ describe Boa::Type::String do
     end
   end
 
+  describe '#name' do
+    include_examples 'Boa::Type#name'
+  end
+
+  describe '#includes' do
+    include_examples 'Boa::Type#includes'
+
+    sig { returns(Object) }
+    def includes
+      @includes ||= %w[test]
+    end
+  end
+
+  describe '#options' do
+    include_examples 'Boa::Type#options'
+  end
+
+  describe '#default' do
+    include_examples 'Boa::Type#default'
+
+    sig { returns(Object) }
+    def default
+      'test'
+    end
+  end
+
   describe '#min_length' do
     cover 'Boa::Type::String#min_length'
 
@@ -174,14 +217,14 @@ describe Boa::Type::String do
   end
 
   describe '#==' do
-    include Support::TypeBehaviour::Equality
+    include_examples 'Boa::Type#=='
   end
 
-  describe '#eql' do
-    include Support::TypeBehaviour::Eql
+  describe '#eql?' do
+    include_examples 'Boa::Type#eql?'
   end
 
   describe '#hash' do
-    include Support::TypeBehaviour::Hash
+    include_examples 'Boa::Type#hash'
   end
 end

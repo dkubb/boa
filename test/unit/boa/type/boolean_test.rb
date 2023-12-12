@@ -5,6 +5,7 @@ require 'test_helper'
 
 describe Boa::Type::Boolean do
   extend T::Sig
+  include Support::TypeBehaviour
 
   subject { described_class.new(type_name, **options) }
 
@@ -36,8 +37,24 @@ describe Boa::Type::Boolean do
     { default: false }
   end
 
+  describe '.[]' do
+    include_examples 'Boa::Type.[]'
+  end
+
+  describe '.[]=' do
+    include_examples 'Boa::Type.[]='
+  end
+
+  describe '.class_type' do
+    include_examples 'Boa::Type.class_type'
+  end
+
+  describe '.inherited' do
+    include_examples 'Boa::Type.inherited'
+  end
+
   describe '.new' do
-    include Support::TypeBehaviour::New
+    include_examples 'Boa::Type.new'
 
     cover 'Boa::Type::Boolean#initialize'
 
@@ -52,15 +69,41 @@ describe Boa::Type::Boolean do
     end
   end
 
-  describe '#==' do
-    include Support::TypeBehaviour::Equality
+  describe '#name' do
+    include_examples 'Boa::Type#name'
   end
 
-  describe '#eql' do
-    include Support::TypeBehaviour::Eql
+  describe '#includes' do
+    include_examples 'Boa::Type#includes'
+
+    sig { returns(Object) }
+    def includes
+      @includes ||= [true]
+    end
+  end
+
+  describe '#options' do
+    include_examples 'Boa::Type#options'
+  end
+
+  describe '#default' do
+    include_examples 'Boa::Type#default'
+
+    sig { returns(Object) }
+    def default
+      false
+    end
+  end
+
+  describe '#==' do
+    include_examples 'Boa::Type#=='
+  end
+
+  describe '#eql?' do
+    include_examples 'Boa::Type#eql?'
   end
 
   describe '#hash' do
-    include Support::TypeBehaviour::Hash
+    include_examples 'Boa::Type#hash'
   end
 end

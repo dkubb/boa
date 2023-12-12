@@ -5,6 +5,7 @@ require 'test_helper'
 
 describe Boa::Type::Integer do
   extend T::Sig
+  include Support::TypeBehaviour
 
   subject { described_class.new(type_name, **options) }
 
@@ -36,8 +37,24 @@ describe Boa::Type::Integer do
     { default: 42 }
   end
 
+  describe '.[]' do
+    include_examples 'Boa::Type.[]'
+  end
+
+  describe '.[]=' do
+    include_examples 'Boa::Type.[]='
+  end
+
+  describe '.class_type' do
+    include_examples 'Boa::Type.class_type'
+  end
+
+  describe '.inherited' do
+    include_examples 'Boa::Type.inherited'
+  end
+
   describe '.new' do
-    include Support::TypeBehaviour::New
+    include_examples 'Boa::Type.new'
 
     cover 'Boa::Type::Integer#initialize'
 
@@ -89,6 +106,32 @@ describe Boa::Type::Integer do
           assert_equal(..10, subject.range)
         end
       end
+    end
+  end
+
+  describe '#name' do
+    include_examples 'Boa::Type#name'
+  end
+
+  describe '#includes' do
+    include_examples 'Boa::Type#includes'
+
+    sig { returns(Object) }
+    def includes
+      @includes ||= [1]
+    end
+  end
+
+  describe '#options' do
+    include_examples 'Boa::Type#options'
+  end
+
+  describe '#default' do
+    include_examples 'Boa::Type#default'
+
+    sig { returns(Object) }
+    def default
+      1
     end
   end
 
@@ -149,14 +192,14 @@ describe Boa::Type::Integer do
   end
 
   describe '#==' do
-    include Support::TypeBehaviour::Equality
+    include_examples 'Boa::Type#=='
   end
 
   describe '#eql?' do
-    include Support::TypeBehaviour::Eql
+    include_examples 'Boa::Type#eql?'
   end
 
   describe '#hash' do
-    include Support::TypeBehaviour::Hash
+    include_examples 'Boa::Type#hash'
   end
 end

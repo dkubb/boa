@@ -52,6 +52,10 @@ Metrics/MethodLength:
     - spec/doctest_helper.rb
     - test/support/**/*.rb
 
+Metrics/ModuleLength:
+  Exclude:
+    - test/support/**/*.rb
+
 Naming/BlockForwarding:
   EnforcedStyle: explicit
 
@@ -60,6 +64,9 @@ Security/CompoundHash:
     - lib/boa/equality.rb
 
 Sorbet/ForbidTStruct:
+  Enabled: false
+
+Sorbet/ForbidTypeAliasedShapes:
   Enabled: false
 
 Sorbet/RedundantExtendTSig:
@@ -107,12 +114,16 @@ Style/MethodCallWithArgsParentheses:
     - describe
     - extend
     - include
+    - include_context
+    - include_examples
     - it
     - prop
     - protected
     - public_constant
     - require
     - require_relative
+    - shared_context
+    - shared_examples
   EnforcedStyle: require_parentheses
   Exclude:
     - .simplecov
