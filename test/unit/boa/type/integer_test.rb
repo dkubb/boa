@@ -37,6 +37,22 @@ describe Boa::Type::Integer do
     { default: 42 }
   end
 
+  describe '.[]' do
+    include_examples 'Boa::Type.[]'
+  end
+
+  describe '.[]=' do
+    include_examples 'Boa::Type.[]='
+  end
+
+  describe '.class_type' do
+    include_examples 'Boa::Type.class_type'
+  end
+
+  describe '.inherited' do
+    include_examples 'Boa::Type.inherited'
+  end
+
   describe '.new' do
     include_examples 'Boa::Type.new'
 
