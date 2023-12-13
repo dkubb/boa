@@ -6,7 +6,7 @@ module Boa
   module Util
     extend T::Sig
 
-    DEFAULT_RANGE = T.let(nil.., T::Range[T.nilable(::Integer)])
+    DEFAULT_RANGE = T.let(Range.new(nil, nil).freeze, T::Range[T.nilable(::Integer)])
     private_constant(:DEFAULT_RANGE)
 
     # Normalize an integer range
