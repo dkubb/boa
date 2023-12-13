@@ -142,6 +142,10 @@ describe Boa::Type::Integer do
     end
   end
 
+  describe '#freeze' do
+    include_examples 'Boa::Type#freeze'
+  end
+
   describe '#==' do
     include_examples 'Boa::Equality#=='
   end

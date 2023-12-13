@@ -266,5 +266,49 @@ module Support
         end
       end
     end
+
+    shared_examples 'Boa::Type#freeze' do
+      cover 'Boa::Type#freeze'
+
+      subject do
+        # construct the object directly
+        described_class.allocate.tap do |type|
+          type.instance_eval do
+            @name     = :name
+            @includes = nil
+            @options  = {}
+          end
+        end
+      end
+
+      it 'freezes the instance variables' do
+        ivars =
+          subject.instance_variables.to_h do |ivar|
+            [ivar, subject.instance_variable_get(ivar)]
+          end
+
+        # assert the instance variables are not frozen
+        ivars.each_value do |value|
+          next if value.nil? || value.instance_of?(Symbol)
+
+          refute_operator(value, :frozen?)
+        end
+
+        subject.freeze
+
+        # assert the instance variables are frozen
+        ivars.each_value do |value|
+          assert_operator(value, :frozen?)
+        end
+      end
+
+      it 'freezes the type' do
+        assert_operator(subject.freeze, :frozen?)
+      end
+
+      it 'returns the type' do
+        assert_same(subject, subject.freeze)
+      end
+    end
   end
 end

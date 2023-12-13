@@ -157,5 +157,24 @@ module Boa
     def default
       options[:default]
     end
+
+    # Deep freeze the type
+    #
+    # @example
+    #   type = String.new(:first_name)
+    #   type.freeze
+    #   type.frozen? # => true
+    #
+    # @return [Type] the type
+    #
+    # @api public
+    sig { returns(T.self_type) }
+    def freeze
+      instance_variables.each do |ivar_name|
+        T.let(instance_variable_get(ivar_name), ::Object).freeze
+      end
+
+      T.let(super(), Type)
+    end
   end
 end

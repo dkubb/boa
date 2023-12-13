@@ -64,6 +64,10 @@ describe Boa::Type::Boolean do
     let(:default) { false }
   end
 
+  describe '#freeze' do
+    include_examples 'Boa::Type#freeze'
+  end
+
   describe '#==' do
     include_examples 'Boa::Equality#=='
   end
