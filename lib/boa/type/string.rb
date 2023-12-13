@@ -7,6 +7,10 @@ module Boa
     class String < self
       class_type(::String)
 
+      # The default length for the string type
+      DEFAULT_LENGTH = T.let(Range.new(0, nil).freeze, T::Range[T.nilable(::Integer)])
+      private_constant(:DEFAULT_LENGTH)
+
       # The length of the string
       #
       # @example
@@ -56,8 +60,8 @@ module Boa
       #
       # @api public
       sig { params(name: Symbol, length: T::Range[T.nilable(::Integer)], options: ::Object).void }
-      def initialize(name, length: nil.., **options)
-        @length = T.let(Util.normalize_integer_range(length, default: 0..), T::Range[T.nilable(::Integer)])
+      def initialize(name, length: DEFAULT_LENGTH, **options)
+        @length = T.let(Util.normalize_integer_range(length, default: DEFAULT_LENGTH), T::Range[T.nilable(::Integer)])
 
         super(name, **options)
       end
