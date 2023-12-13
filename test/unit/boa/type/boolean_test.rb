@@ -5,6 +5,7 @@ require 'test_helper'
 
 describe Boa::Type::Boolean do
   extend T::Sig
+  include Support::EqualityBehaviour
   include Support::TypeBehaviour
 
   subject { described_class.new(type_name, **options) }
@@ -16,7 +17,7 @@ describe Boa::Type::Boolean do
   let(:other_class)       { described_class                              }
   let(:other_name)        { type_name                                    }
   let(:other_options)     { options                                      }
-  let(:different_options) { { default: false }                           }
+  let(:different_state)   { other_class.new(:differemt)                  }
 
   describe '.[]' do
     include_examples 'Boa::Type.[]'
@@ -64,14 +65,14 @@ describe Boa::Type::Boolean do
   end
 
   describe '#==' do
-    include_examples 'Boa::Type#=='
+    include_examples 'Boa::Equality#=='
   end
 
   describe '#eql?' do
-    include_examples 'Boa::Type#eql?'
+    include_examples 'Boa::Equality#eql?'
   end
 
   describe '#hash' do
-    include_examples 'Boa::Type#hash'
+    include_examples 'Boa::Equality#hash'
   end
 end
