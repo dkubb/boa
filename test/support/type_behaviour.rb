@@ -146,12 +146,12 @@ module Support
       cover 'Boa::Type.new'
       cover 'Boa::Type#initialize'
 
-      it 'sets the name attribute' do
-        assert_equal(type_name, subject.name)
-      end
-
       describe 'with no default option' do
         let(:options) { {} }
+
+        it 'sets the name attribute' do
+          assert_equal(type_name, subject.name)
+        end
 
         it 'sets the default attribute to the default' do
           assert_nil(subject.default)
@@ -162,6 +162,10 @@ module Support
         subject { described_class.new(type_name, default: non_nil_default) }
 
         describe 'with a non-nil value' do
+          it 'sets the name attribute' do
+            assert_equal(type_name, subject.name)
+          end
+
           it 'sets the default attribute' do
             assert_equal(non_nil_default, subject.default)
           end
@@ -169,6 +173,10 @@ module Support
       end
 
       describe 'with no includes option' do
+        it 'sets the name attribute' do
+          assert_equal(type_name, subject.name)
+        end
+
         it 'sets the includes attribute to the default' do
           if default_includes.nil?
             assert_nil(subject.includes)
@@ -180,6 +188,10 @@ module Support
 
       describe 'with an includes option' do
         subject { described_class.new(type_name, includes: []) }
+
+        it 'sets the name attribute' do
+          assert_equal(type_name, subject.name)
+        end
 
         it 'sets the includes attribute to an empty list' do
           assert_empty(subject.includes)
