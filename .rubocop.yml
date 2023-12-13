@@ -110,6 +110,7 @@ Style/MethodCallWithArgsParentheses:
   AllowedMethods:
     - attr_reader
     - attr_writer
+    - const
     - cover
     - describe
     - extend

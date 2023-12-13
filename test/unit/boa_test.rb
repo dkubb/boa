@@ -6,25 +6,18 @@ require 'test_helper'
 describe Boa do
   extend T::Sig
 
-  sig { returns(T::Class[Boa]) }
-  def described_class
-    Person
-  end
-
   subject { described_class.new(name: 'Dan Kubb') }
+
+  let(:described_class) do
+    Class.new(T::ImmutableStruct) do
+      include Boa
+
+      const :name, String
+    end
+  end
 
   describe '.new' do
     cover 'Boa#initialize'
-
-    sig { returns(T::Class[Boa]) }
-    def described_class
-      @described_class ||=
-        Class.new(T::Struct) do
-          include Boa
-
-          prop :name, String
-        end
-    end
 
     describe 'with no attributes' do
       it 'raises an error' do

@@ -39,14 +39,20 @@ module Support
 
     sig { params(descendant: T.class_of(Minitest::Spec)).void }
     def inherited(descendant)
-      descendant.instance_variable_set(:@examples, examples.dup)
+      add_examples(descendant)
       super
     end
 
     sig { params(descendant: T.class_of(Minitest::Spec)).void }
     def included(descendant)
-      descendant.instance_variable_set(:@examples, examples.dup)
+      add_examples(descendant)
       super
+    end
+
+    sig { params(descendant: T.class_of(Minitest::Spec)).void }
+    def add_examples(descendant)
+      examples = T.let(descendant.instance_variable_get(:@examples), T.nilable(T::Hash[String, Example]))
+      descendant.instance_variable_set(:@examples, (examples || {}).merge(self.examples))
     end
   end
 end
