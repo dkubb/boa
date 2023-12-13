@@ -13,9 +13,3 @@ require_relative 'support/type_behaviour'
 require 'boa'
 
 Minitest::Spec.extend(Support::SharedSetup)
-
-class Person < T::Struct
-  include Boa
-
-  prop :name, String
-end
