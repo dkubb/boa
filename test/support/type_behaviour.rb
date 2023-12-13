@@ -156,6 +156,10 @@ module Support
         it 'sets the default attribute to the default' do
           assert_nil(subject.default)
         end
+
+        it 'freezes the type' do
+          assert_operator(subject, :frozen?)
+        end
       end
 
       describe 'with a default option' do
@@ -168,6 +172,10 @@ module Support
 
           it 'sets the default attribute' do
             assert_equal(non_nil_default, subject.default)
+          end
+
+          it 'freezes the type' do
+            assert_operator(subject, :frozen?)
           end
         end
       end
@@ -184,6 +192,10 @@ module Support
             assert_equal(default_includes, subject.includes)
           end
         end
+
+        it 'freezes the type' do
+          assert_operator(subject, :frozen?)
+        end
       end
 
       describe 'with an includes option' do
@@ -195,6 +207,10 @@ module Support
 
         it 'sets the includes attribute to an empty list' do
           assert_empty(subject.includes)
+        end
+
+        it 'freezes the type' do
+          assert_operator(subject, :frozen?)
         end
       end
     end

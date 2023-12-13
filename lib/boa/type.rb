@@ -141,6 +141,8 @@ module Boa
       @name     = name
       @includes = T.let(includes, T.nilable(::Object))
       @options  = options
+
+      freeze
     end
 
     # The default value of the type

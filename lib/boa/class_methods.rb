@@ -54,8 +54,6 @@ module Boa
     # @api public
     sig { returns(T.self_type) }
     def freeze
-      properties.each_value(&:freeze)
-
       instance_variables.each do |ivar_name|
         T.let(instance_variable_get(ivar_name), Object).freeze
       end
