@@ -7,6 +7,10 @@ module Boa
     class Boolean < self
       class_type(T::Boolean)
 
+      # The default includes for the boolean type
+      DEFAULT_INCLUDES = T.let([true, false].freeze, T::Array[T::Boolean])
+      private_constant(:DEFAULT_INCLUDES)
+
       # Initialize the boolean type
       #
       # @example
@@ -22,7 +26,7 @@ module Boa
       #
       # @api public
       sig { params(_name: Symbol, includes: T::Array[T::Boolean], options: ::Object).void }
-      def initialize(_name, includes: [true, false], **options)
+      def initialize(_name, includes: DEFAULT_INCLUDES, **options)
         super
       end
     end
