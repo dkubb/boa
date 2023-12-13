@@ -5,16 +5,23 @@ require 'test_helper'
 
 describe Boa do
   extend T::Sig
+  include Support::EqualityBehaviour
 
-  subject { described_class.new(name: 'Dan Kubb') }
+  subject { described_class.new(**options) }
 
   let(:described_class) do
-    Class.new(T::ImmutableStruct) do
+    Class.new(T::InexactStruct) do
       include Boa
 
       const :name, String
     end
   end
+
+  let(:options)         { { name: 'Dan Kubb' }                }
+  let(:other)           { other_class.new(**other_options)    }
+  let(:other_class)     { described_class                     }
+  let(:other_options)   { options                             }
+  let(:different_state) { other_class.new(name: 'Other Name') }
 
   describe '.new' do
     cover 'Boa#initialize'
@@ -55,54 +62,14 @@ describe Boa do
   end
 
   describe '#==' do
-    cover 'Boa::Equality#=='
-
-    describe 'when the objects have equivalent state' do
-      it 'returns true' do
-        assert_equal(subject, subject.dup)
-      end
-    end
-
-    describe 'when the objects have different state' do
-      it 'returns false' do
-        refute_equal(subject, described_class.new(name: 'Other Name'))
-      end
-    end
+    include_examples 'Boa::Equality#=='
   end
 
-  describe 'eql?' do
-    cover 'Boa::Equality#eql?'
-
-    describe 'when the objects have equivalent state' do
-      it 'returns true' do
-        assert_operator(subject, :eql?, subject.dup)
-      end
-    end
-
-    describe 'when the objects have different state' do
-      it 'returns false' do
-        other = described_class.new(name: 'Other Name')
-
-        refute_operator(subject, :eql?, other)
-      end
-    end
+  describe '#eql?' do
+    include_examples 'Boa::Equality#eql?'
   end
 
   describe '#hash' do
-    cover 'Boa::Equality#hash'
-
-    it 'returns an integer' do
-      assert_kind_of(Integer, subject.hash)
-    end
-
-    it 'returns the same value for equal objects' do
-      assert_equal(subject.hash, subject.dup.hash)
-    end
-
-    it 'returns a different values for different objects' do
-      other = described_class.new(name: 'Other Name')
-
-      refute_equal(subject.hash, other.hash)
-    end
+    include_examples 'Boa::Equality#hash'
   end
 end

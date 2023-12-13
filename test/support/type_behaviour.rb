@@ -151,6 +151,8 @@ module Support
       end
 
       describe 'with no default option' do
+        let(:options) { {} }
+
         it 'sets the default attribute to the default' do
           assert_nil(subject.default)
         end
@@ -229,6 +231,8 @@ module Support
       end
 
       describe 'with no default option' do
+        let(:options) { {} }
+
         it 'returns nil' do
           assert_nil(subject.default)
         end

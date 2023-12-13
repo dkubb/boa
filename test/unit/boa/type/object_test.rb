@@ -5,18 +5,21 @@ require 'test_helper'
 
 describe Boa::Type::Object do
   extend T::Sig
+  include Support::EqualityBehaviour
   include Support::TypeBehaviour
 
-  subject { described_class.new(type_name) }
+  subject { described_class.new(type_name, **options) }
 
-  let(:described_class)   { Boa::Type::Object                            }
-  let(:type_name)         { :object                                      }
-  let(:options)           { {}                                           }
-  let(:other)             { other_class.new(other_name, **other_options) }
-  let(:other_class)       { described_class                              }
-  let(:other_name)        { type_name                                    }
-  let(:other_options)     { options                                      }
-  let(:different_options) { { default: Object.new }                      }
+  let(:described_class)   { Boa::Type::Object                                }
+  let(:type_name)         { :object                                          }
+  let(:options)           { { default: 1 }                                   }
+  let(:other)             { other_class.new(other_name, **other_options)     }
+  let(:other_class)       { described_class                                  }
+  let(:other_name)        { type_name                                        }
+  let(:other_options)     { options                                          }
+  let(:different_state)   { other_class.new(:different)                      }
+  let(:not_eql_state)     { other_class.new(other_name, **not_eql_options)   }
+  let(:not_eql_options)   { { default: 1.0 }                                 }
 
   describe '.[]' do
     include_examples 'Boa::Type.[]'
@@ -64,22 +67,14 @@ describe Boa::Type::Object do
   end
 
   describe '#==' do
-    include_examples 'Boa::Type#=='
-
-    it 'is false when object state is equal but does not eql?' do
-      subject = described_class.new(type_name, default: 1)
-      other   = described_class.new(type_name, default: 1.0)
-
-      assert_equal(subject, other)
-      refute_operator(subject, :eql?, other)
-    end
+    include_examples 'Boa::Equality#=='
   end
 
   describe '#eql' do
-    include_examples 'Boa::Type#eql?'
+    include_examples 'Boa::Equality#eql?'
   end
 
   describe '#hash' do
-    include_examples 'Boa::Type#hash'
+    include_examples 'Boa::Equality#hash'
   end
 end
