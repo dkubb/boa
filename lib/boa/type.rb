@@ -16,7 +16,7 @@ module Boa
     # Lookup the type for a class type
     #
     # @example when type class type is registered
-    #   Boa::Type[::String]  # => Boa::Type::String
+    #   Boa::Type[::String] # => Boa::Type::String
     #
     # @example when type class type is unknown
     #   OtherClass = Class.new
@@ -38,7 +38,7 @@ module Boa
     #
     # @example
     #   Boa::Type[::String] = Boa::Type::String
-    #   Boa::Type[::String]  # => Boa::Type::String
+    #   Boa::Type[::String] # => Boa::Type::String
     #
     # @param class_type [ClassType] the class type
     # @param descendant [Class<Type>] the type for the class type
@@ -54,8 +54,8 @@ module Boa
     # Set the class type for the type
     #
     # @example
-    #   Boa::Type::String.class_type(::String)  # => Boa::Type::String
-    #   Boa::Type[::String]                     # => Boa::Type::String
+    #   Boa::Type::String.class_type(::String) # => Boa::Type::String
+    #   Boa::Type[::String]                    # => Boa::Type::String
     #
     # @param class_type [ClassType] the class type
     #
@@ -97,7 +97,7 @@ module Boa
     # The name of the instance variable
     #
     # @example
-    #   type.name  # => :first_name
+    #   type.name # => :first_name
     #
     # @return [Symbol] the name of the instance variable
     #
@@ -108,7 +108,7 @@ module Boa
     # The object to check inclusion against
     #
     # @example
-    #   type.includes  # => nil
+    #   type.includes # => nil
     #
     # @return [Object] the object to check inclusion against
     #
@@ -119,7 +119,7 @@ module Boa
     # The options for the T::Struct.prop method
     #
     # @example
-    #   type.options  # => { default: 'Jon' }
+    #   type.options # => { default: 'Jon' }
     #
     # @return [Hash{Symbol => Object}] the options for the type
     #
@@ -146,7 +146,7 @@ module Boa
     # The default value of the type
     #
     # @example
-    #   type.default  # => 'Jon'
+    #   type.default # => 'Jon'
     #
     # @return [Object] the default value of the type
     #

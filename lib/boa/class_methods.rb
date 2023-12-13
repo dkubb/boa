@@ -26,7 +26,7 @@ module Boa
     # @example
     #   klass  = Class.new(T::Struct) { include Boa }
     #   result = klass.prop :last_name, String
-    #   klass.equal?(result)                    # => true
+    #   klass.equal?(result) # => true
     #
     # @param name [Symbol] the name of the property
     # @param class_type [Type::ClassType] the type of the property
