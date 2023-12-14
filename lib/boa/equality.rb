@@ -14,10 +14,10 @@ module Boa
     # Compare the object with other object for equivalency
     #
     # @example when the objects are equal
-    #   equality_object == equality_object  # => true
+    #   equality_object == equality_object # => true
     #
     # @example when the objects are not equal
-    #   equality_object == other  # => false
+    #   equality_object == other # => false
     #
     # @param [Equality] other
     #   the other object to compare with
@@ -33,10 +33,10 @@ module Boa
     # Compare the object with other object for equality
     #
     # @example when the objects are equal
-    #   equality_object.eql?(equality_object)  # => true
+    #   equality_object.eql?(equality_object) # => true
     #
     # @example when the objects are not equal
-    #   equality_object.eql?(other)  # => false
+    #   equality_object.eql?(other) # => false
     #
     # @param [Equality] other
     #   the other object to compare with
@@ -54,7 +54,7 @@ module Boa
     # The hash value of the object
     #
     # @example
-    #   equality_object.hash.class  # => Integer
+    #   equality_object.hash.class # => Integer
     #
     # @return [Integer] the hash value of the object
     #

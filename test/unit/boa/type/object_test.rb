@@ -66,6 +66,10 @@ describe Boa::Type::Object do
     let(:default) { Object.new }
   end
 
+  describe '#freeze' do
+    include_examples 'Boa::Type#freeze'
+  end
+
   describe '#==' do
     include_examples 'Boa::Equality#=='
   end

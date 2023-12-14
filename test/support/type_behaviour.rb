@@ -146,15 +146,19 @@ module Support
       cover 'Boa::Type.new'
       cover 'Boa::Type#initialize'
 
-      it 'sets the name attribute' do
-        assert_equal(type_name, subject.name)
-      end
-
       describe 'with no default option' do
         let(:options) { {} }
 
+        it 'sets the name attribute' do
+          assert_equal(type_name, subject.name)
+        end
+
         it 'sets the default attribute to the default' do
           assert_nil(subject.default)
+        end
+
+        it 'freezes the type' do
+          assert_operator(subject, :frozen?)
         end
       end
 
@@ -162,13 +166,25 @@ module Support
         subject { described_class.new(type_name, default: non_nil_default) }
 
         describe 'with a non-nil value' do
+          it 'sets the name attribute' do
+            assert_equal(type_name, subject.name)
+          end
+
           it 'sets the default attribute' do
             assert_equal(non_nil_default, subject.default)
+          end
+
+          it 'freezes the type' do
+            assert_operator(subject, :frozen?)
           end
         end
       end
 
       describe 'with no includes option' do
+        it 'sets the name attribute' do
+          assert_equal(type_name, subject.name)
+        end
+
         it 'sets the includes attribute to the default' do
           if default_includes.nil?
             assert_nil(subject.includes)
@@ -176,13 +192,25 @@ module Support
             assert_equal(default_includes, subject.includes)
           end
         end
+
+        it 'freezes the type' do
+          assert_operator(subject, :frozen?)
+        end
       end
 
       describe 'with an includes option' do
         subject { described_class.new(type_name, includes: []) }
 
+        it 'sets the name attribute' do
+          assert_equal(type_name, subject.name)
+        end
+
         it 'sets the includes attribute to an empty list' do
           assert_empty(subject.includes)
+        end
+
+        it 'freezes the type' do
+          assert_operator(subject, :frozen?)
         end
       end
     end
@@ -236,6 +264,50 @@ module Support
         it 'returns nil' do
           assert_nil(subject.default)
         end
+      end
+    end
+
+    shared_examples 'Boa::Type#freeze' do
+      cover 'Boa::Type#freeze'
+
+      subject do
+        # construct the object directly
+        described_class.allocate.tap do |type|
+          type.instance_eval do
+            @name     = :name
+            @includes = nil
+            @options  = {}
+          end
+        end
+      end
+
+      it 'freezes the instance variables' do
+        ivars =
+          subject.instance_variables.to_h do |ivar|
+            [ivar, subject.instance_variable_get(ivar)]
+          end
+
+        # assert the instance variables are not frozen
+        ivars.each_value do |value|
+          next if value.nil? || value.instance_of?(Symbol)
+
+          refute_operator(value, :frozen?)
+        end
+
+        subject.freeze
+
+        # assert the instance variables are frozen
+        ivars.each_value do |value|
+          assert_operator(value, :frozen?)
+        end
+      end
+
+      it 'freezes the type' do
+        assert_operator(subject.freeze, :frozen?)
+      end
+
+      it 'returns the type' do
+        assert_same(subject, subject.freeze)
       end
     end
   end

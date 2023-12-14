@@ -56,16 +56,6 @@ describe Boa::ClassMethods do
       subject.class_eval { @ivar = +'value' }
     end
 
-    it 'freezes type of each property' do
-      type = subject.properties.fetch(:name)
-
-      refute_operator(type, :frozen?)
-
-      subject.freeze
-
-      assert_operator(type, :frozen?)
-    end
-
     it 'freezes the properties' do
       refute_operator(subject.properties, :frozen?)
 

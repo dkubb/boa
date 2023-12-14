@@ -26,7 +26,7 @@ module Boa
     # @example
     #   klass  = Class.new(T::Struct) { include Boa }
     #   result = klass.prop :last_name, String
-    #   klass.equal?(result)                    # => true
+    #   klass.equal?(result) # => true
     #
     # @param name [Symbol] the name of the property
     # @param class_type [Type::ClassType] the type of the property
@@ -54,8 +54,6 @@ module Boa
     # @api public
     sig { returns(T.self_type) }
     def freeze
-      properties.each_value(&:freeze)
-
       instance_variables.each do |ivar_name|
         T.let(instance_variable_get(ivar_name), Object).freeze
       end

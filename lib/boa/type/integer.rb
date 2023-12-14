@@ -7,6 +7,10 @@ module Boa
     class Integer < self
       class_type(::Integer)
 
+      # The default range for the integer type
+      DEFAULT_RANGE = T.let(Range.new(nil, nil).freeze, T::Range[T.nilable(::Integer)])
+      private_constant(:DEFAULT_RANGE)
+
       # The range of the integer
       #
       # @example
@@ -43,7 +47,7 @@ module Boa
       #
       # @api public
       sig { params(name: Symbol, range: T::Range[T.nilable(::Integer)], options: ::Object).void }
-      def initialize(name, range: Range.new(nil, nil), **options)
+      def initialize(name, range: DEFAULT_RANGE, **options)
         @range = T.let(Util.normalize_integer_range(range), T::Range[T.nilable(::Integer)])
 
         super(name, **options)
