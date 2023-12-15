@@ -21,5 +21,7 @@ module Boa
 
   mixes_in_class_methods(ClassMethods)
 
+  requires_ancestor { T::InexactStruct }
+
   abstract!
 end
