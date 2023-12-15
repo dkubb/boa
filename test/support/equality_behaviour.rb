@@ -3,7 +3,6 @@
 
 module Support
   module EqualityBehaviour
-    extend T::Sig
     extend SharedSetup
 
     shared_examples 'Boa::Equality#==' do
