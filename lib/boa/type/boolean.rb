@@ -5,11 +5,11 @@ module Boa
   class Type
     # A boolean type
     class Boolean < self
-      class_type(T::Boolean)
-
       # The default includes for the boolean type
       DEFAULT_INCLUDES = T.let([true, false].freeze, T::Array[T::Boolean])
       private_constant(:DEFAULT_INCLUDES)
+
+      class_type(T::Boolean)
 
       # Initialize the boolean type
       #

@@ -5,11 +5,11 @@ module Boa
   class Type
     # An integer type
     class Integer < self
-      class_type(::Integer)
-
       # The default range for the integer type
       DEFAULT_RANGE = T.let(Range.new(nil, nil).freeze, T::Range[T.nilable(::Integer)])
       private_constant(:DEFAULT_RANGE)
+
+      class_type(::Integer)
 
       # The range of the integer
       #

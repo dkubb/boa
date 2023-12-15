@@ -5,11 +5,11 @@ module Boa
   class Type
     # A string type
     class String < self
-      class_type(::String)
-
       # The default length for the string type
       DEFAULT_LENGTH = T.let(Range.new(0, nil).freeze, T::Range[T.nilable(::Integer)])
       private_constant(:DEFAULT_LENGTH)
+
+      class_type(::String)
 
       # The length of the string
       #
