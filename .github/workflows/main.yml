@@ -80,13 +80,13 @@ jobs:
         test $diff_exit_code -eq 0 -a $status_exit_code -eq 1
 
     - name: Save YARD docs
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: yard-docs
         path: doc
 
     - name: Save Code Coverage
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage
         path: coverage
