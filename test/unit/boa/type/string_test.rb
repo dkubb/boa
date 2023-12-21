@@ -66,13 +66,13 @@ describe Boa::Type::String do
     end
 
     describe 'with length option' do
-      subject { described_class.new(type_name, length: min_length..10) }
+      subject { described_class.new(type_name, length: min_length...10) }
 
       describe 'with a non-nil minimum length' do
         let(:min_length) { 2 }
 
         it 'sets the length attribute' do
-          assert_equal(2..10, subject.length)
+          assert_equal(2..9, subject.length)
         end
 
         it 'has the expected minimum length' do
@@ -80,7 +80,7 @@ describe Boa::Type::String do
         end
 
         it 'has the expected default maximum length' do
-          assert_equal(10, subject.max_length)
+          assert_equal(9, subject.max_length)
         end
       end
 
@@ -89,7 +89,7 @@ describe Boa::Type::String do
         def min_length; end
 
         it 'sets the length attribute' do
-          assert_equal(0..10, subject.length)
+          assert_equal(0..9, subject.length)
         end
 
         it 'has the expected minimum length' do
@@ -97,7 +97,7 @@ describe Boa::Type::String do
         end
 
         it 'has the expected default maximum length' do
-          assert_same(10, subject.max_length)
+          assert_same(9, subject.max_length)
         end
       end
     end
