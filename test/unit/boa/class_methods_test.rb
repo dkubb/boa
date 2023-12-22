@@ -1,85 +1,126 @@
-# typed: false
+# typed: strong
 # frozen_string_literal: true
 
 require 'test_helper'
 
-describe Boa::ClassMethods do
-  extend T::Sig
+require_relative '../boa_test'
 
-  subject do
-    Class.new(T::Struct) do
-      extend Boa::ClassMethods
+module Boa
+  class Test
+    class ClassMethods < Minitest::Test
+      extend T::Sig
 
-      prop :name,  String
-      prop :admin, T::Boolean
-    end
-  end
+      parallelize_me!
 
-  describe '#properties' do
-    cover 'Boa::ClassMethods#properties'
-
-    it 'returns the properties' do
-      assert_equal({ name: Boa::Type::String.new(:name), admin: Boa::Type::Boolean.new(:admin) }, subject.properties)
-    end
-  end
-
-  describe '#prop' do
-    cover 'Boa::ClassMethods#prop'
-
-    subject do
-      Class.new(T::Struct) do
+      class Person < T::InexactStruct
         extend Boa::ClassMethods
-
-        prop :name, String, default: 'Default Name'
       end
-    end
 
-    it 'sets the property' do
-      subject
+      sig { returns(T.class_of(Person)) }
+      def described_class
+        Person
+      end
 
-      assert_equal({ name: Boa::Type::String.new(:name, default: 'Default Name') }, subject.properties)
-    end
+      sig { returns(Symbol) }
+      def type_name
+        :name
+      end
 
-    it 'returns self' do
-      assert_same(subject, subject.prop(:admin, T::Boolean))
-    end
+      class Properties < self
+        extend MutantCoverage
 
-    it 'passes through the default option' do
-      assert_same('Default Name', subject.new.name)
-    end
-  end
+        cover 'Boa::ClassMethods#properties'
 
-  describe '#freeze' do
-    cover 'Boa::ClassMethods#freeze'
+        sig { void }
+        def test_properties
+          subject = Class.new(described_class)
 
-    before do
-      subject.class_eval { @ivar = +'value' }
-    end
+          assert_empty(subject.properties)
 
-    it 'freezes the properties' do
-      refute_operator(subject.properties, :frozen?)
+          type = subject.properties[type_name] = Boa::Type::String.new(type_name)
 
-      subject.freeze
+          assert_equal({ name: type }, subject.properties)
+        end
+      end
 
-      assert_operator(subject.properties, :frozen?)
-    end
+      class Prop < self
+        extend MutantCoverage
 
-    it 'freezes the instance variables' do
-      ivar = subject.instance_variable_get(:@ivar)
+        cover 'Boa::ClassMethods#properties'
 
-      refute_operator(ivar, :frozen?)
+        sig { void }
+        def test_prop_sets_the_property
+          subject = Class.new(described_class)
 
-      subject.freeze
+          assert_empty(subject.properties)
 
-      assert_operator(ivar, :frozen?)
-    end
+          subject.prop(type_name, String)
 
-    it 'freezes the class' do
-      assert_operator(subject.freeze, :frozen?)
-    end
+          assert_equal({ name: Boa::Type::String.new(type_name) }, subject.properties)
+        end
 
-    it 'returns the class' do
-      assert_same(subject, subject.freeze)
+        sig { void }
+        def test_prop_returns_self
+          subject = Class.new(described_class)
+
+          assert_same(subject, subject.prop(type_name, String))
+        end
+
+        sig { void }
+        def test_passes_through_the_options
+          subject = Class.new(described_class)
+
+          subject.prop(type_name, String, immutable: true)
+
+          # assert the immutable true option is passed through
+          assert_respond_to(subject.new(type_name => 'Test Name'), type_name)
+          refute_respond_to(subject.new(type_name => 'Test Name'), :"#{type_name}=")
+        end
+      end
+
+      class Freeze < self
+        extend MutantCoverage
+
+        cover 'Boa::ClassMethods#freeze'
+
+        sig { void }
+        def test_freezes_the_instance_variables
+          subject = Class.new(described_class)
+
+          ivars(subject).each_value do |value|
+            refute_operator(value, :frozen?)
+          end
+
+          subject.freeze
+
+          ivars(subject).each_value do |value|
+            assert_operator(value, :frozen?)
+          end
+        end
+
+        sig { void }
+        def test_freezes_the_class
+          subject = Class.new(described_class)
+
+          assert_operator(subject.freeze, :frozen?)
+        end
+
+        sig { void }
+        def test_returns_the_class
+          subject = Class.new(described_class)
+
+          assert_same(subject, subject.freeze)
+        end
+
+      private
+
+        sig { params(object: Object).returns(T::Hash[Symbol, Object]) }
+        def ivars(object)
+          object.instance_variables.to_h do |ivar|
+            [ivar, T.let(object.instance_variable_get(ivar), Object)]
+          end
+        end
+      end
     end
   end
 end

@@ -1,160 +1,211 @@
-# typed: false
+# typed: strong
 # frozen_string_literal: true
 
 require 'test_helper'
 
-describe Boa::Type::Integer do
-  extend T::Sig
-  include Support::EqualityBehaviour
-  include Support::TypeBehaviour
+require_relative '../type_test'
 
-  subject { described_class.new(type_name, **options) }
+module Boa
+  class Test
+    class Type
+      class Integer < Minitest::Test
+        extend T::Sig
+        include Support::EqualityBehaviour::Setup
+        include Support::TypeBehaviour::Setup
 
-  let(:described_class)   { Boa::Type::Integer                           }
-  let(:type_name)         { :integer                                     }
-  let(:options)           { {}                                           }
-  let(:other)             { other_class.new(other_name, **other_options) }
-  let(:other_class)       { described_class                              }
-  let(:other_name)        { type_name                                    }
-  let(:other_options)     { options                                      }
-  let(:different_state)   { other_class.new(:different)                  }
+        parallelize_me!
 
-  describe '.[]' do
-    include_examples 'Boa::Type.[]'
-  end
+        sig { override.returns(T.class_of(Boa::Type::Integer)) }
+        def described_class
+          Boa::Type::Integer
+        end
 
-  describe '.[]=' do
-    include_examples 'Boa::Type.[]='
-  end
+        sig { override.returns(Boa::Type::Integer) }
+        def state_inequality
+          @state_inequality ||= T.let(described_class.new(:inequal), T.nilable(Boa::Type::Integer))
+        end
 
-  describe '.class_type' do
-    include_examples 'Boa::Type.class_type'
-  end
+        sig { override.params(klass: T.class_of(::Object)).returns(Boa::Type::Integer) }
+        def new_object(klass)
+          raise(ArgumentError, "klass must be a Boa::Type::Integer, but was #{klass}") unless klass <= Boa::Type::Integer
 
-  describe '.inherited' do
-    include_examples 'Boa::Type.inherited'
-  end
+          klass.new(type_name, **options)
+        end
 
-  describe '.new' do
-    include_examples 'Boa::Type.new'
+        sig { void }
+        def test_class_hierarchy
+          assert_operator(Boa::Type, :>, described_class)
+          assert_equal(Boa::Type::Integer, described_class)
+        end
 
-    cover 'Boa::Type::Integer#initialize'
+        class ElementReference < self
+          include Support::TypeBehaviour::ElementReference
+        end
 
-    let(:default_includes) { nil }
-    let(:non_nil_default)  { 100 }
+        class ElementAssignment < self
+          include Support::TypeBehaviour::ElementAssignment
+        end
 
-    describe 'with default option' do
-      subject { described_class.new(type_name, default: 42) }
+        class ClassType < self
+          include Support::TypeBehaviour::ClassType
+        end
 
-      it 'sets the default attribute' do
-        assert_same(42, subject.default)
-      end
-    end
+        class Inherited < self
+          include Support::TypeBehaviour::Inherited
+        end
 
-    describe 'with no range option' do
-      it 'sets the range attribute to the default' do
-        assert_equal(nil.., subject.range)
-      end
-    end
+        class New < self
+          extend MutantCoverage
+          include Support::TypeBehaviour::New
 
-    describe 'with a range option' do
-      subject { described_class.new(type_name, range:) }
+          cover('Boa::Type::Integer#initialize')
 
-      describe 'with a minimum range' do
-        let(:range) { 0..10 }
+          sig { override.returns(::Integer) }
+          def non_nil_default
+            0
+          end
 
-        it 'sets the range attribute' do
-          assert_equal(0..10, subject.range)
+          sig { override.returns(NilClass) }
+          def default_includes; end
+
+          sig { void }
+          def test_with_no_range_option
+            subject = described_class.new(type_name)
+
+            assert_same(type_name, subject.name)
+            assert_equal(nil.., subject.range)
+            assert_operator(subject, :frozen?)
+          end
+
+          sig { void }
+          def test_with_range_option_and_minimum_range
+            subject = described_class.new(type_name, range: 0..10)
+
+            assert_same(type_name, subject.name)
+            assert_equal(0..10, subject.range)
+            assert_operator(subject, :frozen?)
+          end
+
+          sig { void }
+          def test_with_range_option_and_nil_minimum_range
+            subject = described_class.new(type_name, range: ..10)
+
+            assert_same(type_name, subject.name)
+            assert_equal(..10, subject.range)
+            assert_operator(subject, :frozen?)
+          end
+        end
+
+        class Name < self
+          include Support::TypeBehaviour::Name
+        end
+
+        class Includes < self
+          include Support::TypeBehaviour::Includes
+
+          sig { override.returns(T::Array[::Integer]) }
+          def includes
+            @includes ||= T.let([1], T.nilable(T::Array[::Integer]))
+          end
+        end
+
+        class Options < self
+          include Support::TypeBehaviour::Options
+        end
+
+        class Default < self
+          include Support::TypeBehaviour::Default
+
+          sig { override.returns(::Integer) }
+          def default
+            0
+          end
+        end
+
+        class MinRange < self
+          extend MutantCoverage
+
+          cover('Boa::Type::Integer#min_range')
+
+          sig { void }
+          def test_with_no_range_option
+            subject = described_class.new(type_name)
+
+            assert_nil(subject.min_range)
+          end
+
+          sig { void }
+          def test_with_range_option_and_no_minimum_range
+            subject = described_class.new(type_name, range: ..100)
+
+            assert_nil(subject.min_range)
+          end
+
+          sig { void }
+          def test_with_range_option_and_minimum_range
+            subject = described_class.new(type_name, range: 1..100)
+
+            assert_same(1, subject.min_range)
+          end
+        end
+
+        class MaxRange < self
+          extend MutantCoverage
+
+          cover('Boa::Type::Integer#max_range')
+
+          sig { void }
+          def test_with_no_range_option
+            subject = described_class.new(type_name)
+
+            assert_nil(subject.max_range)
+          end
+
+          sig { void }
+          def test_with_inclusive_range_option_and_no_maximum_range
+            subject = described_class.new(type_name, range: 1..)
+
+            assert_nil(subject.max_range)
+          end
+
+          sig { void }
+          def test_with_inclusive_range_option_and_maximum_range
+            subject = described_class.new(type_name, range: 1..100)
+
+            assert_same(100, subject.max_range)
+          end
+
+          sig { void }
+          def test_with_exclusive_range_option_and_no_maximum_range
+            subject = described_class.new(type_name, range: 1...)
+
+            assert_nil(subject.max_range)
+          end
+
+          sig { void }
+          def test_with_exclusive_range_option_and_maximum_range
+            subject = described_class.new(type_name, range: 1...100)
+
+            assert_same(99, subject.max_range)
+          end
+        end
+
+        class Freeze < self
+          include Support::TypeBehaviour::Freeze
+        end
+
+        class Equality < self
+          include Support::EqualityBehaviour::Equality
+        end
+
+        class Eql < self
+          include Support::EqualityBehaviour::Eql
+        end
+
+        class Hash < self
+          include Support::EqualityBehaviour::Hash
         end
       end
-
-      describe 'with no minimum range' do
-        let(:range) { ..10 }
-
-        it 'sets the range attribute' do
-          assert_equal(..10, subject.range)
-        end
-      end
     end
-  end
-
-  describe '#name' do
-    include_examples 'Boa::Type#name'
-  end
-
-  describe '#includes' do
-    include_examples 'Boa::Type#includes'
-
-    let(:includes) { [1] }
-  end
-
-  describe '#options' do
-    include_examples 'Boa::Type#options'
-  end
-
-  describe '#default' do
-    include_examples 'Boa::Type#default'
-
-    let(:default) { 1 }
-  end
-
-  describe '#min_range' do
-    cover 'Boa::Type::Integer#min_range'
-
-    subject { described_class.new(type_name, range:) }
-
-    describe 'with no minimum range' do
-      let(:range) { (..100) }
-
-      it 'returns nil' do
-        assert_nil(subject.min_range)
-      end
-    end
-
-    describe 'with a minimum range' do
-      let(:range) { 1..100 }
-
-      it 'returns the minimum range' do
-        assert_same(1, subject.min_range)
-      end
-    end
-  end
-
-  describe '#max_range' do
-    cover 'Boa::Type::Integer#max_range'
-
-    subject { described_class.new(type_name, range:) }
-
-    describe 'with no maximum range' do
-      let(:range) { 1.. }
-
-      it 'returns nil' do
-        assert_nil(subject.max_range)
-      end
-    end
-
-    describe 'with a maximum range' do
-      let(:range) { 1..100 }
-
-      it 'returns the maximum range' do
-        assert_same(100, subject.max_range)
-      end
-    end
-  end
-
-  describe '#freeze' do
-    include_examples 'Boa::Type#freeze'
-  end
-
-  describe '#==' do
-    include_examples 'Boa::Equality#=='
-  end
-
-  describe '#eql?' do
-    include_examples 'Boa::Equality#eql?'
-  end
-
-  describe '#hash' do
-    include_examples 'Boa::Equality#hash'
   end
 end

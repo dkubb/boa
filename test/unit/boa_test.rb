@@ -1,75 +1,88 @@
-# typed: false
+# typed: strong
 # frozen_string_literal: true
 
 require 'test_helper'
 
-describe Boa do
-  extend T::Sig
-  include Support::EqualityBehaviour
+module Boa
+  class Test < Minitest::Test
+    extend T::Sig
+    include Support::EqualityBehaviour::Setup
 
-  subject { described_class.new(**options) }
+    parallelize_me!
 
-  let(:described_class) do
-    Class.new(T::InexactStruct) do
+    class Person < T::ImmutableStruct
       include Boa
 
       const :name, String
     end
-  end
 
-  let(:options)         { { name: 'Dan Kubb' }                }
-  let(:other)           { other_class.new(**other_options)    }
-  let(:other_class)     { described_class                     }
-  let(:other_options)   { options                             }
-  let(:different_state) { other_class.new(name: 'Other Name') }
+    class InheritablePerson < T::InexactStruct
+      extend T::Sig
+      include Boa
 
-  describe '.new' do
-    cover 'Boa#initialize'
-
-    describe 'with no attributes' do
-      it 'raises an error' do
-        error =
-          assert_raises(ArgumentError) do
-            described_class.new
-          end
-
-        assert_equal('Missing required prop `name` for class ``', error.message)
+      sig { params(name: String).void }
+      def initialize(name:)
+        @name = name
+        super()
       end
     end
 
-    describe 'with attributes' do
-      subject { described_class.new(name: 'Dan Kubb') }
+    sig { override.returns(T.class_of(Person)) }
+    def described_class
+      Person
+    end
 
-      it 'initializes the object' do
-        assert_kind_of(described_class, subject)
-      end
+    sig { override.returns(T.class_of(InheritablePerson)) }
+    def inheritable_class
+      InheritablePerson
+    end
 
-      it 'sets the name' do
-        assert_equal('Dan Kubb', subject.name)
+    sig { override.returns(Person) }
+    def state_inequality
+      @state_inequality ||= T.let(described_class.new(T.unsafe(**options, name: 'Other Name')), T.nilable(Person))
+    end
+
+    sig { override.params(klass: T.class_of(Object)).returns(Object) }
+    def new_object(klass)
+      klass.new(**options)
+    end
+
+    sig { returns(T::Hash[Symbol, Object]) }
+    def options
+      { name: name_value }
+    end
+
+    sig { returns(String) }
+    def name_value
+      'Dan Kubb'
+    end
+
+    sig { void }
+    def test_class_hierarchy
+      assert_operator(Boa, :>, described_class)
+      assert_equal(Person, described_class)
+    end
+
+    class New < self
+      sig { void }
+      def test_new_with_attributes
+        subject = described_class.new(name: name_value)
+
+        assert_instance_of(described_class, subject)
+        assert_equal(name_value, subject.name)
       end
     end
 
-    describe 'with unknown attributes' do
-      it 'raises an error' do
-        error =
-          assert_raises(ArgumentError) do
-            described_class.new(unknown: nil)
-          end
-
-        assert_equal('Missing required prop `name` for class ``', error.message)
-      end
+    class Equality < self
+      include Support::EqualityBehaviour::Equality
     end
-  end
 
-  describe '#==' do
-    include_examples 'Boa::Equality#=='
-  end
+    class Eql < self
+      include Support::EqualityBehaviour::Eql
+    end
 
-  describe '#eql?' do
-    include_examples 'Boa::Equality#eql?'
-  end
-
-  describe '#hash' do
-    include_examples 'Boa::Equality#hash'
+    class Hash < self
+      include Support::EqualityBehaviour::Hash
+    end
   end
 end

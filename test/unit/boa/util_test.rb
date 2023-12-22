@@ -1,89 +1,41 @@
-# typed: false
+# typed: strong
 # frozen_string_literal: true
 
 require 'test_helper'
 
-describe Boa::Util do
-  extend T::Sig
+require_relative '../boa_test'
 
-  let(:described_class) { Boa::Util }
+module Boa
+  class Test
+    class Util < Minitest::Test
+      extend MutantCoverage
+      extend T::Sig
 
-  describe '.normalize_integer_range' do
-    cover 'Boa::Util.normalize_integer_range'
+      cover 'Boa::Util.normalize_integer_range'
 
-    subject { described_class.normalize_integer_range(range) }
+      parallelize_me!
 
-    let(:range) { Range.new(public_send(:begin), public_send(:end), exclude_end?) }
-    let(:begin) { 1                                                               }
-    let(:end)   { 10                                                              }
-
-    describe 'when the range is inclusive' do
-      let(:exclude_end?) { false }
-
-      describe 'when the range begin and end is not nil' do
-        it 'returns the expected range' do
-          assert_equal(1..10, subject)
-        end
+      sig { returns(T.class_of(Boa::Util)) }
+      def described_class
+        Boa::Util
       end
 
-      describe 'when the range begin is nil' do
-        let(:begin) { nil }
-
-        it 'returns the expected range' do
-          assert_equal(..10, subject)
-        end
+      sig { void }
+      def test_normalize_integer_range
+        assert_normalize_integer_range(nil..,  nil..)
+        assert_normalize_integer_range(..10,   ..10)
+        assert_normalize_integer_range(...10,  ..9)
+        assert_normalize_integer_range(1..,    1..)
+        assert_normalize_integer_range(1...,   1..)
+        assert_normalize_integer_range(1..10,  1..10)
+        assert_normalize_integer_range(1...10, 1..9)
       end
 
-      describe 'when the range end is nil' do
-        let(:end) { nil }
+    private
 
-        it 'returns the expected range' do
-          assert_equal(1.., subject)
-        end
-      end
-
-      describe 'when the range begin and end is nil' do
-        let(:begin) { nil }
-        let(:end)   { nil }
-
-        it 'returns the expected range' do
-          assert_equal(nil.., subject)
-        end
-      end
-    end
-
-    describe 'when the range is exclusive' do
-      let(:exclude_end?) { true }
-
-      describe 'when the range begin and end is not nil' do
-        it 'returns the expected range' do
-          assert_equal(1..9, subject)
-        end
-      end
-
-      describe 'when the range begin is nil' do
-        let(:begin) { nil }
-
-        it 'returns the expected range' do
-          assert_equal(..9, subject)
-        end
-      end
-
-      describe 'when the range end is nil' do
-        let(:end) { nil }
-
-        it 'returns the expected range' do
-          assert_equal(1.., subject)
-        end
-      end
-
-      describe 'when the range begin and end is nil' do
-        let(:begin) { nil }
-        let(:end)   { nil }
-
-        it 'returns the expected range' do
-          assert_equal(nil.., subject)
-        end
+      sig { params(input: T::Range[T.nilable(::Integer)], expected: T::Range[T.nilable(::Integer)]).void }
+      def assert_normalize_integer_range(input, expected)
+        assert_equal(expected, described_class.normalize_integer_range(input))
       end
     end
   end

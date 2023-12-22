@@ -1,82 +1,115 @@
-# typed: false
+# typed: strong
 # frozen_string_literal: true
 
 require 'test_helper'
 
-describe Boa::Type::Boolean do
-  extend T::Sig
-  include Support::EqualityBehaviour
-  include Support::TypeBehaviour
+require_relative '../type_test'
 
-  subject { described_class.new(type_name, **options) }
+module Boa
+  class Test
+    class Type
+      class Boolean < Minitest::Test
+        extend T::Sig
+        include Support::EqualityBehaviour::Setup
+        include Support::TypeBehaviour::Setup
 
-  let(:described_class)   { Boa::Type::Boolean                           }
-  let(:type_name)         { :boolean                                     }
-  let(:options)           { {}                                           }
-  let(:other)             { other_class.new(other_name, **other_options) }
-  let(:other_class)       { described_class                              }
-  let(:other_name)        { type_name                                    }
-  let(:other_options)     { options                                      }
-  let(:different_state)   { other_class.new(:differemt)                  }
+        parallelize_me!
 
-  describe '.[]' do
-    include_examples 'Boa::Type.[]'
-  end
+        sig { override.returns(T.class_of(Boa::Type::Boolean)) }
+        def described_class
+          Boa::Type::Boolean
+        end
 
-  describe '.[]=' do
-    include_examples 'Boa::Type.[]='
-  end
+        sig { override.returns(Boa::Type::Boolean) }
+        def state_inequality
+          @state_inequality ||= T.let(described_class.new(:inequal), T.nilable(Boa::Type::Boolean))
+        end
 
-  describe '.class_type' do
-    include_examples 'Boa::Type.class_type'
-  end
+        sig { override.params(klass: T.class_of(::Object)).returns(Boa::Type::Boolean) }
+        def new_object(klass)
+          raise(ArgumentError, "klass must be a Boa::Type::Boolean, but was #{klass}") unless klass <= Boa::Type::Boolean
 
-  describe '.inherited' do
-    include_examples 'Boa::Type.inherited'
-  end
+          klass.new(type_name, **options)
+        end
 
-  describe '.new' do
-    include_examples 'Boa::Type.new'
+        sig { void }
+        def test_class_hierarchy
+          assert_operator(Boa::Type, :>, described_class)
+          assert_equal(Boa::Type::Boolean, described_class)
+        end
 
-    cover 'Boa::Type::Boolean#initialize'
+        class ElementReference < self
+          include Support::TypeBehaviour::ElementReference
+        end
 
-    let(:default_includes) { [true, false] }
-    let(:non_nil_default)  { true          }
-  end
+        class ElementAssignment < self
+          include Support::TypeBehaviour::ElementAssignment
+        end
 
-  describe '#name' do
-    include_examples 'Boa::Type#name'
-  end
+        class ClassType < self
+          include Support::TypeBehaviour::ClassType
+        end
 
-  describe '#includes' do
-    include_examples 'Boa::Type#includes'
+        class Inherited < self
+          include Support::TypeBehaviour::Inherited
+        end
 
-    let(:includes) { [true] }
-  end
+        class New < self
+          include Support::TypeBehaviour::New
 
-  describe '#options' do
-    include_examples 'Boa::Type#options'
-  end
+          sig { override.returns(T::Boolean) }
+          def non_nil_default
+            false
+          end
 
-  describe '#default' do
-    include_examples 'Boa::Type#default'
+          sig { override.returns(T::Array[T::Boolean]) }
+          def default_includes
+            [true, false]
+          end
+        end
 
-    let(:default) { false }
-  end
+        class Name < self
+          include Support::TypeBehaviour::Name
+        end
 
-  describe '#freeze' do
-    include_examples 'Boa::Type#freeze'
-  end
+        class Includes < self
+          include Support::TypeBehaviour::Includes
 
-  describe '#==' do
-    include_examples 'Boa::Equality#=='
-  end
+          sig { override.returns(T::Array[T::Boolean]) }
+          def includes
+            @includes ||= T.let([true], T.nilable(T::Array[T::Boolean]))
+          end
+        end
 
-  describe '#eql?' do
-    include_examples 'Boa::Equality#eql?'
-  end
+        class Options < self
+          include Support::TypeBehaviour::Options
+        end
 
-  describe '#hash' do
-    include_examples 'Boa::Equality#hash'
+        class Default < self
+          include Support::TypeBehaviour::Default
+
+          sig { override.returns(T::Boolean) }
+          def default
+            false
+          end
+        end
+
+        class Freeze < self
+          include Support::TypeBehaviour::Freeze
+        end
+
+        class Equality < self
+          include Support::EqualityBehaviour::Equality
+        end
+
+        class Eql < self
+          include Support::EqualityBehaviour::Eql
+        end
+
+        class Hash < self
+          include Support::EqualityBehaviour::Hash
+        end
+      end
+    end
   end
 end

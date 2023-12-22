@@ -1,313 +1,411 @@
-# typed: false
+# typed: strong
 # frozen_string_literal: true
 
 module Support
   module TypeBehaviour
-    extend T::Sig
-    extend SharedSetup
+    module Setup
+      extend T::Helpers
+      extend T::Sig
 
-    sig { returns(T.class_of(Boa::Type)) }
-    def type_class
-      @type_class ||= Class.new(described_class)
-    end
+      requires_ancestor { Minitest::Test }
 
-    sig { returns(Module) }
-    def class_type
-      @class_type ||= Class.new
-    end
+      abstract!
 
-    sig do
-      params(klass: T.class_of(Object), method_name: Symbol, block: T.proc.params(descendant: T.class_of(Boa::Type)).void).void
-    end
-    def replace_method(klass, method_name, &block)
-      original_verbose = $VERBOSE
-      $VERBOSE         = nil
+      sig { abstract.returns(T.class_of(Boa::Type)) }
+      def described_class; end
 
-      # Replace the singleton method without warnings
-      klass.define_singleton_method(method_name, &block)
-
-      $VERBOSE = original_verbose
-    end
-
-    shared_examples 'Boa::Type.[]' do
-      cover 'Boa::Type.[]'
-
-      subject { described_class[class_type] }
-
-      describe 'when class type is registered' do
-        let(:class_type) { String }
-
-        it 'returns the expected type class' do
-          assert_same(Boa::Type::String, subject)
-        end
+      sig { returns(Symbol) }
+      def type_name
+        :type_name
       end
 
-      describe 'when class type is not registered' do
-        it 'returns the default type class' do
-          # assert there is no explict mapping for the class type
-          error =
-            assert_raises(ArgumentError) do
-              described_class[class_type]
-            end
+      sig { overridable.returns(T::Hash[Symbol, T.untyped]) }
+      def options
+        {}
+      end
 
-          assert_equal("type class for #{class_type} is unknown", error.message)
-        end
+      sig { returns(T::Hash[Boa::Type::ClassType, T.class_of(Boa::Type)]) }
+      def class_types
+        T.let(
+          described_class.__send__(:class_types),
+          T::Hash[Boa::Type::ClassType, T.class_of(Boa::Type)]
+        )
+      end
+
+      sig { params(class_type: Boa::Type::ClassType).void }
+      def remove_class_type(class_type)
+        class_types.delete(class_type)
+      end
+
+      sig { params(klass: T.class_of(Object), method_name: Symbol, block: T.nilable(Proc)).void }
+      def replace_method(klass, method_name, &block)
+        original_verbose = $VERBOSE
+        $VERBOSE         = nil
+
+        # Replace the singleton method without warnings
+        klass.define_singleton_method(method_name, &block)
+
+        $VERBOSE = original_verbose
       end
     end
 
-    shared_examples 'Boa::Type.[]=' do
-      cover 'Boa::Type.[]='
+    module ElementReference
+      extend T::Helpers
+      extend T::Sig
 
-      subject { described_class[class_type] = type_class }
+      requires_ancestor { Setup }
 
-      after do
-        # Remove the type class from the registry
-        described_class.send(:class_types).delete(class_type) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/Send
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type.[]')
       end
 
-      it 'sets the class type' do
-        # assert there is no explict mapping for the class type
+      sig { void }
+      def test_when_class_type_is_set
+        type_class = described_class[String]
+
+        assert_same(Boa::Type::String, type_class)
+      end
+
+      sig { void }
+      def test_when_class_type_is_not_set
+        class_type = Class.new
+
+        error = T.let(
+          assert_raises(ArgumentError) { described_class[class_type] },
+          ArgumentError
+        )
+
+        assert_equal("type class for #{class_type} is unknown", error.message)
+      end
+    end
+
+    module ElementAssignment
+      extend T::Helpers
+      extend T::Sig
+
+      requires_ancestor { Setup }
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type.[]=')
+      end
+
+      sig { void }
+      def test_sets_class_type
         assert_raises(ArgumentError) do
           described_class[class_type]
         end
 
-        subject
+        described_class[class_type] = type_class
 
         assert_same(type_class, described_class[class_type])
+      ensure
+        remove_class_type(class_type)
+      end
+
+    private
+
+      sig { returns(Boa::Type::ClassType) }
+      def class_type
+        @class_type ||= T.let(Class.new, T.nilable(T::Class[T.untyped]))
+      end
+
+      sig { returns(T.class_of(Boa::Type)) }
+      def type_class
+        @type_class ||= T.let(Class.new(described_class), T.nilable(T.class_of(Boa::Type)))
       end
     end
 
-    shared_examples 'Boa::Type.class_type' do
-      cover 'Boa::Type.class_type'
+    module ClassType
+      extend T::Helpers
+      extend T::Sig
 
-      subject { described_class.class_type(class_type) }
+      requires_ancestor { Setup }
 
-      after do
-        # Remove the type class from the registry
-        described_class.send(:class_types).delete(class_type) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/Send
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type.class_type')
       end
 
-      it 'returns the type class' do
-        assert_same(described_class, subject)
-      end
-
-      it 'sets the class type' do
-        # assert there is no explict mapping for the class type
+      sig { void }
+      def test_sets_class_type
         assert_raises(ArgumentError) do
           described_class[class_type]
         end
 
-        subject
+        type = described_class.class_type(class_type)
 
-        assert_same(described_class, described_class[class_type])
+        assert_same(described_class[class_type], type)
+      ensure
+        remove_class_type(class_type)
+      end
+
+    private
+
+      sig { returns(Boa::Type::ClassType) }
+      def class_type
+        @class_type ||= T.let(Class.new, T.nilable(T::Class[T.untyped]))
       end
     end
 
-    shared_examples 'Boa::Type.inherited' do
-      cover 'Boa::Type.inherited'
+    module Inherited
+      extend T::Helpers
+      extend T::Sig
 
-      subject { Class.new(described_class) }
+      requires_ancestor { Setup }
 
-      it 'set the class types' do
-        assert_same(described_class.send(:class_types), subject.send(:class_types)) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/Send
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type.inherited')
       end
 
-      it 'calls super' do
+      sig { void }
+      def test_sets_class_types
+        subject = Class.new(described_class)
+
+        assert_same(class_types, subject.__send__(:class_types))
+      end
+
+      sig { void }
+      def test_calls_super
         described_class    = self.described_class
-        object_inherited   = Object.method(:inherited)
         original_inherited = described_class.method(:inherited)
+        object_inherited   = Object.method(:inherited)
         inherited          = []
 
-        # Override described_class.inherited
         replace_method(described_class, :inherited) do |descendant|
           inherited << described_class
           original_inherited.call(descendant)
         end
 
-        # Override Object.inherited
         replace_method(Object, :inherited) do |descendant|
           inherited << Object
           object_inherited.call(descendant)
         end
 
-        subject
+        Class.new(described_class)
 
         assert_equal([described_class, Object], inherited)
 
-        # Restore Object.inherited
-        replace_method(Object, :inherited, &object_inherited)
-
-        # Restore described_class.inherited
+        replace_method(Object,          :inherited, &object_inherited)
         replace_method(described_class, :inherited, &original_inherited)
       end
     end
 
-    shared_examples 'Boa::Type.new' do
-      cover 'Boa::Type.new'
-      cover 'Boa::Type#initialize'
+    module New
+      extend T::Helpers
+      extend T::Sig
 
-      describe 'with no default option' do
-        let(:options) { {} }
+      requires_ancestor { Setup }
 
-        it 'sets the name attribute' do
-          assert_equal(type_name, subject.name)
-        end
+      abstract!
 
-        it 'sets the default attribute to the default' do
-          assert_nil(subject.default)
-        end
-
-        it 'freezes the type' do
-          assert_operator(subject, :frozen?)
-        end
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type.new')
+        descendant.cover('Boa::Type#initialize')
       end
 
-      describe 'with a default option' do
-        subject { described_class.new(type_name, default: non_nil_default) }
+      sig { abstract.returns(Object) }
+      def non_nil_default; end
 
-        describe 'with a non-nil value' do
-          it 'sets the name attribute' do
-            assert_equal(type_name, subject.name)
-          end
+      sig { abstract.returns(T.nilable(Object)) }
+      def default_includes; end
 
-          it 'sets the default attribute' do
-            assert_equal(non_nil_default, subject.default)
-          end
+      sig { void }
+      def test_with_no_default_option
+        subject = described_class.new(type_name)
 
-          it 'freezes the type' do
-            assert_operator(subject, :frozen?)
-          end
-        end
+        assert_same(type_name, subject.name)
+        assert_nil(subject.default)
+        assert_operator(subject, :frozen?)
       end
 
-      describe 'with no includes option' do
-        it 'sets the name attribute' do
-          assert_equal(type_name, subject.name)
-        end
+      sig { void }
+      def test_with_non_nil_default_option
+        subject = described_class.new(type_name, default: non_nil_default)
 
-        it 'sets the includes attribute to the default' do
-          if default_includes.nil?
-            assert_nil(subject.includes)
-          else
-            assert_equal(default_includes, subject.includes)
-          end
-        end
-
-        it 'freezes the type' do
-          assert_operator(subject, :frozen?)
-        end
+        assert_same(type_name, subject.name)
+        assert_same(non_nil_default, subject.default)
+        assert_operator(subject, :frozen?)
       end
 
-      describe 'with an includes option' do
-        subject { described_class.new(type_name, includes: []) }
+      sig { void }
+      def test_with_no_includes_option
+        subject = described_class.new(type_name)
 
-        it 'sets the name attribute' do
-          assert_equal(type_name, subject.name)
+        assert_equal(type_name, subject.name)
+
+        if default_includes.nil?
+          assert_nil(subject.includes)
+        else
+          assert_equal(default_includes, subject.includes)
         end
 
-        it 'sets the includes attribute to an empty list' do
-          assert_empty(subject.includes)
-        end
+        assert_operator(subject, :frozen?)
+      end
 
-        it 'freezes the type' do
-          assert_operator(subject, :frozen?)
-        end
+      sig { void }
+      def test_with_includes_option
+        subject = described_class.new(type_name, includes: [])
+
+        assert_equal(type_name, subject.name)
+        assert_empty(subject.includes)
+        assert_operator(subject, :frozen?)
       end
     end
 
-    shared_examples 'Boa::Type#name' do
-      cover 'Boa::Type#name'
+    module Name
+      extend T::Helpers
+      extend T::Sig
 
-      it 'returns the name' do
+      requires_ancestor { Setup }
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type#name')
+      end
+
+      sig { void }
+      def test_returns_the_name
+        subject = described_class.new(type_name)
+
         assert_same(type_name, subject.name)
       end
     end
 
-    shared_examples 'Boa::Type#includes' do
-      cover 'Boa::Type#incldues'
+    module Includes
+      extend T::Helpers
+      extend T::Sig
 
-      subject { described_class.new(type_name, includes:) }
+      requires_ancestor { Setup }
 
-      it 'returns the includes' do
+      abstract!
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type#includes')
+      end
+
+      sig { abstract.returns(Object) }
+      def includes; end
+
+      sig { void }
+      def test_returns_the_includes
+        subject = described_class.new(type_name, includes:)
+
         assert_same(includes, subject.includes)
       end
     end
 
-    shared_examples 'Boa::Type#options' do
-      cover 'Boa::Type#options'
+    module Options
+      extend T::Helpers
+      extend T::Sig
 
-      subject { described_class.new(type_name, **options) }
+      requires_ancestor { Setup }
 
-      let(:options) { { default: nil } }
+      abstract!
 
-      it 'returns the options' do
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type#options')
+      end
+
+      sig { abstract.returns(T::Hash[Symbol, Object]) }
+      def options; end
+
+      sig { void }
+      def test_returns_the_options
+        subject = described_class.new(type_name, **options)
+
         assert_equal(options, subject.options)
       end
     end
 
-    shared_examples 'Boa::Type#default' do
-      cover 'Boa::Type#default'
+    module Default
+      extend T::Helpers
+      extend T::Sig
 
-      subject { described_class.new(type_name, **options) }
+      requires_ancestor { Setup }
 
-      describe 'with a default option' do
-        let(:options) { { default: } }
+      abstract!
 
-        it 'returns the default' do
-          assert_same(default, subject.default)
-        end
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type#default')
       end
 
-      describe 'with no default option' do
-        let(:options) { {} }
+      sig { abstract.returns(T.nilable(Object)) }
+      def default; end
 
-        it 'returns nil' do
-          assert_nil(subject.default)
-        end
+      sig { void }
+      def test_returns_default_option
+        subject = described_class.new(type_name, default:)
+
+        assert_same(default, subject.default)
+      end
+
+      sig { void }
+      def test_returns_nil_when_no_default_option
+        subject = described_class.new(type_name)
+
+        assert_nil(subject.default)
       end
     end
 
-    shared_examples 'Boa::Type#freeze' do
-      cover 'Boa::Type#freeze'
+    module Freeze
+      extend T::Helpers
+      extend T::Sig
 
-      subject do
-        # construct the object directly
-        described_class.allocate.tap do |type|
-          type.instance_eval do
-            @name     = :name
-            @includes = nil
-            @options  = {}
-          end
-        end
+      requires_ancestor { Setup }
+
+      abstract!
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type#freeze')
       end
 
-      it 'freezes the instance variables' do
-        ivars =
-          subject.instance_variables.to_h do |ivar|
-            [ivar, subject.instance_variable_get(ivar)]
-          end
+      sig { void }
+      def test_freezes_the_instance_variables
+        subject = described_class.allocate
+        subject.instance_variable_set(:@name,     type_name)
+        subject.instance_variable_set(:@includes, [])
+        subject.instance_variable_set(:@options,  {})
 
-        # assert the instance variables are not frozen
-        ivars.each_value do |value|
-          next if value.nil? || value.instance_of?(Symbol)
-
-          refute_operator(value, :frozen?)
+        ivars(subject).each_value do |value|
+          refute_operator(value, :frozen?) unless value.equal?(type_name)
         end
 
         subject.freeze
 
-        # assert the instance variables are frozen
-        ivars.each_value do |value|
+        ivars(subject).each_value do |value|
           assert_operator(value, :frozen?)
         end
       end
 
-      it 'freezes the type' do
+      sig { void }
+      def test_freezes_the_type
+        subject = described_class.new(type_name)
+
         assert_operator(subject.freeze, :frozen?)
       end
 
-      it 'returns the type' do
+      sig { void }
+      def test_returns_the_type
+        subject = described_class.new(type_name)
+
         assert_same(subject, subject.freeze)
+      end
+
+    private
+
+      sig { params(object: Object).returns(T::Hash[Symbol, Object]) }
+      def ivars(object)
+        object.instance_variables.to_h do |ivar|
+          [ivar, T.let(object.instance_variable_get(ivar), Object)]
+        end
       end
     end
   end

@@ -1,27 +1,38 @@
-# typed: false
+# typed: strong
 # frozen_string_literal: true
 
 require 'test_helper'
 
-describe Boa::Type do
-  extend T::Sig
-  include Support::TypeBehaviour
+require_relative '../boa_test'
 
-  let(:described_class) { Boa::Type }
+module Boa
+  class Test
+    class Type < Minitest::Test
+      extend T::Sig
+      include Support::TypeBehaviour::Setup
 
-  describe '.[]' do
-    include_examples 'Boa::Type.[]'
-  end
+      parallelize_me!
 
-  describe '.[]=' do
-    include_examples 'Boa::Type.[]='
-  end
+      sig { override.returns(T.class_of(Boa::Type)) }
+      def described_class
+        Boa::Type
+      end
 
-  describe '.class_type' do
-    include_examples 'Boa::Type.class_type'
-  end
+      class ElementReference < self
+        include Support::TypeBehaviour::ElementReference
+      end
 
-  describe '.inherited' do
-    include_examples 'Boa::Type.inherited'
+      class ElementAssignment < self
+        include Support::TypeBehaviour::ElementAssignment
+      end
+
+      class ClassType < self
+        include Support::TypeBehaviour::ClassType
+      end
+
+      class Inherited < self
+        include Support::TypeBehaviour::Inherited
+      end
+    end
   end
 end

@@ -1,172 +1,226 @@
-# typed: false
+# typed: strong
 # frozen_string_literal: true
+
+require 'minitest/test'
 
 module Support
   module EqualityBehaviour
-    extend SharedSetup
+    module Setup
+      extend T::Helpers
+      extend T::Sig
 
-    shared_examples 'Boa::Equality#==' do
-      cover 'Boa::Equality#=='
+      requires_ancestor { Minitest::Test }
 
-      describe 'when the objects are the same' do
-        it 'returns true' do
-          assert_equal(subject, subject)
-          assert_same(subject, subject)
-        end
+      abstract!
+
+      sig { abstract.returns(T.class_of(Object)) }
+      def described_class; end
+
+      sig { overridable.returns(T.class_of(Object)) }
+      def inheritable_class
+        described_class
       end
 
-      describe 'when the objects have similar state' do
-        it 'returns true' do
-          assert_equal(subject, other)
-          refute_same(subject, other)
-        end
+      sig { overridable.returns(Object) }
+      def state_ineql
+        raise(NotImplementedError, "#{self.class}##{__method__} is not implemented")
       end
 
-      describe 'when the objects have similar state, but the other is a subclass' do
-        let(:other_class) { Class.new(described_class) }
+      sig { abstract.returns(Object) }
+      def state_inequality; end
 
-        it 'returns true' do
-          assert_equal(subject, other)
-          refute_same(subject, other)
-        end
+      sig { abstract.params(klass: T.class_of(Object)).returns(Object) }
+      def new_object(klass) end
+    end
+
+    module Contexts
+      extend T::Helpers
+      extend T::Sig
+
+      requires_ancestor { Minitest::Test }
+
+      abstract!
+
+      sig { abstract.void }
+      def test_objects_have_similar_state; end
+
+      sig { abstract.void }
+      def test_objects_similar_state_but_other_is_subclass; end
+
+      sig { abstract.void }
+      def test_objects_different_classes; end
+
+      sig { abstract.void }
+      def test_objects_inequality; end
+
+      sig { abstract.void }
+      def test_objects_similar_but_not_equal_state; end
+    end
+
+    module Equality
+      extend T::Helpers
+      extend T::Sig
+      include Contexts
+
+      requires_ancestor { Setup }
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Equality#==')
+        descendant.cover('Boa::Equality#object__state')
       end
 
-      describe 'when the objects have different classes' do
-        before do
-          # Redefine the described_class and other_class methods
-          # to return different classes.
-          described_class = Class.new(self.described_class)
-          other_class     = Class.new(self.described_class)
+      sig { override.void }
+      def test_objects_have_similar_state
+        subject = new_object(described_class)
+        other   = subject.dup
 
-          define_singleton_method(:described_class) { described_class }
-          define_singleton_method(:other_class)     { other_class     }
-        end
-
-        it 'returns false' do
-          refute_equal(subject, other)
-        end
+        assert_equal(subject, other)
+        refute_same(subject, other)
       end
 
-      describe 'when the objects have different state' do
-        it 'returns false' do
-          refute_equal(subject, different_state)
-        end
+      sig { override.void }
+      def test_objects_similar_state_but_other_is_subclass
+        subject = new_object(inheritable_class)
+        other   = new_object(Class.new(inheritable_class))
+
+        assert_equal(subject, other)
+        refute_same(subject, other)
       end
 
-      describe 'when the object states are similar but not equal' do
-        it 'returns true' do
-          # Only some types differ between #== and #eql?
-          return unless respond_to?(:not_eql_state)
+      sig { override.void }
+      def test_objects_different_classes
+        subject = new_object(Class.new(inheritable_class))
+        other   = new_object(Class.new(inheritable_class))
 
-          assert_equal(subject, not_eql_state)
-          refute_operator(subject, :eql?, not_eql_state)
-        end
+        refute_equal(subject, other)
+      end
+
+      sig { override.void }
+      def test_objects_inequality
+        subject = new_object(described_class)
+
+        refute_equal(subject, state_inequality)
+      end
+
+      sig { override.void }
+      def test_objects_similar_but_not_equal_state
+        subject = new_object(described_class)
+
+        assert_same(subject.class, state_ineql.class)
+        assert_equal(subject, state_ineql)
+      rescue NotImplementedError
+        # skip if state_ineql impossible to define for this type
       end
     end
 
-    shared_examples 'Boa::Equality#eql?' do
-      cover 'Boa::Equality#eql?'
+    module Eql
+      extend T::Helpers
+      extend T::Sig
+      include Contexts
 
-      describe 'when the objects are the same' do
-        it 'returns true' do
-          assert_operator(subject, :eql?, subject)
-          assert_same(subject, subject)
-        end
+      requires_ancestor { Setup }
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Equality#eql?')
+        descendant.cover('Boa::Equality#object__state')
       end
 
-      describe 'when the objects have similar state' do
-        it 'returns true' do
-          assert_operator(subject, :eql?, other)
-          refute_same(subject, other)
-        end
+      sig { override.void }
+      def test_objects_have_similar_state
+        subject = new_object(described_class)
+        other   = subject.dup
+
+        assert_operator(subject, :eql?, other)
+        refute_same(subject, other)
       end
 
-      describe 'when the objects have similar state, but the other is a subclass' do
-        let(:other_class) { Class.new(described_class) }
+      sig { override.void }
+      def test_objects_similar_state_but_other_is_subclass
+        subject = new_object(inheritable_class)
+        other   = new_object(Class.new(inheritable_class))
 
-        it 'returns false' do
-          refute_operator(subject, :eql?, other)
-        end
+        refute_operator(subject, :eql?, other)
       end
 
-      describe 'when the objects have different classes' do
-        before do
-          # Redefine the described_class and other_class methods
-          # to return different classes.
-          described_class = Class.new(self.described_class)
-          other_class     = Class.new(self.described_class)
+      sig { override.void }
+      def test_objects_different_classes
+        subject = new_object(Class.new(inheritable_class))
+        other   = new_object(Class.new(inheritable_class))
 
-          define_singleton_method(:described_class) { described_class }
-          define_singleton_method(:other_class)     { other_class     }
-        end
-
-        it 'returns false' do
-          refute_operator(subject, :eql?, other)
-        end
+        refute_operator(subject, :eql?, other)
       end
 
-      describe 'when the objects have different state' do
-        it 'returns false' do
-          refute_operator(subject, :eql?, different_state)
-        end
+      sig { override.void }
+      def test_objects_inequality
+        subject = new_object(described_class)
+
+        refute_operator(subject, :eql?, state_inequality)
       end
 
-      describe 'when the object states are similar but not equal' do
-        it 'returns false' do
-          refute_operator(subject, :eql?, not_eql_state) if respond_to?(:not_eql_state)
-        end
+      sig { override.void }
+      def test_objects_similar_but_not_equal_state
+        subject = new_object(described_class)
+
+        assert_same(subject.class, state_ineql.class)
+        refute_operator(subject, :eql?, state_ineql)
+      rescue NotImplementedError
+        # skip if state_ineql impossible to define for this type
       end
     end
 
-    shared_examples 'Boa::Equality#hash' do
-      cover 'Boa::Equality#hash'
+    module Hash
+      extend T::Helpers
+      extend T::Sig
+      include Contexts
 
-      describe 'when the objects are the same' do
-        it 'returns the same hash' do
-          assert_same(subject.hash, subject.hash)
-        end
+      requires_ancestor { Setup }
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Equality#hash')
+        descendant.cover('Boa::Equality#object__state')
       end
 
-      describe 'when the objects have similar state' do
-        it 'returns the same hash' do
-          assert_same(subject.hash, other.hash)
-        end
+      sig { override.void }
+      def test_objects_have_similar_state
+        subject = new_object(described_class)
+        other   = subject.dup
+
+        assert_equal(subject.hash, other.hash)
       end
 
-      describe 'when the objects have similar state, but the other is a subclass' do
-        let(:other_class) { Class.new(described_class) }
+      sig { override.void }
+      def test_objects_similar_state_but_other_is_subclass
+        subject = new_object(inheritable_class)
+        other   = new_object(Class.new(inheritable_class))
 
-        it 'returns different hashes' do
-          refute_same(subject.hash, other.hash)
-        end
+        refute_equal(subject.hash, other.hash)
       end
 
-      describe 'when the objects have different classes' do
-        before do
-          # Redefine the described_class and other_class methods
-          # to return different classes.
-          described_class = Class.new(self.described_class)
-          other_class     = Class.new(self.described_class)
+      sig { override.void }
+      def test_objects_different_classes
+        subject = new_object(Class.new(inheritable_class))
+        other   = new_object(Class.new(inheritable_class))
 
-          define_singleton_method(:described_class) { described_class }
-          define_singleton_method(:other_class)     { other_class     }
-        end
-
-        it 'returns different hashes' do
-          refute_same(subject.hash, other.hash)
-        end
+        refute_equal(subject.hash, other.hash)
       end
 
-      describe 'when the objects have different state' do
-        it 'returns different hashes' do
-          refute_same(subject.hash, different_state.hash)
-        end
+      sig { override.void }
+      def test_objects_inequality
+        subject = new_object(described_class)
+
+        refute_equal(subject.hash, state_inequality.hash)
       end
 
-      describe 'when the object states are similar but not equal' do
-        it 'returns false' do
-          refute_same(subject.hash, not_eql_state.hash) if respond_to?(:not_eql_state)
-        end
+      sig { override.void }
+      def test_objects_similar_but_not_equal_state
+        subject = new_object(described_class)
+
+        refute_equal(subject.hash, state_ineql.hash)
+      rescue NotImplementedError
+        # skip if state_ineql impossible to define for this type
       end
     end
   end
