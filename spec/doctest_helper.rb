@@ -1,4 +1,4 @@
-# typed: strict
+# typed: strong
 # frozen_string_literal: true
 
 require 'simplecov'
@@ -41,6 +41,8 @@ def other
 end
 
 YARD::Doctest.configure do |doctest|
+  doctest = T.let(doctest, YARD::Doctest)
+
   doctest.before('Boa::Equality') do
     @other = T.let(equality_class.new, T.nilable(Boa::Equality))
   end

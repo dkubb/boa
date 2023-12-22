@@ -43,7 +43,7 @@ jobs:
         rm -r -- bin
 
     - name: Check types
-      run: bundle exec srb tc
+      run: bundle exec srb typecheck
 
     - name: Run unit tests
       run: bundle exec rake test

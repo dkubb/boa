@@ -66,6 +66,14 @@ Security/CompoundHash:
 Sorbet/ForbidTStruct:
   Enabled: false
 
+Sorbet/ForbidTUnsafe:
+  Exclude:
+    - test/unit/boa_test.rb
+
+Sorbet/ForbidTUntyped:
+  Exclude:
+    - test/support/type_behaviour.rb
+
 Sorbet/ForbidTypeAliasedShapes:
   Enabled: false
 
@@ -104,6 +112,9 @@ Style/DocumentationMethod:
   Enabled: false
 
 Style/InlineComment:
+  Enabled: false
+
+Style/InvertibleUnlessCondition:
   Enabled: false
 
 Style/MethodCallWithArgsParentheses:

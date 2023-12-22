@@ -1,191 +1,210 @@
-# typed: false
+# typed: strong
 # frozen_string_literal: true
 
 require 'test_helper'
 
-describe Boa::Type::String do
-  extend T::Sig
-  include Support::EqualityBehaviour
-  include Support::TypeBehaviour
+require_relative '../type_test'
 
-  subject { described_class.new(type_name, **options) }
+module Boa
+  class Test
+    class Type
+      class String < Minitest::Test
+        extend T::Sig
+        include Support::EqualityBehaviour::Setup
+        include Support::TypeBehaviour::Setup
 
-  let(:described_class)   { Boa::Type::String                            }
-  let(:type_name)         { :string                                      }
-  let(:options)           { {}                                           }
-  let(:other)             { other_class.new(other_name, **other_options) }
-  let(:other_class)       { described_class                              }
-  let(:other_name)        { type_name                                    }
-  let(:other_options)     { options                                      }
-  let(:different_state)   { other_class.new(:different)                  }
+        parallelize_me!
 
-  describe '.[]' do
-    include_examples 'Boa::Type.[]'
-  end
+        sig { override.returns(T.class_of(Boa::Type::String)) }
+        def described_class
+          Boa::Type::String
+        end
 
-  describe '.[]=' do
-    include_examples 'Boa::Type.[]='
-  end
+        sig { override.returns(Boa::Type::String) }
+        def state_inequality
+          @state_inequality ||= T.let(described_class.new(:inequal), T.nilable(Boa::Type::String))
+        end
 
-  describe '.class_type' do
-    include_examples 'Boa::Type.class_type'
-  end
+        sig { override.params(klass: T.class_of(::Object)).returns(Boa::Type::String) }
+        def new_object(klass)
+          raise(ArgumentError, "klass must be a Boa::Type::String, but was #{klass}") unless klass <= Boa::Type::String
 
-  describe '.inherited' do
-    include_examples 'Boa::Type.inherited'
-  end
+          klass.new(type_name, **options)
+        end
 
-  describe '.new' do
-    include_examples 'Boa::Type.new'
+        sig { void }
+        def test_class_hierarchy
+          assert_operator(Boa::Type, :>, described_class)
+          assert_equal(Boa::Type::String, described_class)
+        end
 
-    cover 'Boa::Type::String#initialize'
+        class ElementReference < self
+          include Support::TypeBehaviour::ElementReference
+        end
 
-    let(:default_includes) { nil   }
-    let(:non_nil_default)  { 'Jon' }
+        class ElementAssignment < self
+          include Support::TypeBehaviour::ElementAssignment
+        end
 
-    describe 'with default option' do
-      subject { described_class.new(type_name, default: 'default') }
+        class ClassType < self
+          include Support::TypeBehaviour::ClassType
+        end
 
-      it 'sets the default attribute' do
-        assert_same('default', subject.default)
+        class Inherited < self
+          include Support::TypeBehaviour::Inherited
+        end
+
+        class New < self
+          extend MutantCoverage
+          include Support::TypeBehaviour::New
+
+          cover('Boa::Type::String#initialize')
+
+          sig { override.returns(::String) }
+          def non_nil_default
+            @non_nil_default ||= T.let('Jon', T.nilable(::String))
+          end
+
+          sig { override.returns(NilClass) }
+          def default_includes; end
+
+          sig { void }
+          def test_with_no_length_option
+            subject = described_class.new(type_name)
+
+            assert_equal(type_name, subject.name)
+            assert_equal(0.., subject.length)
+            assert_equal(0, subject.min_length)
+            assert_nil(subject.max_length)
+            assert_operator(subject, :frozen?)
+          end
+
+          sig { void }
+          def test_with_length_option
+            subject = described_class.new(type_name, length: 2...10)
+
+            assert_equal(type_name, subject.name)
+            assert_equal(2..9, subject.length)
+            assert_equal(2, subject.min_length)
+            assert_equal(9, subject.max_length)
+            assert_operator(subject, :frozen?)
+          end
+
+          sig { void }
+          def test_with_length_option_and_nil_minimum_length
+            subject = described_class.new(type_name, length: ..10)
+
+            assert_equal(type_name, subject.name)
+            assert_equal(0..10, subject.length)
+            assert_equal(0, subject.min_length)
+            assert_equal(10, subject.max_length)
+            assert_operator(subject, :frozen?)
+          end
+        end
+
+        class Name < self
+          include Support::TypeBehaviour::Name
+        end
+
+        class Includes < self
+          include Support::TypeBehaviour::Includes
+
+          sig { override.returns(T::Array[::String]) }
+          def includes
+            @includes ||= T.let(%w[test], T.nilable(T::Array[::String]))
+          end
+        end
+
+        class Options < self
+          include Support::TypeBehaviour::Options
+        end
+
+        class Default < self
+          include Support::TypeBehaviour::Default
+
+          sig { override.returns(::String) }
+          def default
+            'test'
+          end
+        end
+
+        class MinLength < self
+          extend MutantCoverage
+
+          cover('Boa::Type::String#min_length')
+
+          sig { void }
+          def test_with_no_length
+            subject = described_class.new(type_name)
+
+            assert_same(0, subject.min_length)
+          end
+
+          sig { void }
+          def test_with_length_and_minimum_length
+            subject = described_class.new(type_name, length: 2..10)
+
+            assert_same(2, subject.min_length)
+          end
+        end
+
+        class MaxLength < self
+          extend MutantCoverage
+
+          cover('Boa::Type::String#max_length')
+
+          sig { void }
+          def test_with_no_length
+            subject = described_class.new(type_name)
+
+            assert_nil(subject.max_length)
+          end
+
+          sig { void }
+          def test_with_inclusive_length_and_no_maximum_length
+            subject = described_class.new(type_name, length: 2..)
+
+            assert_nil(subject.max_length)
+          end
+
+          sig { void }
+          def test_with_inclusive_length_and_maximum_length
+            subject = described_class.new(type_name, length: 2..10)
+
+            assert_same(10, subject.max_length)
+          end
+
+          sig { void }
+          def test_with_exclusive_length_and_no_maximum_length
+            subject = described_class.new(type_name, length: 2...)
+
+            assert_nil(subject.max_length)
+          end
+
+          sig { void }
+          def test_with_exclusive_length_and_maximum_length
+            subject = described_class.new(type_name, length: 2...10)
+
+            assert_same(9, subject.max_length)
+          end
+        end
+
+        class Freeze < self
+          include Support::TypeBehaviour::Freeze
+        end
+
+        class Equality < self
+          include Support::EqualityBehaviour::Equality
+        end
+
+        class Eql < self
+          include Support::EqualityBehaviour::Eql
+        end
+
+        class Hash < self
+          include Support::EqualityBehaviour::Hash
+        end
       end
     end
-
-    describe 'with no length option' do
-      it 'sets the length attribute to the default' do
-        assert_equal(0.., subject.length)
-      end
-
-      it 'has the expected default minimum length' do
-        assert_equal(0, subject.min_length)
-      end
-
-      it 'has the expected default maximum length' do
-        assert_nil(subject.max_length)
-      end
-    end
-
-    describe 'with length option' do
-      subject { described_class.new(type_name, length: min_length...10) }
-
-      describe 'with a non-nil minimum length' do
-        let(:min_length) { 2 }
-
-        it 'sets the length attribute' do
-          assert_equal(2..9, subject.length)
-        end
-
-        it 'has the expected minimum length' do
-          assert_equal(2, subject.min_length)
-        end
-
-        it 'has the expected default maximum length' do
-          assert_equal(9, subject.max_length)
-        end
-      end
-
-      describe 'with a nil minimum length' do
-        sig { returns(T.nilable(Integer)) }
-        def min_length; end
-
-        it 'sets the length attribute' do
-          assert_equal(0..9, subject.length)
-        end
-
-        it 'has the expected minimum length' do
-          assert_same(0, subject.min_length)
-        end
-
-        it 'has the expected default maximum length' do
-          assert_same(9, subject.max_length)
-        end
-      end
-    end
-  end
-
-  describe '#name' do
-    include_examples 'Boa::Type#name'
-  end
-
-  describe '#includes' do
-    include_examples 'Boa::Type#includes'
-
-    let(:includes) { %w[test] }
-  end
-
-  describe '#options' do
-    include_examples 'Boa::Type#options'
-  end
-
-  describe '#default' do
-    include_examples 'Boa::Type#default'
-
-    let(:default) { 'test' }
-  end
-
-  describe '#min_length' do
-    cover 'Boa::Type::String#min_length'
-
-    it 'returns the minimum length' do
-      assert_equal(0, subject.min_length)
-    end
-  end
-
-  describe '#max_length' do
-    cover 'Boa::Type::String#max_length'
-
-    describe 'with no maximum length' do
-      describe 'with an inclusive range' do
-        it 'returns nil' do
-          assert_nil(subject.max_length)
-        end
-      end
-
-      describe 'with an exclusive range' do
-        subject { described_class.new(type_name, length:) }
-
-        let(:length) { 1... }
-
-        it 'returns nil' do
-          assert_nil(subject.max_length)
-        end
-      end
-    end
-
-    describe 'with a maximum length' do
-      subject { described_class.new(type_name, length:) }
-
-      describe 'with an inclusive range' do
-        let(:length) { 1..10 }
-
-        it 'returns the maximum length' do
-          assert_equal(10, subject.max_length)
-        end
-      end
-
-      describe 'with an exclusive range' do
-        let(:length) { 1...10 }
-
-        it 'returns the maximum length' do
-          assert_equal(9, subject.max_length)
-        end
-      end
-    end
-  end
-
-  describe '#freeze' do
-    include_examples 'Boa::Type#freeze'
-  end
-
-  describe '#==' do
-    include_examples 'Boa::Equality#=='
-  end
-
-  describe '#eql?' do
-    include_examples 'Boa::Equality#eql?'
-  end
-
-  describe '#hash' do
-    include_examples 'Boa::Equality#hash'
   end
 end
