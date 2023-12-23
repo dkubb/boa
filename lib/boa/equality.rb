@@ -46,9 +46,7 @@ module Boa
     # @api public
     sig { params(other: Equality).returns(T::Boolean) }
     def eql?(other)
-      return false unless other.instance_of?(self.class)
-
-      cmp?(other, :eql?)
+      other.instance_of?(self.class) && cmp?(other, :eql?)
     end
 
     # The hash value of the object
