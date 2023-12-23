@@ -27,7 +27,7 @@ module Boa
     # @api public
     sig { params(other: Equality).returns(T::Boolean) }
     def ==(other)
-      other.is_a?(self.class) && object_state == other.object_state
+      other.is_a?(self.class) && cmp?(other, :==)
     end
 
     # Compare the object with other object for equality
@@ -48,7 +48,7 @@ module Boa
     def eql?(other)
       return false unless other.instance_of?(self.class)
 
-      T.let(object_state.eql?(other.object_state), T::Boolean)
+      cmp?(other, :eql?)
     end
 
     # The hash value of the object
@@ -76,6 +76,21 @@ module Boa
       instance_variables.to_h do |ivar_name|
         [ivar_name, instance_variable_get(ivar_name)]
       end
+    end
+
+  private
+
+    # Compare the object with other object for equivalency
+    #
+    # @param [Equality] other the other object to compare with
+    # @param [Symbol] operator the operator to use for comparison
+    #
+    # @return [Boolean]
+    #
+    # @api private
+    sig { params(other: Equality, operator: Symbol).returns(T::Boolean) }
+    def cmp?(other, operator)
+      T.let(object_state.public_send(operator, other.object_state), T::Boolean)
     end
   end
 end
