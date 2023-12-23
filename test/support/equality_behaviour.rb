@@ -67,7 +67,7 @@ module Support
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
         descendant.cover('Boa::Equality#==')
-        descendant.cover('Boa::Equality#object__state')
+        descendant.cover('Boa::Equality#object_state')
       end
 
       sig { override.void }
@@ -124,7 +124,7 @@ module Support
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
         descendant.cover('Boa::Equality#eql?')
-        descendant.cover('Boa::Equality#object__state')
+        descendant.cover('Boa::Equality#object_state')
       end
 
       sig { override.void }
@@ -180,7 +180,7 @@ module Support
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
         descendant.cover('Boa::Equality#hash')
-        descendant.cover('Boa::Equality#object__state')
+        descendant.cover('Boa::Equality#object_state')
       end
 
       sig { override.void }
