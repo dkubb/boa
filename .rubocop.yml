@@ -61,7 +61,7 @@ Naming/BlockForwarding:
 
 Security/CompoundHash:
   Exclude:
-    - lib/boa/equality.rb
+    - lib/boa/instance_methods.rb
 
 Sorbet/ForbidTStruct:
   Enabled: false

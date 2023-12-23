@@ -4,7 +4,7 @@
 require 'sorbet-runtime'
 
 require_relative 'boa/util'
-require_relative 'boa/equality'
+require_relative 'boa/instance_methods'
 require_relative 'boa/class_methods'
 require_relative 'boa/type'
 require_relative 'boa/type/object'
@@ -17,7 +17,7 @@ require_relative 'boa/version'
 module Boa
   extend T::Helpers
   extend T::Sig
-  include Equality
+  include InstanceMethods
 
   mixes_in_class_methods(ClassMethods)
 

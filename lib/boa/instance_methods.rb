@@ -2,8 +2,8 @@
 # frozen_string_literal: true
 
 module Boa
-  # A module for comparing objects for equality
-  module Equality
+  # A module for instance methods
+  module InstanceMethods
     extend T::Helpers
     extend T::Sig
 
@@ -14,18 +14,18 @@ module Boa
     # Compare the object with other object for equivalency
     #
     # @example when the objects are equal
-    #   equality_object == equality_object # => true
+    #   instance == instance # => true
     #
     # @example when the objects are not equal
-    #   equality_object == other # => false
+    #   instance == other # => false
     #
-    # @param [Equality] other
+    # @param [InstanceMethods] other
     #   the other object to compare with
     #
     # @return [Boolean]
     #
     # @api public
-    sig { params(other: Equality).returns(T::Boolean) }
+    sig { params(other: InstanceMethods).returns(T::Boolean) }
     def ==(other)
       other.is_a?(self.class) && cmp?(other, :==)
     end
@@ -33,18 +33,18 @@ module Boa
     # Compare the object with other object for equality
     #
     # @example when the objects are equal
-    #   equality_object.eql?(equality_object) # => true
+    #   instance.eql?(instance) # => true
     #
     # @example when the objects are not equal
-    #   equality_object.eql?(other) # => false
+    #   instance.eql?(other) # => false
     #
-    # @param [Equality] other
+    # @param [InstanceMethods] other
     #   the other object to compare with
     #
     # @return [Boolean]
     #
     # @api public
-    sig { params(other: Equality).returns(T::Boolean) }
+    sig { params(other: InstanceMethods).returns(T::Boolean) }
     def eql?(other)
       other.instance_of?(self.class) && cmp?(other, :eql?)
     end
@@ -52,7 +52,7 @@ module Boa
     # The hash value of the object
     #
     # @example
-    #   equality_object.hash.class # => Integer
+    #   instance.hash.class # => Integer
     #
     # @return [Integer] the hash value of the object
     #
@@ -80,13 +80,13 @@ module Boa
 
     # Compare the object with other object for equivalency
     #
-    # @param [Equality] other the other object to compare with
+    # @param [InstanceMethods] other the other object to compare with
     # @param [Symbol] operator the operator to use for comparison
     #
     # @return [Boolean]
     #
     # @api private
-    sig { params(other: Equality, operator: Symbol).returns(T::Boolean) }
+    sig { params(other: InstanceMethods, operator: Symbol).returns(T::Boolean) }
     def cmp?(other, operator)
       T.let(object_state.public_send(operator, other.object_state), T::Boolean)
     end

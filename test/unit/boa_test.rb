@@ -6,7 +6,7 @@ require 'test_helper'
 module Boa
   class Test < Minitest::Test
     extend T::Sig
-    include Support::EqualityBehaviour::Setup
+    include Support::InstanceMethodsBehaviour::Setup
 
     parallelize_me!
 
@@ -42,7 +42,7 @@ module Boa
       @state_inequality ||= T.let(described_class.new(T.unsafe(**options, name: 'Other Name')), T.nilable(Person))
     end
 
-    sig { override.params(klass: T::Class[Boa::Equality]).returns(Boa::Equality) }
+    sig { override.params(klass: T::Class[Boa::InstanceMethods]).returns(Boa::InstanceMethods) }
     def new_object(klass)
       klass.new(**options)
     end
@@ -73,16 +73,16 @@ module Boa
       end
     end
 
-    class Equality < self
-      include Support::EqualityBehaviour::Equality
+    class InstanceMethods < self
+      include Support::InstanceMethodsBehaviour::InstanceMethods
     end
 
     class Eql < self
-      include Support::EqualityBehaviour::Eql
+      include Support::InstanceMethodsBehaviour::Eql
     end
 
     class Hash < self
-      include Support::EqualityBehaviour::Hash
+      include Support::InstanceMethodsBehaviour::Hash
     end
   end
 end

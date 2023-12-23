@@ -4,7 +4,7 @@
 require 'minitest/test'
 
 module Support
-  module EqualityBehaviour
+  module InstanceMethodsBehaviour
     module Setup
       extend T::Helpers
       extend T::Sig
@@ -13,10 +13,10 @@ module Support
 
       abstract!
 
-      sig { abstract.returns(T::Class[Boa::Equality]) }
+      sig { abstract.returns(T::Class[Boa::InstanceMethods]) }
       def described_class; end
 
-      sig { overridable.returns(T::Class[Boa::Equality]) }
+      sig { overridable.returns(T::Class[Boa::InstanceMethods]) }
       def inheritable_class
         described_class
       end
@@ -29,7 +29,7 @@ module Support
       sig { abstract.returns(Object) }
       def state_inequality; end
 
-      sig { abstract.params(klass: T::Class[Boa::Equality]).returns(Boa::Equality) }
+      sig { abstract.params(klass: T::Class[Boa::InstanceMethods]).returns(Boa::InstanceMethods) }
       def new_object(klass) end
     end
 
@@ -57,7 +57,7 @@ module Support
       def test_objects_similar_but_not_equal_state; end
     end
 
-    module Equality
+    module InstanceMethods
       extend T::Helpers
       extend T::Sig
       include Contexts
@@ -66,8 +66,8 @@ module Support
 
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
-        descendant.cover('Boa::Equality#==')
-        descendant.cover('Boa::Equality#object_state')
+        descendant.cover('Boa::InstanceMethods#==')
+        descendant.cover('Boa::InstanceMethods#object_state')
       end
 
       sig { override.void }
@@ -123,8 +123,8 @@ module Support
 
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
-        descendant.cover('Boa::Equality#eql?')
-        descendant.cover('Boa::Equality#object_state')
+        descendant.cover('Boa::InstanceMethods#eql?')
+        descendant.cover('Boa::InstanceMethods#object_state')
       end
 
       sig { override.void }
@@ -179,8 +179,8 @@ module Support
 
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
-        descendant.cover('Boa::Equality#hash')
-        descendant.cover('Boa::Equality#object_state')
+        descendant.cover('Boa::InstanceMethods#hash')
+        descendant.cover('Boa::InstanceMethods#object_state')
       end
 
       sig { override.void }

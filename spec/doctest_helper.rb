@@ -7,9 +7,9 @@ require 'boa'
 
 extend T::Sig
 
-class Equality
+class InstanceMethods
   extend T::Sig
-  include Boa::Equality
+  include Boa::InstanceMethods
 
   sig { void }
   def initialize
@@ -22,14 +22,14 @@ def type
   @type ||= T.let(Class.new(Boa::Type).new(:first_name, default: 'Jon'), T.nilable(Boa::Type))
 end
 
-sig { returns(T::Class[Boa::Equality]) }
-def equality_class
-  @equality_class ||= T.let(Equality, T.nilable(T::Class[Boa::Equality]))
+sig { returns(T::Class[Boa::InstanceMethods]) }
+def klass
+  @klass ||= T.let(InstanceMethods, T.nilable(T::Class[Boa::InstanceMethods]))
 end
 
-sig { returns(Boa::Equality) }
-def equality_object
-  @equality_object ||= T.let(equality_class.new, T.nilable(Boa::Equality))
+sig { returns(Boa::InstanceMethods) }
+def instance
+  @instance ||= T.let(klass.new, T.nilable(Boa::InstanceMethods))
 end
 
 sig { returns(Object) }
@@ -40,8 +40,8 @@ end
 YARD::Doctest.configure do |doctest|
   doctest = T.let(doctest, YARD::Doctest)
 
-  doctest.before('Boa::Equality') do
-    @other = T.let(equality_class.new, T.nilable(Boa::Equality))
+  doctest.before('Boa::InstanceMethods') do
+    @other = T.let(klass.new, T.nilable(Boa::InstanceMethods))
   end
 
   doctest.before('Boa::Type::Boolean') do
