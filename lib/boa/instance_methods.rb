@@ -59,7 +59,7 @@ module Boa
     # @api public
     sig { returns(Integer) }
     def hash
-      self.class.hash ^ T.let(object_state.hash, Integer)
+      self.class.hash ^ T.let(deconstruct_keys(nil).hash, Integer)
     end
 
     # Deconstruct the object into a hash
@@ -88,20 +88,6 @@ module Boa
       end
     end
 
-  protected
-
-    # The state of the object
-    #
-    # @return [Hash{Symbol => Object}] the state of the object
-    #
-    # @api private
-    sig { overridable.returns(T::Hash[Symbol, Object]) }
-    def object_state
-      instance_variables.to_h do |ivar_name|
-        [ivar_name, instance_variable_get(ivar_name)]
-      end
-    end
-
   private
 
     # The names of the properties of the object
@@ -124,7 +110,7 @@ module Boa
     # @api private
     sig { params(other: InstanceMethods, operator: Symbol).returns(T::Boolean) }
     def cmp?(other, operator)
-      T.let(object_state.public_send(operator, other.object_state), T::Boolean)
+      T.let(deconstruct_keys(nil).public_send(operator, other.deconstruct_keys(nil)), T::Boolean)
     end
   end
 end

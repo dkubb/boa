@@ -67,7 +67,6 @@ module Support
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
         descendant.cover('Boa::InstanceMethods#==')
-        descendant.cover('Boa::InstanceMethods#object_state')
       end
 
       sig { override.void }
@@ -124,7 +123,6 @@ module Support
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
         descendant.cover('Boa::InstanceMethods#eql?')
-        descendant.cover('Boa::InstanceMethods#object_state')
       end
 
       sig { override.void }
@@ -180,7 +178,6 @@ module Support
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
         descendant.cover('Boa::InstanceMethods#hash')
-        descendant.cover('Boa::InstanceMethods#object_state')
       end
 
       sig { override.void }
