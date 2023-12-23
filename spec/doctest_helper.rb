@@ -1,7 +1,6 @@
 # typed: strong
 # frozen_string_literal: true
 
-require 'simplecov'
 require 'sorbet-runtime'
 
 require 'boa'
