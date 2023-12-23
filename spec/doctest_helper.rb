@@ -11,11 +11,9 @@ class Equality
   extend T::Sig
   include Boa::Equality
 
-protected
-
-  sig { override.returns(T::Hash[Symbol, Object]) }
-  def object_state
-    { object_id: }
+  sig { void }
+  def initialize
+    @object_id = T.let(object_id, Integer)
   end
 end
 
