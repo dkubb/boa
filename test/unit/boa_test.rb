@@ -84,5 +84,14 @@ module Boa
     class Hash < self
       include Support::InstanceMethodsBehaviour::Hash
     end
+
+    class DeconstructKeys < self
+      include Support::InstanceMethodsBehaviour::DeconstructKeys
+
+      sig { override.returns(T::Hash[Symbol, Object]) }
+      def expected_object_state
+        options
+      end
+    end
   end
 end

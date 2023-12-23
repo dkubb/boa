@@ -205,6 +205,15 @@ module Boa
         class Hash < self
           include Support::InstanceMethodsBehaviour::Hash
         end
+
+        class DeconstructKeys < self
+          include Support::InstanceMethodsBehaviour::DeconstructKeys
+
+          sig { override.returns(T::Hash[Symbol, ::Object]) }
+          def expected_object_state
+            { range: nil.., name: type_name, includes: nil, options: {} }
+          end
+        end
       end
     end
   end

@@ -223,5 +223,43 @@ module Support
         # skip if state_ineql impossible to define for this type
       end
     end
+
+    module DeconstructKeys
+      extend T::Helpers
+      extend T::Sig
+
+      requires_ancestor { Setup }
+
+      abstract!
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::InstanceMethods#deconstruct_keys')
+      end
+
+      sig { abstract.returns(T::Hash[Symbol, Object]) }
+      def expected_object_state; end
+
+      sig { void }
+      def test_deconstruct_keys_with_nil
+        subject = new_object(described_class)
+
+        assert_equal(expected_object_state, subject.deconstruct_keys(nil))
+      end
+
+      sig { void }
+      def test_deconstruct_keys_with_property_names
+        subject = new_object(described_class)
+
+        assert_equal(expected_object_state, subject.deconstruct_keys(expected_object_state.keys))
+      end
+
+      sig { void }
+      def test_deconstruct_keys_with_invalid_property_names
+        subject = new_object(described_class)
+
+        assert_empty(subject.deconstruct_keys(%i[invalid]))
+      end
+    end
   end
 end
