@@ -13,10 +13,10 @@ module Support
 
       abstract!
 
-      sig { abstract.returns(T.class_of(Object)) }
+      sig { abstract.returns(T::Class[Boa::Equality]) }
       def described_class; end
 
-      sig { overridable.returns(T.class_of(Object)) }
+      sig { overridable.returns(T::Class[Boa::Equality]) }
       def inheritable_class
         described_class
       end
@@ -29,7 +29,7 @@ module Support
       sig { abstract.returns(Object) }
       def state_inequality; end
 
-      sig { abstract.params(klass: T.class_of(Object)).returns(Object) }
+      sig { abstract.params(klass: T::Class[Boa::Equality]).returns(Boa::Equality) }
       def new_object(klass) end
     end
 

@@ -30,7 +30,7 @@ module Boa
           @state_inequality ||= T.let(described_class.new(:inequal), T.nilable(Boa::Type::Object))
         end
 
-        sig { override.params(klass: T.class_of(::Object)).returns(Boa::Type::Object) }
+        sig { override.params(klass: T::Class[Boa::Equality]).returns(Boa::Type::Object) }
         def new_object(klass)
           raise(ArgumentError, "klass must be a Boa::Type::Object, but was #{klass}") unless klass <= Boa::Type::Object
 

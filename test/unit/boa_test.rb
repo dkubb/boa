@@ -42,7 +42,7 @@ module Boa
       @state_inequality ||= T.let(described_class.new(T.unsafe(**options, name: 'Other Name')), T.nilable(Person))
     end
 
-    sig { override.params(klass: T.class_of(Object)).returns(Object) }
+    sig { override.params(klass: T::Class[Boa::Equality]).returns(Boa::Equality) }
     def new_object(klass)
       klass.new(**options)
     end
