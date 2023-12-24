@@ -126,6 +126,15 @@ module Boa
             { name: type_name, includes: nil, options: { default: 1 } }
           end
         end
+
+        class Deconstruct < self
+          include Support::InstanceMethodsBehaviour::Deconstruct
+
+          sig { override.returns(T::Hash[Symbol, ::Object]) }
+          def expected_object_state
+            { name: type_name, includes: nil, options: { default: 1 } }
+          end
+        end
       end
     end
   end

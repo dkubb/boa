@@ -88,6 +88,19 @@ module Boa
       end
     end
 
+    # Deconstruct the object into an array
+    #
+    # @example
+    #   instance.deconstruct.map(&:class) # => [Integer]
+    #
+    # @return [Array<Object>] the deconstructed object
+    #
+    # @api public
+    sig { returns(T::Array[Object]) }
+    def deconstruct
+      prop_names.map { |key| T.let(instance_variable_get(:"@#{key}"), Object) }
+    end
+
   private
 
     # The names of the properties of the object

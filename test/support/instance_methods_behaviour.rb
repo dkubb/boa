@@ -258,5 +258,29 @@ module Support
         assert_empty(subject.deconstruct_keys(%i[invalid]))
       end
     end
+
+    module Deconstruct
+      extend T::Helpers
+      extend T::Sig
+
+      requires_ancestor { Setup }
+
+      abstract!
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::InstanceMethods#deconstruct')
+      end
+
+      sig { abstract.returns(T::Hash[Symbol, Object]) }
+      def expected_object_state; end
+
+      sig { void }
+      def test_deconstruct
+        subject = new_object(described_class)
+
+        assert_equal(expected_object_state.values, subject.deconstruct)
+      end
+    end
   end
 end

@@ -93,5 +93,14 @@ module Boa
         options
       end
     end
+
+    class Deconstruct < self
+      include Support::InstanceMethodsBehaviour::Deconstruct
+
+      sig { override.returns(T::Hash[Symbol, Object]) }
+      def expected_object_state
+        options
+      end
+    end
   end
 end
