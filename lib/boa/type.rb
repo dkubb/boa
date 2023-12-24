@@ -6,7 +6,7 @@ module Boa
   class Type
     extend T::Helpers
     extend T::Sig
-    include Equality
+    include InstanceMethods
 
     # The class type alias
     ClassType = T.type_alias { T.untyped } # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Sorbet/ForbidTUntyped

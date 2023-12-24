@@ -4,7 +4,7 @@
 require 'minitest/test'
 
 module Support
-  module EqualityBehaviour
+  module InstanceMethodsBehaviour
     module Setup
       extend T::Helpers
       extend T::Sig
@@ -13,10 +13,10 @@ module Support
 
       abstract!
 
-      sig { abstract.returns(T.class_of(Object)) }
+      sig { abstract.returns(T::Class[Boa::InstanceMethods]) }
       def described_class; end
 
-      sig { overridable.returns(T.class_of(Object)) }
+      sig { overridable.returns(T::Class[Boa::InstanceMethods]) }
       def inheritable_class
         described_class
       end
@@ -29,7 +29,7 @@ module Support
       sig { abstract.returns(Object) }
       def state_inequality; end
 
-      sig { abstract.params(klass: T.class_of(Object)).returns(Object) }
+      sig { abstract.params(klass: T::Class[Boa::InstanceMethods]).returns(Boa::InstanceMethods) }
       def new_object(klass) end
     end
 
@@ -57,7 +57,7 @@ module Support
       def test_objects_similar_but_not_equal_state; end
     end
 
-    module Equality
+    module InstanceMethods
       extend T::Helpers
       extend T::Sig
       include Contexts
@@ -66,8 +66,7 @@ module Support
 
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
-        descendant.cover('Boa::Equality#==')
-        descendant.cover('Boa::Equality#object__state')
+        descendant.cover('Boa::InstanceMethods#==')
       end
 
       sig { override.void }
@@ -123,8 +122,7 @@ module Support
 
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
-        descendant.cover('Boa::Equality#eql?')
-        descendant.cover('Boa::Equality#object__state')
+        descendant.cover('Boa::InstanceMethods#eql?')
       end
 
       sig { override.void }
@@ -179,8 +177,7 @@ module Support
 
       sig { params(descendant: MutantCoverage).void }
       def self.included(descendant)
-        descendant.cover('Boa::Equality#hash')
-        descendant.cover('Boa::Equality#object__state')
+        descendant.cover('Boa::InstanceMethods#hash')
       end
 
       sig { override.void }
@@ -221,6 +218,68 @@ module Support
         refute_equal(subject.hash, state_ineql.hash)
       rescue NotImplementedError
         # skip if state_ineql impossible to define for this type
+      end
+    end
+
+    module DeconstructKeys
+      extend T::Helpers
+      extend T::Sig
+
+      requires_ancestor { Setup }
+
+      abstract!
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::InstanceMethods#deconstruct_keys')
+      end
+
+      sig { abstract.returns(T::Hash[Symbol, Object]) }
+      def expected_object_state; end
+
+      sig { void }
+      def test_deconstruct_keys_with_nil
+        subject = new_object(described_class)
+
+        assert_equal(expected_object_state, subject.deconstruct_keys(nil))
+      end
+
+      sig { void }
+      def test_deconstruct_keys_with_property_names
+        subject = new_object(described_class)
+
+        assert_equal(expected_object_state, subject.deconstruct_keys(expected_object_state.keys))
+      end
+
+      sig { void }
+      def test_deconstruct_keys_with_invalid_property_names
+        subject = new_object(described_class)
+
+        assert_empty(subject.deconstruct_keys(%i[invalid]))
+      end
+    end
+
+    module Deconstruct
+      extend T::Helpers
+      extend T::Sig
+
+      requires_ancestor { Setup }
+
+      abstract!
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::InstanceMethods#deconstruct')
+      end
+
+      sig { abstract.returns(T::Hash[Symbol, Object]) }
+      def expected_object_state; end
+
+      sig { void }
+      def test_deconstruct
+        subject = new_object(described_class)
+
+        assert_equal(expected_object_state.values, subject.deconstruct)
       end
     end
   end

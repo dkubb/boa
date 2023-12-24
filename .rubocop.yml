@@ -59,9 +59,12 @@ Metrics/ModuleLength:
 Naming/BlockForwarding:
   EnforcedStyle: explicit
 
+Performance/ArraySemiInfiniteRangeSlice:
+  Enabled: false
+
 Security/CompoundHash:
   Exclude:
-    - lib/boa/equality.rb
+    - lib/boa/instance_methods.rb
 
 Sorbet/ForbidTStruct:
   Enabled: false

@@ -10,7 +10,7 @@ module Boa
     class Type
       class Boolean < Minitest::Test
         extend T::Sig
-        include Support::EqualityBehaviour::Setup
+        include Support::InstanceMethodsBehaviour::Setup
         include Support::TypeBehaviour::Setup
 
         parallelize_me!
@@ -25,7 +25,7 @@ module Boa
           @state_inequality ||= T.let(described_class.new(:inequal), T.nilable(Boa::Type::Boolean))
         end
 
-        sig { override.params(klass: T.class_of(::Object)).returns(Boa::Type::Boolean) }
+        sig { override.params(klass: T::Class[Boa::InstanceMethods]).returns(Boa::Type::Boolean) }
         def new_object(klass)
           raise(ArgumentError, "klass must be a Boa::Type::Boolean, but was #{klass}") unless klass <= Boa::Type::Boolean
 
@@ -98,16 +98,34 @@ module Boa
           include Support::TypeBehaviour::Freeze
         end
 
-        class Equality < self
-          include Support::EqualityBehaviour::Equality
+        class InstanceMethods < self
+          include Support::InstanceMethodsBehaviour::InstanceMethods
         end
 
         class Eql < self
-          include Support::EqualityBehaviour::Eql
+          include Support::InstanceMethodsBehaviour::Eql
         end
 
         class Hash < self
-          include Support::EqualityBehaviour::Hash
+          include Support::InstanceMethodsBehaviour::Hash
+        end
+
+        class DeconstructKeys < self
+          include Support::InstanceMethodsBehaviour::DeconstructKeys
+
+          sig { override.returns(T::Hash[Symbol, ::Object]) }
+          def expected_object_state
+            { name: type_name, includes: [true, false], options: {} }
+          end
+        end
+
+        class Deconstruct < self
+          include Support::InstanceMethodsBehaviour::Deconstruct
+
+          sig { override.returns(T::Hash[Symbol, ::Object]) }
+          def expected_object_state
+            { name: type_name, includes: [true, false], options: {} }
+          end
         end
       end
     end
