@@ -63,6 +63,8 @@ module Boa
       def self.new(name, length: DEFAULT_LENGTH, **options)
         min, max = length_minmax(length)
 
+        raise(ArgumentError, "length.begin must be greater than or equal to 0, but was #{min}") if min.negative?
+
         super(name, length: min..max, **options)
       end
 

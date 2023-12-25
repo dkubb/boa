@@ -100,6 +100,16 @@ module Boa
             assert_equal(10, subject.max_length)
             assert_operator(subject, :frozen?)
           end
+
+          sig { void }
+          def test_with_length_option_and_negative_minimum_length
+            error = T.let(
+              assert_raises(ArgumentError) { described_class.new(type_name, length: -1..) },
+              ArgumentError
+            )
+
+            assert_equal('length.begin must be greater than or equal to 0, but was -1', error.message)
+          end
         end
 
         class Name < self
