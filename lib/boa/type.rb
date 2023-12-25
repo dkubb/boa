@@ -9,7 +9,7 @@ module Boa
     include InstanceMethods
 
     # The class type alias
-    ClassType = T.type_alias { T.untyped } # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Sorbet/ForbidTUntyped
+    ClassType = T.type_alias { T.anything }
 
     abstract!
 
