@@ -22,7 +22,7 @@ module Boa
       sig { returns(T::Range[T.nilable(::Integer)]) }
       attr_reader :length
 
-      # Initialize the string type
+      # Construct the string type
       #
       # @example with the default length
       #   type = String.new(:name)
@@ -56,14 +56,47 @@ module Boa
       # @param length [Range<::Integer>] the length of the string
       # @param options [Hash{Symbol => Object}] the options for the type
       #
-      # @return [void]
+      # @return [Type::String] the string type
       #
       # @api public
+      sig { params(name: Symbol, length: T::Range[T.nilable(::Integer)], options: ::Object).returns(T.attached_class) }
+      def self.new(name, length: DEFAULT_LENGTH, **options)
+        min, max = length_minmax(length)
+
+        raise(ArgumentError, "length.begin must be greater than or equal to 0, but was #{min}")              if min.negative?
+        raise(ArgumentError, "length.end must be greater than or equal to 0 or nil, but was #{max}")         if max&.negative?
+        raise(ArgumentError, "length.end must be greater than or equal to length.begin, but was: #{length}") if max&.<(min)
+
+        super(name, length: min..max, **options)
+      end
+
+      # The min and max from the length constraint
+      #
+      # @param length [Range<::Integer>] the length constraint of the string
+      #
+      # @return [Array(::Integer, ::Integer), Array(::Integer, nil)] the min, max length constraints
+      #
+      # @api private
+      sig { params(length: T::Range[T.nilable(::Integer)]).returns([::Integer, T.nilable(::Integer)]) }
+      def self.length_minmax(length)
+        normalized = Util.normalize_integer_range(length)
+
+        [normalized.begin || 0, normalized.end]
+      end
+      private_class_method(:length_minmax)
+
+      # Initialize the string type
+      #
+      # @param name [Symbol] the name of the type
+      # @param length [Range<::Integer>] the length of the string
+      # @param options [Hash{Symbol => Object}] the options for the type
+      #
+      # @return [void]
+      #
+      # @api private
       sig { params(name: Symbol, length: T::Range[T.nilable(::Integer)], options: ::Object).void }
       def initialize(name, length: DEFAULT_LENGTH, **options)
-        length = Util.normalize_integer_range(length)
-
-        @length = T.let(Range.new(length.begin || 0, length.end), T::Range[T.nilable(::Integer)])
+        @length = T.let(length, T::Range[T.nilable(::Integer)])
 
         super(name, **options)
       end

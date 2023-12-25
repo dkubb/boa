@@ -108,7 +108,7 @@ module Support
 
       sig { returns(Boa::Type::ClassType) }
       def class_type
-        @class_type ||= T.let(Class.new, T.nilable(T::Class[T.untyped]))
+        @class_type ||= T.let(Class.new, T.nilable(T::Class[T.anything]))
       end
 
       sig { returns(T.class_of(Boa::Type)) }
@@ -145,7 +145,7 @@ module Support
 
       sig { returns(Boa::Type::ClassType) }
       def class_type
-        @class_type ||= T.let(Class.new, T.nilable(T::Class[T.untyped]))
+        @class_type ||= T.let(Class.new, T.nilable(T::Class[T.anything]))
       end
     end
 
