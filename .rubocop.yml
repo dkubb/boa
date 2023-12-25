@@ -77,9 +77,6 @@ Sorbet/ForbidTUntyped:
   Exclude:
     - test/support/type_behaviour.rb
 
-Sorbet/ForbidTypeAliasedShapes:
-  Enabled: false
-
 Sorbet/RedundantExtendTSig:
   Enabled: false
 
