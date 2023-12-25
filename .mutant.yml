@@ -13,3 +13,5 @@ mutation:
 matcher:
   subjects:
     - Boa*
+  ignore:
+    - Boa::Type::String#initialize  # Sorbet requires the default value for length
