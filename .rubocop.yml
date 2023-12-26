@@ -80,19 +80,6 @@ Sorbet/ForbidTUntyped:
 Sorbet/RedundantExtendTSig:
   Enabled: false
 
-Sorbet/StrictSigil:
-  Exclude:
-    - test/**/*.rb
-
-Sorbet/StrongSigil:
-  Exclude:
-    - spec/doctest_helper.rb
-    - test/**/*.rb
-
-Sorbet/TrueSigil:
-  Exclude:
-    - test/**/*.rb
-
 Style/AccessorGrouping:
   Enabled: false
 
