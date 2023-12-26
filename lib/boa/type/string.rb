@@ -63,11 +63,11 @@ module Boa
       # @api public
       sig { params(name: Symbol, length: T::Range[T.nilable(::Integer)], options: ::Object).returns(T.attached_class) }
       def self.new(name, length: DEFAULT_LENGTH, **options)
-        min, max = minmax_length(length)
+        min_length, max_length = minmax_length(length)
 
-        assert_valid_length(min, max)
+        assert_valid_length(min_length, max_length)
 
-        super(name, length: min..max, **options)
+        super(name, length: min_length..max_length, **options)
       end
 
       # The min and max from the length constraint
