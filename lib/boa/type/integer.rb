@@ -23,7 +23,7 @@ module Boa
       sig { returns(T::Range[T.nilable(::Integer)]) }
       attr_reader :range
 
-      # Initialize the integer type
+      # Constructs the integer type
       #
       # @example with the default range
       #   type = Integer.new(:age)
@@ -45,7 +45,45 @@ module Boa
       #
       # @return [void]
       #
+      # @raise [ArgumentError] if the range constraint  is invalid
+      #
       # @api public
+      sig { params(name: Symbol, range: T::Range[T.nilable(::Integer)], options: ::Object).returns(T.attached_class) }
+      def self.new(name, range: DEFAULT_RANGE, **options)
+        range = Util.normalize_integer_range(range)
+
+        assert_valid_range(range.begin, range.end)
+
+        super(name, range:, **options)
+      end
+
+      # Assert the range constraint is valid
+      #
+      # @param min [::Integer, nil] the minimum range
+      # @param max [::Integer, nil] the maximum range
+      #
+      # @return [void]
+      #
+      # @raise [ArgumentError] if the range constraint is invalid
+      #
+      # @api private
+      sig { params(min: T.nilable(::Integer), max: T.nilable(::Integer)).void }
+      def self.assert_valid_range(min, max)
+        return if min.nil? || max.nil? || max >= min
+
+        raise(ArgumentError, "range.end must be greater than or equal to range.begin, but was: #{min..max} (normalized)")
+      end
+      private_class_method(:assert_valid_range)
+
+      # Initialize the integer type
+      #
+      # @param name [Symbol] the name of the type
+      # @param range [Range<::Integer>] the range of the integer
+      # @param options [Hash{Symbol => Object}] the options for the type
+      #
+      # @return [void]
+      #
+      # @api private
       sig { params(name: Symbol, range: T::Range[T.nilable(::Integer)], options: ::Object).void }
       def initialize(name, range: DEFAULT_RANGE, **options)
         @range = T.let(Util.normalize_integer_range(range), T::Range[T.nilable(::Integer)])
