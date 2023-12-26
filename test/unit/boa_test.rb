@@ -39,7 +39,7 @@ module Boa
 
     sig { override.returns(Person) }
     def state_inequality
-      @state_inequality ||= T.let(described_class.new(T.unsafe(**options, name: 'Other Name')), T.nilable(Person))
+      @state_inequality ||= T.let(described_class.new(name: 'Other Name'), T.nilable(Person))
     end
 
     sig { override.params(klass: T::Class[Boa::InstanceMethods]).returns(Boa::InstanceMethods) }
