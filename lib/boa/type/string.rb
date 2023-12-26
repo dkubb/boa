@@ -63,7 +63,7 @@ module Boa
       # @api public
       sig { params(name: Symbol, length: T::Range[T.nilable(::Integer)], options: ::Object).returns(T.attached_class) }
       def self.new(name, length: DEFAULT_LENGTH, **options)
-        min, max = length_minmax(length)
+        min, max = minmax_length(length)
 
         raise(ArgumentError, "length.begin must be greater than or equal to 0, but was #{min}")              if min.negative?
         raise(ArgumentError, "length.end must be greater than or equal to 0 or nil, but was #{max}")         if max&.negative?
@@ -80,12 +80,12 @@ module Boa
       #
       # @api private
       sig { params(length: T::Range[T.nilable(::Integer)]).returns([::Integer, T.nilable(::Integer)]) }
-      def self.length_minmax(length)
+      def self.minmax_length(length)
         normalized = Util.normalize_integer_range(length)
 
         [normalized.begin || 0, normalized.end]
       end
-      private_class_method(:length_minmax)
+      private_class_method(:minmax_length)
 
       # Initialize the string type
       #
