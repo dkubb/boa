@@ -102,7 +102,7 @@ module Boa
             "length.begin must be greater than or equal to 0, but was #{min}"
           elsif max&.negative?
             "length.end must be greater than or equal to 0 or nil, but was #{max}"
-          elsif max&.<(min) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/MissingElse
+          elsif max && max < min # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/MissingElse
             "length.end must be greater than or equal to length.begin, but was: #{min..max} (normalized)"
           end
 
