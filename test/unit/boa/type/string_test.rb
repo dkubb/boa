@@ -128,7 +128,7 @@ module Boa
               ArgumentError
             )
 
-            assert_equal('length.end must be greater than or equal to length.begin, but was: 1..0', error.message)
+            assert_equal('length.end must be greater than or equal to length.begin, but was: 1..0 (normalized)', error.message)
           end
 
           sig { void }
@@ -138,7 +138,7 @@ module Boa
               ArgumentError
             )
 
-            assert_equal('length.end must be greater than or equal to length.begin, but was: 1...1', error.message)
+            assert_equal('length.end must be greater than or equal to length.begin, but was: 1..0 (normalized)', error.message)
           end
         end
 

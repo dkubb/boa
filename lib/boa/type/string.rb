@@ -65,9 +65,7 @@ module Boa
       def self.new(name, length: DEFAULT_LENGTH, **options)
         min, max = minmax_length(length)
 
-        raise(ArgumentError, "length.begin must be greater than or equal to 0, but was #{min}")              if min.negative?
-        raise(ArgumentError, "length.end must be greater than or equal to 0 or nil, but was #{max}")         if max&.negative?
-        raise(ArgumentError, "length.end must be greater than or equal to length.begin, but was: #{length}") if max&.<(min)
+        assert_valid_length(min, max)
 
         super(name, length: min..max, **options)
       end
@@ -86,6 +84,30 @@ module Boa
         [normalized.begin || 0, normalized.end]
       end
       private_class_method(:minmax_length)
+
+      # Assert the length constraint is valid
+      #
+      # @param min [::Integer] the minimum length
+      # @param max [::Integer, nil] the maximum length
+      #
+      # @return [void]
+      #
+      # @raise [ArgumentError] if the length constraint is invalid
+      #
+      # @api private
+      sig { params(min: ::Integer, max: T.nilable(::Integer)).void }
+      def self.assert_valid_length(min, max)
+        message =
+          if min.negative?
+            "length.begin must be greater than or equal to 0, but was #{min}"
+          elsif max&.negative?
+            "length.end must be greater than or equal to 0 or nil, but was #{max}"
+          elsif max&.<(min) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/MissingElse
+            "length.end must be greater than or equal to length.begin, but was: #{min..max} (normalized)"
+          end
+
+        raise(ArgumentError, message) if message
+      end
 
       # Initialize the string type
       #
