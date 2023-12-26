@@ -108,6 +108,7 @@ module Boa
 
         raise(ArgumentError, message) if message
       end
+      private_class_method(:assert_valid_length)
 
       # Initialize the string type
       #
