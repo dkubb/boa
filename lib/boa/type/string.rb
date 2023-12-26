@@ -58,6 +58,8 @@ module Boa
       #
       # @return [Type::String] the string type
       #
+      # @raise [ArgumentError] if the length constraint is invalid
+      #
       # @api public
       sig { params(name: Symbol, length: T::Range[T.nilable(::Integer)], options: ::Object).returns(T.attached_class) }
       def self.new(name, length: DEFAULT_LENGTH, **options)
