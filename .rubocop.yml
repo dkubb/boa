@@ -69,10 +69,6 @@ Security/CompoundHash:
 Sorbet/ForbidTStruct:
   Enabled: false
 
-Sorbet/ForbidTUnsafe:
-  Exclude:
-    - test/unit/boa_test.rb
-
 Sorbet/ForbidTUntyped:
   Exclude:
     - test/support/type_behaviour.rb
