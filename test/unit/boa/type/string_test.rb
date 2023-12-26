@@ -102,6 +102,17 @@ module Boa
           end
 
           sig { void }
+          def test_with_length_option_and_singleton_range
+            subject = described_class.new(type_name, length: 1..1)
+
+            assert_equal(type_name, subject.name)
+            assert_equal(1..1, subject.length)
+            assert_equal(1, subject.min_length)
+            assert_equal(1, subject.max_length)
+            assert_operator(subject, :frozen?)
+          end
+
+          sig { void }
           def test_with_length_option_and_negative_minimum_length
             error = T.let(
               assert_raises(ArgumentError) { described_class.new(type_name, length: -1..) },
