@@ -176,12 +176,12 @@ module Support
 
         replace_method(described_class, :inherited) do |descendant|
           inherited << described_class
-          original_inherited.call(descendant)
+          original_inherited.(descendant)
         end
 
         replace_method(Object, :inherited) do |descendant|
           inherited << Object
-          object_inherited.call(descendant)
+          object_inherited.(descendant)
         end
 
         Class.new(described_class)

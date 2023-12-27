@@ -104,6 +104,9 @@ Style/InlineComment:
 Style/InvertibleUnlessCondition:
   Enabled: false
 
+Style/LambdaCall:
+  EnforcedStyle: braces
+
 Style/MethodCallWithArgsParentheses:
   AllowedMethods:
     - attr_reader
