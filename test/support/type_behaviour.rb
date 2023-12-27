@@ -71,12 +71,12 @@ module Support
       def test_when_class_type_is_not_set
         class_type = Class.new
 
-        error = T.let(
+        exception = T.let(
           assert_raises(ArgumentError) { described_class[class_type] },
           ArgumentError
         )
 
-        assert_equal("type class for #{class_type} is unknown", error.message)
+        assert_equal("type class for #{class_type} is unknown", exception.message)
       end
     end
 
