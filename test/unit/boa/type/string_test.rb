@@ -244,8 +244,8 @@ module Boa
           include Support::TypeBehaviour::Freeze
         end
 
-        class InstanceMethods < self
-          include Support::InstanceMethodsBehaviour::InstanceMethods
+        class Equality < self
+          include Support::InstanceMethodsBehaviour::Equality
         end
 
         class Eql < self
