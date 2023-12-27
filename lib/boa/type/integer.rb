@@ -96,7 +96,7 @@ module Boa
       # @example with no minimum range
       #   type = Integer.new(:age)
       #   type.min_range  # => nil
-
+      #
       # @example with a minimum range
       #   type = Integer.new(:age, range: 1..125)
       #   type.min_range  # => 1
