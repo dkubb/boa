@@ -1,5 +1,9 @@
 inherit_from: .rubocop_todo.yml
 
+inherit_mode:
+  merge:
+    - Exclude
+
 require:
   - rubocop-minitest
   - rubocop-performance
@@ -32,11 +36,18 @@ Layout/IndentationWidth:
 Layout/LineLength:
   Max: 132
 
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
 Layout/RedundantLineBreak:
   Enabled: false
 
 Lint/ConstantResolution:
   Enabled: false
+
+Lint/UnreachableLoop:
+  Exclude:
+    - test/unit/boa/result_test.rb
 
 Metrics/AbcSize:
   Exclude:
@@ -62,6 +73,13 @@ Naming/BlockForwarding:
 Performance/ArraySemiInfiniteRangeSlice:
   Enabled: false
 
+Performance/ChainArrayAllocation:
+  Exclude:
+    - test/unit/boa/result_test.rb
+
+Performance/RedundantBlockCall:
+  Enabled: false
+
 Security/CompoundHash:
   Exclude:
     - lib/boa/instance_methods.rb
@@ -72,6 +90,7 @@ Sorbet/ForbidTStruct:
 Sorbet/ForbidTUntyped:
   Exclude:
     - test/support/type_behaviour.rb
+    - test/unit/boa/result_test.rb
 
 Sorbet/RedundantExtendTSig:
   Enabled: false
@@ -94,11 +113,17 @@ Style/Copyright:
 Style/DocumentationMethod:
   Enabled: false
 
+Style/ImplicitRuntimeError:
+  Enabled: false
+
 Style/InlineComment:
   Enabled: false
 
 Style/InvertibleUnlessCondition:
   Enabled: false
+
+Style/LambdaCall:
+  EnforcedStyle: braces
 
 Style/MethodCallWithArgsParentheses:
   AllowedMethods:

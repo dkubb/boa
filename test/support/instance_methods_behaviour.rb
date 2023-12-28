@@ -57,7 +57,7 @@ module Support
       def test_objects_similar_but_not_equal_state; end
     end
 
-    module InstanceMethods
+    module Equality
       extend T::Helpers
       extend T::Sig
       include Contexts

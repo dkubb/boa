@@ -71,12 +71,12 @@ module Support
       def test_when_class_type_is_not_set
         class_type = Class.new
 
-        error = T.let(
+        exception = T.let(
           assert_raises(ArgumentError) { described_class[class_type] },
           ArgumentError
         )
 
-        assert_equal("type class for #{class_type} is unknown", error.message)
+        assert_equal("type class for #{class_type} is unknown", exception.message)
       end
     end
 
@@ -176,12 +176,12 @@ module Support
 
         replace_method(described_class, :inherited) do |descendant|
           inherited << described_class
-          original_inherited.call(descendant)
+          original_inherited.(descendant)
         end
 
         replace_method(Object, :inherited) do |descendant|
           inherited << Object
-          object_inherited.call(descendant)
+          object_inherited.(descendant)
         end
 
         Class.new(described_class)

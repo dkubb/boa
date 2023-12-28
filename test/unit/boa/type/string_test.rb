@@ -114,42 +114,42 @@ module Boa
 
           sig { void }
           def test_with_length_option_and_negative_minimum_length
-            error = T.let(
+            exception = T.let(
               assert_raises(ArgumentError) { described_class.new(type_name, length: -1..) },
               ArgumentError
             )
 
-            assert_equal('length.begin must be greater than or equal to 0, but was -1', error.message)
+            assert_equal('length.begin must be greater than or equal to 0, but was -1', exception.message)
           end
 
           sig { void }
           def test_with_length_option_and_negative_maximum_length
-            error = T.let(
+            exception = T.let(
               assert_raises(ArgumentError) { described_class.new(type_name, length: 0..-1) },
               ArgumentError
             )
 
-            assert_equal('length.end must be greater than or equal to 0 or nil, but was -1', error.message)
+            assert_equal('length.end must be greater than or equal to 0 or nil, but was -1', exception.message)
           end
 
           sig { void }
           def test_with_length_option_and_maximum_length_less_than_minimum_length
-            error = T.let(
+            exception = T.let(
               assert_raises(ArgumentError) { described_class.new(type_name, length: 1..0) },
               ArgumentError
             )
 
-            assert_equal('length.end must be greater than or equal to length.begin, but was: 1..0 (normalized)', error.message)
+            assert_equal('length.end must be greater than or equal to length.begin, but was: 1..0 (normalized)', exception.message)
           end
 
           sig { void }
           def test_with_length_option_and_empty_range
-            error = T.let(
+            exception = T.let(
               assert_raises(ArgumentError) { described_class.new(type_name, length: 1...1) },
               ArgumentError
             )
 
-            assert_equal('length.end must be greater than or equal to length.begin, but was: 1..0 (normalized)', error.message)
+            assert_equal('length.end must be greater than or equal to length.begin, but was: 1..0 (normalized)', exception.message)
           end
         end
 
@@ -244,8 +244,8 @@ module Boa
           include Support::TypeBehaviour::Freeze
         end
 
-        class InstanceMethods < self
-          include Support::InstanceMethodsBehaviour::InstanceMethods
+        class Equality < self
+          include Support::InstanceMethodsBehaviour::Equality
         end
 
         class Eql < self

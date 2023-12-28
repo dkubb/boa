@@ -3,9 +3,11 @@
 
 require 'sorbet-runtime'
 
-require_relative 'boa/util'
 require_relative 'boa/instance_methods'
 require_relative 'boa/class_methods'
+require_relative 'boa/result'
+require_relative 'boa/util'
+
 require_relative 'boa/type'
 require_relative 'boa/type/object'
 require_relative 'boa/type/boolean'

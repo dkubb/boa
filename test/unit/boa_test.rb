@@ -73,8 +73,8 @@ module Boa
       end
     end
 
-    class InstanceMethods < self
-      include Support::InstanceMethodsBehaviour::InstanceMethods
+    class Equality < self
+      include Support::InstanceMethodsBehaviour::Equality
     end
 
     class Eql < self

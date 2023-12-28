@@ -106,12 +106,12 @@ module Boa
 
           sig { void }
           def test_with_range_option_and_empty_range
-            error = T.let(
+            exception = T.let(
               assert_raises(ArgumentError) { described_class.new(type_name, range: 1...1) },
               ArgumentError
             )
 
-            assert_equal('range.end must be greater than or equal to range.begin, but was: 1..0 (normalized)', error.message)
+            assert_equal('range.end must be greater than or equal to range.begin, but was: 1..0 (normalized)', exception.message)
           end
         end
 
@@ -213,8 +213,8 @@ module Boa
           include Support::TypeBehaviour::Freeze
         end
 
-        class InstanceMethods < self
-          include Support::InstanceMethodsBehaviour::InstanceMethods
+        class Equality < self
+          include Support::InstanceMethodsBehaviour::Equality
         end
 
         class Eql < self
