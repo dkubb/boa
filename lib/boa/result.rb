@@ -13,8 +13,13 @@ module Boa
 
     abstract!
 
-    ValueType = type_member # The type of the success value
-    ErrorType = type_member # The type of the failure error
+    # The type of the success value
+    ValueType = type_member
+    private_constant(:ValueType)
+
+    # The type of the failure error
+    ErrorType = type_member
+    private_constant(:ErrorType)
 
     # The success status
     #
@@ -147,11 +152,21 @@ module Boa
     extend T::Sig
     include Result
 
-    ValueTemplate = type_template # The type of the success value (class methods)
-    ErrorTemplate = type_template # The type of the failure error (class methods)
+    # The type of the success value (class methods)
+    ValueTemplate = type_template
+    private_constant(:ValueTemplate)
 
-    ValueType = type_member # The type of the success value
-    ErrorType = type_member # The type of the failure error
+    # The type of the failure error (class methods)
+    ErrorTemplate = type_template
+    private_constant(:ErrorTemplate)
+
+    # The type of the success value
+    ValueType = type_member
+    private_constant(:ValueType)
+
+    # The type of the failure error
+    ErrorType = type_member
+    private_constant(:ErrorType)
 
     # Construct a new success result
     #
@@ -363,11 +378,21 @@ module Boa
     extend T::Sig
     include Result
 
-    ValueTemplate = type_template # The type of the success value (class methods)
-    ErrorTemplate = type_template # The type of the failure error (class methods)
+    # The type of the success value (class methods)
+    ValueTemplate = type_template
+    private_constant(:ValueTemplate)
 
-    ValueType = type_member # The type of the success value
-    ErrorType = type_member # The type of the failure error
+    # The type of the failure error (class methods)
+    ErrorTemplate = type_template
+    private_constant(:ErrorTemplate)
+
+    # The type of the success value
+    ValueType = type_member
+    private_constant(:ValueType)
+
+    # The type of the failure error
+    ErrorType = type_member
+    private_constant(:ErrorType)
 
     # Construct a new failure result
     #
