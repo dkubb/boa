@@ -45,7 +45,7 @@ module Boa
       #
       # @return [void]
       #
-      # @raise [ArgumentError] if the range constraint  is invalid
+      # @raise [ArgumentError] if the range constraint is invalid
       #
       # @api public
       sig { params(name: Symbol, range: T::Range[T.nilable(::Integer)], options: ::Object).returns(T.attached_class) }
