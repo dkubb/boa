@@ -62,10 +62,10 @@ module Boa
 
       if exception.nil?
         Success.new(value)
-      elsif exception.is_a?(Exception)
-        Failure.new(exception)
-      else
+      elsif exception.instance_of?(String)
         Failure.new(ArgumentError.new(exception))
+      else
+        Failure.new(exception)
       end
     end
 
