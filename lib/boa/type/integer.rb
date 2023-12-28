@@ -5,8 +5,12 @@ module Boa
   class Type
     # An integer type
     class Integer < self
+      # The type for the range integer constraint
+      RangeType = T.type_alias { T::Range[T.nilable(::Integer)] }
+      private_constant(:RangeType)
+
       # The default range for the integer type
-      DEFAULT_RANGE = T.let(Range.new(nil, nil).freeze, T::Range[T.nilable(::Integer)])
+      DEFAULT_RANGE = T.let(Range.new(nil, nil).freeze, RangeType)
       private_constant(:DEFAULT_RANGE)
 
       class_type(::Integer)
@@ -20,7 +24,7 @@ module Boa
       # @return [Range<::Integer>] the range of the integer
       #
       # @api public
-      sig { returns(T::Range[T.nilable(::Integer)]) }
+      sig { returns(RangeType) }
       attr_reader :range
 
       # Constructs the integer type
@@ -48,7 +52,7 @@ module Boa
       # @raise [ArgumentError] if the range constraint is invalid
       #
       # @api public
-      sig { params(name: Symbol, range: T::Range[T.nilable(::Integer)], options: ::Object).returns(T.attached_class) }
+      sig { params(name: Symbol, range: RangeType, options: ::Object).returns(T.attached_class) }
       def self.new(name, range: DEFAULT_RANGE, **options)
         range = Util.normalize_integer_range(range)
 
@@ -84,9 +88,9 @@ module Boa
       # @return [void]
       #
       # @api private
-      sig { params(name: Symbol, range: T::Range[T.nilable(::Integer)], options: ::Object).void }
+      sig { params(name: Symbol, range: RangeType, options: ::Object).void }
       def initialize(name, range: DEFAULT_RANGE, **options)
-        @range = T.let(range, T::Range[T.nilable(::Integer)])
+        @range = T.let(range, RangeType)
 
         super(name, **options)
       end
