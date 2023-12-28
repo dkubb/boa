@@ -67,41 +67,23 @@ module Boa
       # @api public
       sig { params(name: Symbol, length: LengthType, options: ::Object).returns(T.attached_class) }
       def self.new(name, length: DEFAULT_LENGTH, **options)
-        min_length, max_length = minmax_length(length)
-
-        assert_valid_length(min_length, max_length)
-
-        super(name, length: min_length..max_length, **options)
+        super(name, length: parse_length(length).unwrap, **options)
       end
 
-      # The min and max from the length constraint
+      # Parse the length constraint
       #
-      # @param length [Range<::Integer>] the length constraint of the string
+      # @param length [Range<::Integer>] the length constraint
       #
-      # @return [Array(::Integer, ::Integer), Array(::Integer, nil)] the min, max length constraints
+      # @return [Result<LengthType, ArgumentError>] the result of parsing the length constraint
       #
       # @api private
-      sig { params(length: LengthType).returns([::Integer, T.nilable(::Integer)]) }
-      def self.minmax_length(length)
+      sig { params(length: LengthType).returns(Result[LengthType, ExceptionType]) }
+      def self.parse_length(length) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Metrics/MethodLength
         normalized = Util.normalize_integer_range(length)
 
-        [normalized.begin || 0, normalized.end]
-      end
-      private_class_method(:minmax_length)
+        min, max = normalized.begin || 0, normalized.end
 
-      # Assert the length constraint is valid
-      #
-      # @param min [::Integer] the minimum length
-      # @param max [::Integer, nil] the maximum length
-      #
-      # @return [void]
-      #
-      # @raise [ArgumentError] if the length constraint is invalid
-      #
-      # @api private
-      sig { params(min: ::Integer, max: T.nilable(::Integer)).void }
-      def self.assert_valid_length(min, max)
-        message =
+        Result.parse(T.let(min..max, LengthType)) do
           if min.negative?
             "length.begin must be greater than or equal to 0, but was #{min}"
           elsif max&.negative?
@@ -109,10 +91,9 @@ module Boa
           elsif max && max < min # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/MissingElse
             "length.end must be greater than or equal to length.begin, but was: #{min..max} (normalized)"
           end
-
-        raise(ArgumentError, message) if message
+        end
       end
-      private_class_method(:assert_valid_length)
+      private_class_method(:parse_length)
 
       # Initialize the string type
       #
