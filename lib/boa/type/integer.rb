@@ -71,7 +71,7 @@ module Boa
         Result.parse(normalized) do
           min, max = normalized.begin, normalized.end
 
-          "range.end must be greater than or equal to range.begin, but was: #{normalized} (normalized)" if min && max && max < min
+          "range cannot be empty, but was: #{range}" if min && max && max < min
         end
       end
       private_class_method(:parse_range)

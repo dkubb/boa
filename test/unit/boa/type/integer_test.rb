@@ -111,7 +111,7 @@ module Boa
               ArgumentError
             )
 
-            assert_equal('range.end must be greater than or equal to range.begin, but was: 1..0 (normalized)', exception.message)
+            assert_equal('range cannot be empty, but was: 1...1', exception.message)
           end
         end
 
