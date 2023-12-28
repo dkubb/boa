@@ -86,7 +86,7 @@ module Boa
       # @api private
       sig { params(name: Symbol, range: T::Range[T.nilable(::Integer)], options: ::Object).void }
       def initialize(name, range: DEFAULT_RANGE, **options)
-        @range = T.let(Util.normalize_integer_range(range), T::Range[T.nilable(::Integer)])
+        @range = T.let(range, T::Range[T.nilable(::Integer)])
 
         super(name, **options)
       end
