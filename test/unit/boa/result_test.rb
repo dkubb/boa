@@ -54,9 +54,48 @@ module Boa
 
       sig { abstract.void }
       def test_unwrap_failure; end
+    end
 
-      # sig { abstract.void }
-      # def test_deconstruct
+    class Result < Minitest::Test
+      extend MutantCoverage
+      extend T::Sig
+
+      cover('Boa::Result*')
+
+      sig { returns(T.class_of(Boa::Result)) }
+      def described_class
+        Boa::Result
+      end
+
+      sig { returns(String) }
+      def valid
+        'valid'
+      end
+
+      sig { void }
+      def test_parse_valid_value
+        result = described_class.parse(valid) { |value| 'error' unless value.equal?(valid) }
+
+        assert_instance_of(Boa::Success, result)
+        assert_same(valid, result.unwrap)
+      end
+
+      sig { void }
+      def test_parse_invalid_value
+        result = described_class.parse(nil) { |value| 'error' unless value.equal?(valid) }
+
+        assert_instance_of(Boa::Failure, result)
+        assert_equal(ArgumentError.new('error'), result.unwrap_failure)
+      end
+
+      sig { void }
+      def test_parse_invalid_value_with_exception_instance
+        exception = RuntimeError.new('error').freeze
+        result    = described_class.parse(nil) { |value| exception unless value.equal?(valid) }
+
+        assert_instance_of(Boa::Failure, result)
+        assert_same(exception, result.unwrap_failure)
+      end
     end
 
     class Success < Minitest::Test

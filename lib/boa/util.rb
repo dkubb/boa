@@ -15,10 +15,11 @@ module Boa
     # @api private
     sig { params(range: T::Range[T.nilable(::Integer)]).returns(T::Range[T.nilable(::Integer)]) }
     def self.normalize_integer_range(range)
-      range_end  = range.end
-      range_end -= 1 if range_end && range.exclude_end?
-
-      Range.new(range.begin, range_end)
+      if range.exclude_end?
+        range.begin..range.end&.pred
+      else
+        range
+      end
     end
   end
 end

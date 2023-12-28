@@ -13,8 +13,61 @@ module Boa
 
     abstract!
 
-    ValueType = type_member # The type of the success value
-    ErrorType = type_member # The type of the failure error
+    # The type of the success value
+    ValueType = type_member
+    private_constant(:ValueType)
+
+    # The type of the failure error
+    ErrorType = type_member
+    private_constant(:ErrorType)
+
+    # Parse and construct a result
+    #
+    # @example with a valid value
+    #   result = Boa::Result.parse(1) { |value| 'must be positive' unless value.positive? }
+    #   result.success? # => true
+    #   result.unwrap   # => 1
+    #
+    # @example with an invalid value
+    #   result = Boa::Result.parse(0) { |value| 'must be positive' unless value.positive? }
+    #   result.failure?       # => true
+    #   result.unwrap_failure # => ArgumentError.new('must be positive')
+    #
+    # @example with an exception
+    #   result = Boa::Result.parse(1) { RuntimeError.new('error') }
+    #   result.failure?       # => true
+    #   result.unwrap_failure # => RuntimeError.new('error')
+    #
+    # @param value [Object] The value to parse
+    #
+    # @yield [value] Passes the value to the block
+    # @yieldparam [Object] value The value to parse
+    # @yieldreturn [Exception, String, nil] The error if failure, nil if success
+    #
+    # @return [Result] a result
+    #
+    # @api public
+    sig do
+      type_parameters(:V)
+        .params(
+          value: T.type_parameter(:V),
+          block: T.proc
+            .params(arg0: T.type_parameter(:V))
+            .returns(T.nilable(ExceptionType))
+        )
+        .returns(Result[T.type_parameter(:V), ExceptionType])
+    end
+    def self.parse(value, &block)
+      exception = block.(value)
+
+      if exception.nil?
+        Success.new(value)
+      elsif exception.is_a?(Exception)
+        Failure.new(exception)
+      else
+        Failure.new(ArgumentError.new(exception))
+      end
+    end
 
     # The success status
     #
@@ -147,11 +200,21 @@ module Boa
     extend T::Sig
     include Result
 
-    ValueTemplate = type_template # The type of the success value (class methods)
-    ErrorTemplate = type_template # The type of the failure error (class methods)
+    # The type of the success value (class methods)
+    ValueTemplate = type_template
+    private_constant(:ValueTemplate)
 
-    ValueType = type_member # The type of the success value
-    ErrorType = type_member # The type of the failure error
+    # The type of the failure error (class methods)
+    ErrorTemplate = type_template
+    private_constant(:ErrorTemplate)
+
+    # The type of the success value
+    ValueType = type_member
+    private_constant(:ValueType)
+
+    # The type of the failure error
+    ErrorType = type_member
+    private_constant(:ErrorType)
 
     # Construct a new success result
     #
@@ -363,11 +426,21 @@ module Boa
     extend T::Sig
     include Result
 
-    ValueTemplate = type_template # The type of the success value (class methods)
-    ErrorTemplate = type_template # The type of the failure error (class methods)
+    # The type of the success value (class methods)
+    ValueTemplate = type_template
+    private_constant(:ValueTemplate)
 
-    ValueType = type_member # The type of the success value
-    ErrorType = type_member # The type of the failure error
+    # The type of the failure error (class methods)
+    ErrorTemplate = type_template
+    private_constant(:ErrorTemplate)
+
+    # The type of the success value
+    ValueType = type_member
+    private_constant(:ValueType)
+
+    # The type of the failure error
+    ErrorType = type_member
+    private_constant(:ErrorType)
 
     # Construct a new failure result
     #
