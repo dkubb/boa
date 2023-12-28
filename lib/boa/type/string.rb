@@ -5,8 +5,12 @@ module Boa
   class Type
     # A string type
     class String < self
+      # The type for the string length constraint
+      LengthType = T.type_alias { T::Range[T.nilable(::Integer)] }
+      private_constant(:LengthType)
+
       # The default length for the string type
-      DEFAULT_LENGTH = T.let(Range.new(0, nil).freeze, T::Range[T.nilable(::Integer)])
+      DEFAULT_LENGTH = T.let(Range.new(0, nil).freeze, LengthType)
       private_constant(:DEFAULT_LENGTH)
 
       class_type(::String)
@@ -19,7 +23,7 @@ module Boa
       # @return [Range<::Integer>] the length of the string
       #
       # @api public
-      sig { returns(T::Range[T.nilable(::Integer)]) }
+      sig { returns(LengthType) }
       attr_reader :length
 
       # Construct the string type
@@ -61,7 +65,7 @@ module Boa
       # @raise [ArgumentError] if the length constraint is invalid
       #
       # @api public
-      sig { params(name: Symbol, length: T::Range[T.nilable(::Integer)], options: ::Object).returns(T.attached_class) }
+      sig { params(name: Symbol, length: LengthType, options: ::Object).returns(T.attached_class) }
       def self.new(name, length: DEFAULT_LENGTH, **options)
         min_length, max_length = minmax_length(length)
 
@@ -77,7 +81,7 @@ module Boa
       # @return [Array(::Integer, ::Integer), Array(::Integer, nil)] the min, max length constraints
       #
       # @api private
-      sig { params(length: T::Range[T.nilable(::Integer)]).returns([::Integer, T.nilable(::Integer)]) }
+      sig { params(length: LengthType).returns([::Integer, T.nilable(::Integer)]) }
       def self.minmax_length(length)
         normalized = Util.normalize_integer_range(length)
 
@@ -119,9 +123,9 @@ module Boa
       # @return [void]
       #
       # @api private
-      sig { params(name: Symbol, length: T::Range[T.nilable(::Integer)], options: ::Object).void }
+      sig { params(name: Symbol, length: LengthType, options: ::Object).void }
       def initialize(name, length: DEFAULT_LENGTH, **options)
-        @length = T.let(length, T::Range[T.nilable(::Integer)])
+        @length = T.let(length, LengthType)
 
         super(name, **options)
       end
