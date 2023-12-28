@@ -54,30 +54,27 @@ module Boa
       # @api public
       sig { params(name: Symbol, range: RangeType, options: ::Object).returns(T.attached_class) }
       def self.new(name, range: DEFAULT_RANGE, **options)
-        range = Util.normalize_integer_range(range)
-
-        assert_valid_range(range.begin, range.end)
-
-        super(name, range:, **options)
+        super(name, range: parse_range(range).unwrap, **options)
       end
 
-      # Assert the range constraint is valid
+      # Parse the range constraint
       #
-      # @param min [::Integer, nil] the minimum range
-      # @param max [::Integer, nil] the maximum range
+      # @param range [RangeType] the range constraint
       #
-      # @return [void]
-      #
-      # @raise [ArgumentError] if the range constraint is invalid
+      # @return [Result<RangeType, ArgumentError>] the result of parsing the range constraint
       #
       # @api private
-      sig { params(min: T.nilable(::Integer), max: T.nilable(::Integer)).void }
-      def self.assert_valid_range(min, max)
-        return if min.nil? || max.nil? || max >= min
+      sig { params(range: RangeType).returns(Result[RangeType, ExceptionType]) }
+      def self.parse_range(range)
+        normalized = Util.normalize_integer_range(range)
 
-        raise(ArgumentError, "range.end must be greater than or equal to range.begin, but was: #{min..max} (normalized)")
+        Result.parse(normalized) do
+          min, max = normalized.begin, normalized.end
+
+          "range.end must be greater than or equal to range.begin, but was: #{normalized} (normalized)" if min && max && max < min
+        end
       end
-      private_class_method(:assert_valid_range)
+      private_class_method(:parse_range)
 
       # Initialize the integer type
       #
