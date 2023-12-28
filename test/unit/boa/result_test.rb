@@ -54,9 +54,6 @@ module Boa
 
       sig { abstract.void }
       def test_unwrap_failure; end
-
-      # sig { abstract.void }
-      # def test_deconstruct
     end
 
     class Success < Minitest::Test
