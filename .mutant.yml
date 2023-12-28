@@ -14,10 +14,10 @@ matcher:
   subjects:
     - Boa*
   ignore:
-    - Boa::Failure#and_then         # Mutant removes the optioal block that sorbet asserts
-    - Boa::Failure#map              # Mutant removes the optioal block that sorbet asserts
+    - Boa::Failure#and_then         # Mutant removes the optional block that sorbet asserts
+    - Boa::Failure#map              # Mutant removes the optional block that sorbet asserts
     - Boa::Result*                  # The abstract class cannot be instantiated
-    - Boa::Success#map_failure      # Mutant removes the optioal block that sorbet asserts
-    - Boa::Success#or_else          # Mutant removes the optioal block that sorbet asserts
+    - Boa::Success#map_failure      # Mutant removes the optional block that sorbet asserts
+    - Boa::Success#or_else          # Mutant removes the optional block that sorbet asserts
     - Boa::Type::Integer#initialize # Sorbet requires the default value for range
     - Boa::Type::String#initialize  # Sorbet requires the default value for length
