@@ -11,6 +11,10 @@ module Boa
     # The class type alias
     ClassType = T.type_alias { T.anything }
 
+    # The includes type alias
+    Includes = T.type_alias { T.all(T::Enumerable[T.anything], ::Object) }
+    private_constant(:Includes)
+
     abstract!
 
     # Lookup the type for a class type
@@ -113,7 +117,7 @@ module Boa
     # @return [Object] the object to check inclusion against
     #
     # @api public
-    sig { returns(::Object) }
+    sig { returns(T.nilable(Includes)) }
     attr_reader :includes
 
     # The options for the T::Struct.prop method
@@ -130,16 +134,16 @@ module Boa
     # Initialize the type
     #
     # @param name [Symbol] the name of the type
-    # @param includes [Object] the object to check inclusion against
+    # @param includes [Enumerable<Integer>, nil] the object to check inclusion against
     # @param options [Hash{Symbol => Object}] the options for the type
     #
     # @return [void]
     #
     # @api private
-    sig { params(name: Symbol, includes: ::Object, options: ::Object).void }
+    sig { params(name: Symbol, includes: T.nilable(Includes), options: ::Object).void }
     def initialize(name, includes: nil, **options)
       @name     = name
-      @includes = T.let(includes, T.nilable(::Object))
+      @includes = T.let(includes, T.nilable(Includes))
       @options  = options
 
       freeze

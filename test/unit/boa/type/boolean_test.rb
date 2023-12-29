@@ -83,6 +83,11 @@ module Boa
 
         class Options < self
           include Support::TypeBehaviour::Options
+
+          sig { override.returns(T::Array[T::Boolean]) }
+          def includes
+            @includes ||= T.let([true, false].freeze, T.nilable(T::Array[T::Boolean]))
+          end
         end
 
         class Default < self

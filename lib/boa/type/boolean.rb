@@ -19,7 +19,7 @@ module Boa
       #   type.name   # => :admin?
       #
       # @param _name [Symbol] the name of the type
-      # @param includes [Array<Boolean>] the object to check inclusion against
+      # @param includes [Enumerable<Boolean>] the object to check inclusion against
       # @param options [Hash] the options to initialize with
       #
       # @return [void]

@@ -35,7 +35,7 @@ module Boa
     # @return [ClassMethods] the class method module
     #
     # @api public
-    sig { params(name: Symbol, class_type: Type::ClassType, options: Object).returns(T.self_type) }
+    sig { params(name: Symbol, class_type: Type::ClassType, options: T.untyped).returns(T.self_type) }
     def prop(name, class_type, **options)
       property = properties[name] = Type[class_type].new(name, **options)
       super(name, class_type, **property.options)

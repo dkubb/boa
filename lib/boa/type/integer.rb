@@ -44,6 +44,7 @@ module Boa
       #   type.default # => nil
       #
       # @param name [Symbol] the name of the type
+      # @param includes [Enumerable<Integer>, nil] the object to check inclusion against
       # @param range [Range<::Integer>] the range of the integer
       # @param options [Hash{Symbol => Object}] the options for the type
       #
@@ -52,9 +53,9 @@ module Boa
       # @raise [ArgumentError] if the range constraint is invalid
       #
       # @api public
-      sig { params(name: Symbol, range: RangeType, options: ::Object).returns(T.attached_class) }
-      def self.new(name, range: DEFAULT_RANGE, **options)
-        super(name, **options, range: parse_range(range).unwrap)
+      sig { params(name: Symbol, includes: T.nilable(Includes), range: RangeType, options: ::Object).returns(T.attached_class) }
+      def self.new(name, includes: nil, range: DEFAULT_RANGE, **options)
+        super(name, **options, includes:, range: parse_range(range).unwrap)
       end
 
       # Parse the range constraint
@@ -79,17 +80,18 @@ module Boa
       # Initialize the integer type
       #
       # @param name [Symbol] the name of the type
+      # @param includes [Enumerable<Integer>, nil] the object to check inclusion against
       # @param range [Range<::Integer>] the range of the integer
       # @param options [Hash{Symbol => Object}] the options for the type
       #
       # @return [void]
       #
       # @api private
-      sig { params(name: Symbol, range: RangeType, options: ::Object).void }
-      def initialize(name, range: DEFAULT_RANGE, **options)
+      sig { params(name: Symbol, includes: T.nilable(Includes), range: RangeType, options: ::Object).void }
+      def initialize(name, includes: nil, range: DEFAULT_RANGE, **options)
         @range = T.let(range, RangeType)
 
-        super(name, **options)
+        super(name, **options, includes:)
       end
 
       # The minimum range of the integer

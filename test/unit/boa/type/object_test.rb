@@ -34,7 +34,7 @@ module Boa
         def new_object(klass)
           raise(ArgumentError, "klass must be a Boa::Type::Object, but was #{klass}") unless klass <= Boa::Type::Object
 
-          klass.new(type_name, **options)
+          klass.new(type_name, **options, includes:)
         end
 
         sig { override.returns(T::Hash[Symbol, ::Object]) }

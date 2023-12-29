@@ -24,6 +24,9 @@ module Support
         {}
       end
 
+      sig { overridable.returns(T.nilable(T::Array[T.untyped])) }
+      def includes; end
+
       sig { returns(T::Hash[Boa::Type::ClassType, T.class_of(Boa::Type)]) }
       def class_types
         T.let(
@@ -288,9 +291,6 @@ module Support
         descendant.cover('Boa::Type#includes')
       end
 
-      sig { abstract.returns(Object) }
-      def includes; end
-
       sig { void }
       def test_returns_the_includes
         subject = described_class.new(type_name, includes:)
@@ -317,7 +317,7 @@ module Support
 
       sig { void }
       def test_returns_the_options
-        subject = described_class.new(type_name, **options)
+        subject = described_class.new(type_name, **options, includes:)
 
         assert_equal(options, subject.options)
       end

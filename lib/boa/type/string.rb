@@ -57,6 +57,7 @@ module Boa
       #   type.default # => 'Dan Kubb'
       #
       # @param name [Symbol] the name of the type
+      # @param includes [Enumerable<Integer>, nil] the object to check inclusion against
       # @param length [Range<::Integer>] the length of the string
       # @param options [Hash{Symbol => Object}] the options for the type
       #
@@ -65,9 +66,9 @@ module Boa
       # @raise [ArgumentError] if the length constraint is invalid
       #
       # @api public
-      sig { params(name: Symbol, length: LengthType, options: ::Object).returns(T.attached_class) }
-      def self.new(name, length: DEFAULT_LENGTH, **options)
-        super(name, **options, length: parse_length(length).unwrap)
+      sig { params(name: Symbol, includes: T.nilable(Includes), length: LengthType, options: ::Object).returns(T.attached_class) }
+      def self.new(name, includes: nil, length: DEFAULT_LENGTH, **options)
+        super(name, **options, includes:, length: parse_length(length).unwrap)
       end
 
       # Parse the length constraint
@@ -98,17 +99,18 @@ module Boa
       # Initialize the string type
       #
       # @param name [Symbol] the name of the type
+      # @param includes [Enumerable<Integer>, nil] the object to check inclusion against
       # @param length [Range<::Integer>] the length of the string
       # @param options [Hash{Symbol => Object}] the options for the type
       #
       # @return [void]
       #
       # @api private
-      sig { params(name: Symbol, length: LengthType, options: ::Object).void }
-      def initialize(name, length: DEFAULT_LENGTH, **options)
+      sig { params(name: Symbol, includes: T.nilable(Includes), length: LengthType, options: ::Object).void }
+      def initialize(name, includes: nil, length: DEFAULT_LENGTH, **options)
         @length = T.let(length, LengthType)
 
-        super(name, **options)
+        super(name, **options, includes:)
       end
 
       # The minimum length of the string
