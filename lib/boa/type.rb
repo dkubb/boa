@@ -170,8 +170,13 @@ module Boa
     # @api public
     sig { returns(T.self_type) }
     def freeze
+      return self if frozen?
+
       instance_variables.each do |ivar_name|
-        T.let(instance_variable_get(ivar_name), ::Object).freeze
+        ivar = T.let(instance_variable_get(ivar_name),        ::Object)
+        ivar = T.let(Ractor.make_shareable(ivar, copy: true), ::Object)
+
+        instance_variable_set(ivar_name, ivar)
       end
 
       T.let(super(), Type)

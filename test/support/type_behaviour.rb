@@ -399,6 +399,30 @@ module Support
         assert_same(subject, subject.freeze)
       end
 
+      sig { void }
+      def test_does_not_mutate_arguments
+        includes = []
+        options  = { includes: }
+        subject  = described_class.new(type_name, **options)
+
+        subject.freeze
+
+        # Argument is not mutated
+        refute_operator(includes, :frozen?)
+        assert_operator(subject.includes, :frozen?)
+
+        # Argument state is copied
+        refute_same(includes, subject.includes)
+        assert_equal(includes, subject.includes)
+      end
+
+      sig { void }
+      def test_idempotent
+        subject = described_class.new(type_name)
+
+        assert_same(subject.freeze, subject.freeze)
+      end
+
     private
 
       sig { params(object: Object).returns(T::Hash[Symbol, Object]) }
