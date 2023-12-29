@@ -54,7 +54,7 @@ module Boa
       # @api public
       sig { params(name: Symbol, range: RangeType, options: ::Object).returns(T.attached_class) }
       def self.new(name, range: DEFAULT_RANGE, **options)
-        super(name, range: parse_range(range).unwrap, **options)
+        super(name, **options, range: parse_range(range).unwrap)
       end
 
       # Parse the range constraint

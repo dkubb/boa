@@ -67,7 +67,7 @@ module Boa
       # @api public
       sig { params(name: Symbol, length: LengthType, options: ::Object).returns(T.attached_class) }
       def self.new(name, length: DEFAULT_LENGTH, **options)
-        super(name, length: parse_length(length).unwrap, **options)
+        super(name, **options, length: parse_length(length).unwrap)
       end
 
       # Parse the length constraint
