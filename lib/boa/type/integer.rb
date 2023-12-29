@@ -129,6 +129,43 @@ module Boa
       def max_range
         range.end
       end
+
+      # Parse the integer value
+      #
+      # @example with a value within range
+      #   type = Integer.new(:age, range: 1..125)
+      #   type.parse(1)   # => Boa::Success.new(1)
+      #   type.parse(125) # => Boa::Success.new(125)
+      #
+      # @example with a value outside of range
+      #   type = Integer.new(:age, range: 1..125)
+      #   type.parse(0)   # => Boa::Failure.new('must be within 1..125, but was: 0')
+      #   type.parse(126) # => Boa::Failure.new('must be within 1..125, but was: 126')
+      #
+      # @example with a non-integer value
+      #   type = Integer.new(:age)
+      #   type.parse('1') # => Boa::Failure.new('must be an Integer, but was: String')
+      #
+      # @param _value [::Integer] the value to parse
+      #
+      # @return [Result<::Integer, ExceptionType>] the result of parsing the value
+      #
+      # @api public
+      sig { override.params(_value: ::Object).returns(Result[::Integer, ExceptionType]) }
+      def parse(_value) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Metrics/MethodLength
+        super.and_then do |value|
+          case value
+          when ::Integer
+            if range.cover?(value)
+              Success.new(value)
+            else
+              Failure.new("must be within #{range}, but was: #{value}")
+            end
+          else
+            Failure.new("must be an Integer, but was: #{T.let(value, ::Object).class}")
+          end
+        end
+      end
     end
   end
 end

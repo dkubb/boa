@@ -214,7 +214,10 @@ module Boa
         end
 
         class Parse < self
+          extend MutantCoverage
           include Support::TypeBehaviour::Parse
+
+          cover('Boa::Type::Integer#parse')
 
           sig { override.returns(::Integer) }
           def valid_value
@@ -224,6 +227,48 @@ module Boa
           sig { override.returns(::Integer) }
           def invalid_value
             0
+          end
+
+          sig { void }
+          def test_with_no_range_option
+            subject = described_class.new(type_name)
+
+            assert_equal(Boa::Success.new(0), subject.parse(0))
+          end
+
+          sig { void }
+          def test_with_range_option_and_minimum_range
+            subject = described_class.new(type_name, range: 1..)
+
+            assert_equal(Boa::Success.new(1), subject.parse(1))
+          end
+
+          sig { void }
+          def test_with_range_option_and_minimum_range_and_invalid_value
+            subject = described_class.new(type_name, range: 1..)
+
+            assert_equal(Boa::Failure.new('must be within 1.., but was: 0'), subject.parse(0))
+          end
+
+          sig { void }
+          def test_with_range_option_and_maximum_range
+            subject = described_class.new(type_name, range: ..1)
+
+            assert_equal(Boa::Success.new(1), subject.parse(1))
+          end
+
+          sig { void }
+          def test_with_range_option_and_maximum_range_and_invalid_value
+            subject = described_class.new(type_name, range: ..1)
+
+            assert_equal(Boa::Failure.new('must be within ..1, but was: 2'), subject.parse(2))
+          end
+
+          sig { void }
+          def test_with_invalid_type
+            subject = described_class.new(type_name)
+
+            assert_equal(Boa::Failure.new('must be an Integer, but was: String'), subject.parse('0'))
           end
         end
 
