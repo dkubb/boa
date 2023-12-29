@@ -106,6 +106,25 @@ module Boa
           include Support::TypeBehaviour::Freeze
         end
 
+        class Parse < self
+          include Support::TypeBehaviour::Parse
+
+          sig { override.returns(::Object) }
+          def valid_value
+            @valid_value ||= T.let(::Object.new.freeze, T.nilable(::Object))
+          end
+
+          sig { override.returns(::Object) }
+          def invalid_value
+            @invalid_value ||= T.let(::Object.new.freeze, T.nilable(::Object))
+          end
+
+          sig { override.returns(T::Array[::Object]) }
+          def includes
+            @includes ||= T.let([valid_value], T.nilable(T::Array[::Object]))
+          end
+        end
+
         class Equality < self
           include Support::InstanceMethodsBehaviour::Equality
         end

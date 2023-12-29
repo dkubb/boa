@@ -185,5 +185,35 @@ module Boa
 
       T.let(super(), Type)
     end
+
+    # Parse the value
+    #
+    # @example when the value is included
+    #   type = String.new(:first_name, includes: %w[Jon])
+    #   type.parse('Jon') # => Boa::Success.new('Jon')
+    #
+    # @example when the value is not included
+    #   type = String.new(:first_name, includes: %w[Jon])
+    #   type.parse('Dan') # => Boa::Failure.new('must be one of ["Jon"], but was "Dan"')
+    #
+    # @example when includes is nil
+    #   type = String.new(:first_name)
+    #   type.parse('Jon') # => Boa::Success.new('Jon')
+    #
+    # @param value [Object] the value to parse
+    #
+    # @return [Result<Object, String>] the result of parsing the value
+    #
+    # @api public
+    sig { overridable.params(value: ::Object).returns(Result[T.untyped, ExceptionType]) }
+    def parse(value)
+      allowed_values = includes
+
+      if allowed_values.nil? || allowed_values.include?(value)
+        Success.new(value)
+      else
+        Failure.new("must be one of #{allowed_values}, but was #{value.inspect}")
+      end
+    end
   end
 end

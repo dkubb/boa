@@ -244,6 +244,20 @@ module Boa
           include Support::TypeBehaviour::Freeze
         end
 
+        class Parse < self
+          include Support::TypeBehaviour::Parse
+
+          sig { override.returns(::String) }
+          def valid_value
+            'Jon'
+          end
+
+          sig { override.returns(::String) }
+          def invalid_value
+            'Dan'
+          end
+        end
+
         class Equality < self
           include Support::InstanceMethodsBehaviour::Equality
         end

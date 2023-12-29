@@ -432,5 +432,54 @@ module Support
         end
       end
     end
+
+    module Parse
+      extend T::Helpers
+      extend T::Sig
+
+      requires_ancestor { Setup }
+
+      abstract!
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type.parse')
+      end
+
+      sig { abstract.returns(T.nilable(Object)) }
+      def valid_value; end
+
+      sig { abstract.returns(T.nilable(Object)) }
+      def invalid_value; end
+
+      sig { overridable.returns(T.nilable(T::Array[T.untyped])) }
+      def includes
+        @includes ||= T.let([valid_value], T.nilable(T::Array[T.untyped]))
+      end
+
+      sig { void }
+      def test_when_includes_is_not_set
+        subject = described_class.new(type_name)
+
+        assert_equal(Boa::Success.new(valid_value), subject.parse(valid_value))
+      end
+
+      sig { void }
+      def test_when_includes_is_set_and_value_is_valid
+        subject = described_class.new(type_name, includes:)
+
+        assert_equal(Boa::Success.new(valid_value), subject.parse(valid_value))
+      end
+
+      sig { void }
+      def test_when_includes_is_set_and_value_is_invalid
+        subject = described_class.new(type_name, includes:)
+
+        assert_equal(
+          Boa::Failure.new("must be one of #{includes.inspect}, but was #{invalid_value.inspect}"),
+          subject.parse(invalid_value)
+        )
+      end
+    end
   end
 end
