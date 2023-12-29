@@ -69,7 +69,7 @@ module Boa
 
           sig { override.returns(::Object) }
           def non_nil_default
-            @non_nil_default ||= T.let(::Object.new, T.nilable(::Object))
+            @non_nil_default ||= T.let(::Object.new.freeze, T.nilable(::Object))
           end
 
           sig { override.returns(NilClass) }
@@ -85,7 +85,7 @@ module Boa
 
           sig { override.returns(T::Array[::Object]) }
           def includes
-            @includes ||= T.let([::Object.new], T.nilable(T::Array[::Object]))
+            @includes ||= T.let([::Object.new.freeze].freeze, T.nilable(T::Array[::Object]))
           end
         end
 
@@ -98,7 +98,7 @@ module Boa
 
           sig { override.returns(::Object) }
           def default
-            @default ||= T.let(::Object.new, T.nilable(::Object))
+            @default ||= T.let(::Object.new.freeze, T.nilable(::Object))
           end
         end
 

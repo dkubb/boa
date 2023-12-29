@@ -124,7 +124,7 @@ module Boa
 
           sig { override.returns(T::Array[::Integer]) }
           def includes
-            @includes ||= T.let([1], T.nilable(T::Array[::Integer]))
+            @includes ||= T.let([1].freeze, T.nilable(T::Array[::Integer]))
           end
         end
 

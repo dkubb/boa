@@ -77,7 +77,7 @@ module Boa
 
           sig { override.returns(T::Array[T::Boolean]) }
           def includes
-            @includes ||= T.let([true], T.nilable(T::Array[T::Boolean]))
+            @includes ||= T.let([true].freeze, T.nilable(T::Array[T::Boolean]))
           end
         end
 

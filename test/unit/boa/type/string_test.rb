@@ -162,7 +162,7 @@ module Boa
 
           sig { override.returns(T::Array[::String]) }
           def includes
-            @includes ||= T.let(%w[test], T.nilable(T::Array[::String]))
+            @includes ||= T.let(%w[test].freeze, T.nilable(T::Array[::String]))
           end
         end
 
