@@ -245,7 +245,10 @@ module Boa
         end
 
         class Parse < self
+          extend MutantCoverage
           include Support::TypeBehaviour::Parse
+
+          cover('Boa::Type::String#parse')
 
           sig { override.returns(::String) }
           def valid_value
@@ -255,6 +258,42 @@ module Boa
           sig { override.returns(::String) }
           def invalid_value
             'Dan'
+          end
+
+          sig { void }
+          def test_with_no_length_option
+            subject = described_class.new(type_name)
+
+            assert_equal(Boa::Success.new('Dan'), subject.parse('Dan'))
+          end
+
+          sig { void }
+          def test_with_length_option
+            subject = described_class.new(type_name, length: 2..10)
+
+            assert_equal(Boa::Success.new('a' * 2),  subject.parse('a' * 2))
+            assert_equal(Boa::Success.new('a' * 10), subject.parse('a' * 10))
+          end
+
+          sig { void }
+          def test_with_length_option_and_too_short
+            subject = described_class.new(type_name, length: 2..10)
+
+            assert_equal(Boa::Failure.new('must have a length within 2..10, but was: 1'), subject.parse('a'))
+          end
+
+          sig { void }
+          def test_with_length_option_and_too_long
+            subject = described_class.new(type_name, length: 2..10)
+
+            assert_equal(Boa::Failure.new('must have a length within 2..10, but was: 11'), subject.parse('a' * 11))
+          end
+
+          sig { void }
+          def test_with_length_option_and_non_string_value
+            subject = described_class.new(type_name, length: 2..10)
+
+            assert_equal(Boa::Failure.new('must be a String, but was: Integer'), subject.parse(1))
           end
         end
 

@@ -144,6 +144,45 @@ module Boa
       def max_length
         length.end
       end
+
+      # Parse the string value
+      #
+      # @example with a valid string
+      #   type = String.new(:name)
+      #   type.parse('Dan Kubb') # => Boa::Success.new('Dan Kubb')
+      #
+      # @example with a string that is too short
+      #   type = String.new(:name, length: 4..)
+      #   type.parse('Dan') # => Boa::Failure.new('must have a length within 4.., but was: 3')
+      #
+      # @example with a string that is too long
+      #   type = String.new(:name, length: ..7)
+      #   type.parse('Dan Kubb') # => Boa::Failure.new('must have a length within 0..7, but was: 8')
+      #
+      # @example with a non-string value
+      #   type = String.new(:name)
+      #   type.parse(1) # => Boa::Failure.new('must be a String, but was: Integer')
+      #
+      # @param _value [Object] the value to parse
+      #
+      # @return [Result<::String, ExceptionType>] the result of parsing the value
+      #
+      # @api public
+      sig { override.params(_value: ::Object).returns(Result[::String, ExceptionType]) }
+      def parse(_value) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Metrics/MethodLength
+        super.and_then do |value|
+          case value
+          when ::String
+            if length.cover?(value.length)
+              Success.new(value)
+            else
+              Failure.new("must have a length within #{length}, but was: #{value.length}")
+            end
+          else
+            Failure.new("must be a String, but was: #{T.let(value, ::Object).class}")
+          end
+        end
+      end
     end
   end
 end
