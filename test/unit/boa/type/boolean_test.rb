@@ -77,12 +77,17 @@ module Boa
 
           sig { override.returns(T::Array[T::Boolean]) }
           def includes
-            @includes ||= T.let([true], T.nilable(T::Array[T::Boolean]))
+            @includes ||= T.let([true].freeze, T.nilable(T::Array[T::Boolean]))
           end
         end
 
         class Options < self
           include Support::TypeBehaviour::Options
+
+          sig { override.returns(T::Array[T::Boolean]) }
+          def includes
+            @includes ||= T.let([true, false].freeze, T.nilable(T::Array[T::Boolean]))
+          end
         end
 
         class Default < self
@@ -96,6 +101,20 @@ module Boa
 
         class Freeze < self
           include Support::TypeBehaviour::Freeze
+        end
+
+        class Parse < self
+          include Support::TypeBehaviour::Parse
+
+          sig { override.returns(T::Boolean) }
+          def valid_value
+            true
+          end
+
+          sig { override.returns(T::Boolean) }
+          def invalid_value
+            false
+          end
         end
 
         class Equality < self

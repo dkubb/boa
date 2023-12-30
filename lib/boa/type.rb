@@ -11,6 +11,10 @@ module Boa
     # The class type alias
     ClassType = T.type_alias { T.anything }
 
+    # The includes type alias
+    Includes = T.type_alias { T.all(T::Enumerable[T.anything], ::Object) }
+    private_constant(:Includes)
+
     abstract!
 
     # Lookup the type for a class type
@@ -113,7 +117,7 @@ module Boa
     # @return [Object] the object to check inclusion against
     #
     # @api public
-    sig { returns(::Object) }
+    sig { returns(T.nilable(Includes)) }
     attr_reader :includes
 
     # The options for the T::Struct.prop method
@@ -130,16 +134,16 @@ module Boa
     # Initialize the type
     #
     # @param name [Symbol] the name of the type
-    # @param includes [Object] the object to check inclusion against
+    # @param includes [Enumerable<Integer>, nil] the object to check inclusion against
     # @param options [Hash{Symbol => Object}] the options for the type
     #
     # @return [void]
     #
     # @api private
-    sig { params(name: Symbol, includes: ::Object, options: ::Object).void }
+    sig { params(name: Symbol, includes: T.nilable(Includes), options: ::Object).void }
     def initialize(name, includes: nil, **options)
       @name     = name
-      @includes = T.let(includes, T.nilable(::Object))
+      @includes = T.let(includes, T.nilable(Includes))
       @options  = options
 
       freeze
@@ -170,11 +174,46 @@ module Boa
     # @api public
     sig { returns(T.self_type) }
     def freeze
+      return self if frozen?
+
       instance_variables.each do |ivar_name|
-        T.let(instance_variable_get(ivar_name), ::Object).freeze
+        ivar = T.let(instance_variable_get(ivar_name),        ::Object)
+        ivar = T.let(Ractor.make_shareable(ivar, copy: true), ::Object)
+
+        instance_variable_set(ivar_name, ivar)
       end
 
       T.let(super(), Type)
+    end
+
+    # Parse the value
+    #
+    # @example when the value is included
+    #   type = String.new(:first_name, includes: %w[Jon])
+    #   type.parse('Jon') # => Boa::Success.new('Jon')
+    #
+    # @example when the value is not included
+    #   type = String.new(:first_name, includes: %w[Jon])
+    #   type.parse('Dan') # => Boa::Failure.new('must be one of ["Jon"], but was "Dan"')
+    #
+    # @example when includes is nil
+    #   type = String.new(:first_name)
+    #   type.parse('Jon') # => Boa::Success.new('Jon')
+    #
+    # @param value [Object] the value to parse
+    #
+    # @return [Result<Object, String>] the result of parsing the value
+    #
+    # @api public
+    sig { overridable.params(value: ::Object).returns(Result[T.untyped, ExceptionType]) }
+    def parse(value)
+      allowed_values = includes
+
+      if allowed_values.nil? || allowed_values.include?(value)
+        Success.new(value)
+      else
+        Failure.new("must be one of #{allowed_values}, but was #{value.inspect}")
+      end
     end
   end
 end

@@ -57,6 +57,7 @@ module Boa
       #   type.default # => 'Dan Kubb'
       #
       # @param name [Symbol] the name of the type
+      # @param includes [Enumerable<Integer>, nil] the object to check inclusion against
       # @param length [Range<::Integer>] the length of the string
       # @param options [Hash{Symbol => Object}] the options for the type
       #
@@ -65,9 +66,9 @@ module Boa
       # @raise [ArgumentError] if the length constraint is invalid
       #
       # @api public
-      sig { params(name: Symbol, length: LengthType, options: ::Object).returns(T.attached_class) }
-      def self.new(name, length: DEFAULT_LENGTH, **options)
-        super(name, length: parse_length(length).unwrap, **options)
+      sig { params(name: Symbol, includes: T.nilable(Includes), length: LengthType, options: ::Object).returns(T.attached_class) }
+      def self.new(name, includes: nil, length: DEFAULT_LENGTH, **options)
+        super(name, **options, includes:, length: parse_length(length).unwrap)
       end
 
       # Parse the length constraint
@@ -89,7 +90,7 @@ module Boa
           elsif max&.negative?
             "length.end must be greater than or equal to 0 or nil, but was #{max}"
           elsif max && max < min # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Style/MissingElse
-            "length.end must be greater than or equal to length.begin, but was: #{length}"
+            "length range cannot be empty, but was: #{length}"
           end
         end
       end
@@ -98,17 +99,18 @@ module Boa
       # Initialize the string type
       #
       # @param name [Symbol] the name of the type
+      # @param includes [Enumerable<Integer>, nil] the object to check inclusion against
       # @param length [Range<::Integer>] the length of the string
       # @param options [Hash{Symbol => Object}] the options for the type
       #
       # @return [void]
       #
       # @api private
-      sig { params(name: Symbol, length: LengthType, options: ::Object).void }
-      def initialize(name, length: DEFAULT_LENGTH, **options)
+      sig { params(name: Symbol, includes: T.nilable(Includes), length: LengthType, options: ::Object).void }
+      def initialize(name, includes: nil, length: DEFAULT_LENGTH, **options)
         @length = T.let(length, LengthType)
 
-        super(name, **options)
+        super(name, **options, includes:)
       end
 
       # The minimum length of the string
@@ -141,6 +143,45 @@ module Boa
       sig { returns(T.nilable(::Integer)) }
       def max_length
         length.end
+      end
+
+      # Parse the string value
+      #
+      # @example with a valid string
+      #   type = String.new(:name)
+      #   type.parse('Dan Kubb') # => Boa::Success.new('Dan Kubb')
+      #
+      # @example with a string that is too short
+      #   type = String.new(:name, length: 4..)
+      #   type.parse('Dan') # => Boa::Failure.new('must have a length within 4.., but was: 3')
+      #
+      # @example with a string that is too long
+      #   type = String.new(:name, length: ..7)
+      #   type.parse('Dan Kubb') # => Boa::Failure.new('must have a length within 0..7, but was: 8')
+      #
+      # @example with a non-string value
+      #   type = String.new(:name)
+      #   type.parse(1) # => Boa::Failure.new('must be a String, but was: Integer')
+      #
+      # @param _value [Object] the value to parse
+      #
+      # @return [Result<::String, ExceptionType>] the result of parsing the value
+      #
+      # @api public
+      sig { override.params(_value: ::Object).returns(Result[::String, ExceptionType]) }
+      def parse(_value) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Metrics/MethodLength
+        super.and_then do |value|
+          case value
+          when ::String
+            if length.cover?(value.length)
+              Success.new(value)
+            else
+              Failure.new("must have a length within #{length}, but was: #{value.length}")
+            end
+          else
+            Failure.new("must be a String, but was: #{T.let(value, ::Object).class}")
+          end
+        end
       end
     end
   end

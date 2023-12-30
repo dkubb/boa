@@ -44,6 +44,7 @@ module Boa
       #   type.default # => nil
       #
       # @param name [Symbol] the name of the type
+      # @param includes [Enumerable<Integer>, nil] the object to check inclusion against
       # @param range [Range<::Integer>] the range of the integer
       # @param options [Hash{Symbol => Object}] the options for the type
       #
@@ -52,9 +53,9 @@ module Boa
       # @raise [ArgumentError] if the range constraint is invalid
       #
       # @api public
-      sig { params(name: Symbol, range: RangeType, options: ::Object).returns(T.attached_class) }
-      def self.new(name, range: DEFAULT_RANGE, **options)
-        super(name, range: parse_range(range).unwrap, **options)
+      sig { params(name: Symbol, includes: T.nilable(Includes), range: RangeType, options: ::Object).returns(T.attached_class) }
+      def self.new(name, includes: nil, range: DEFAULT_RANGE, **options)
+        super(name, **options, includes:, range: parse_range(range).unwrap)
       end
 
       # Parse the range constraint
@@ -79,17 +80,18 @@ module Boa
       # Initialize the integer type
       #
       # @param name [Symbol] the name of the type
+      # @param includes [Enumerable<Integer>, nil] the object to check inclusion against
       # @param range [Range<::Integer>] the range of the integer
       # @param options [Hash{Symbol => Object}] the options for the type
       #
       # @return [void]
       #
       # @api private
-      sig { params(name: Symbol, range: RangeType, options: ::Object).void }
-      def initialize(name, range: DEFAULT_RANGE, **options)
+      sig { params(name: Symbol, includes: T.nilable(Includes), range: RangeType, options: ::Object).void }
+      def initialize(name, includes: nil, range: DEFAULT_RANGE, **options)
         @range = T.let(range, RangeType)
 
-        super(name, **options)
+        super(name, **options, includes:)
       end
 
       # The minimum range of the integer
@@ -126,6 +128,43 @@ module Boa
       sig { returns(T.nilable(::Integer)) }
       def max_range
         range.end
+      end
+
+      # Parse the integer value
+      #
+      # @example with a value within range
+      #   type = Integer.new(:age, range: 1..125)
+      #   type.parse(1)   # => Boa::Success.new(1)
+      #   type.parse(125) # => Boa::Success.new(125)
+      #
+      # @example with a value outside of range
+      #   type = Integer.new(:age, range: 1..125)
+      #   type.parse(0)   # => Boa::Failure.new('must be within 1..125, but was: 0')
+      #   type.parse(126) # => Boa::Failure.new('must be within 1..125, but was: 126')
+      #
+      # @example with a non-integer value
+      #   type = Integer.new(:age)
+      #   type.parse('1') # => Boa::Failure.new('must be an Integer, but was: String')
+      #
+      # @param _value [::Integer] the value to parse
+      #
+      # @return [Result<::Integer, ExceptionType>] the result of parsing the value
+      #
+      # @api public
+      sig { override.params(_value: ::Object).returns(Result[::Integer, ExceptionType]) }
+      def parse(_value) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Metrics/MethodLength
+        super.and_then do |value|
+          case value
+          when ::Integer
+            if range.cover?(value)
+              Success.new(value)
+            else
+              Failure.new("must be within #{range}, but was: #{value}")
+            end
+          else
+            Failure.new("must be an Integer, but was: #{T.let(value, ::Object).class}")
+          end
+        end
       end
     end
   end

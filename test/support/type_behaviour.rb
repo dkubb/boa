@@ -24,6 +24,9 @@ module Support
         {}
       end
 
+      sig { overridable.returns(T.nilable(T::Array[T.untyped])) }
+      def includes; end
+
       sig { returns(T::Hash[Boa::Type::ClassType, T.class_of(Boa::Type)]) }
       def class_types
         T.let(
@@ -288,9 +291,6 @@ module Support
         descendant.cover('Boa::Type#includes')
       end
 
-      sig { abstract.returns(Object) }
-      def includes; end
-
       sig { void }
       def test_returns_the_includes
         subject = described_class.new(type_name, includes:)
@@ -317,7 +317,7 @@ module Support
 
       sig { void }
       def test_returns_the_options
-        subject = described_class.new(type_name, **options)
+        subject = described_class.new(type_name, **options, includes:)
 
         assert_equal(options, subject.options)
       end
@@ -399,6 +399,30 @@ module Support
         assert_same(subject, subject.freeze)
       end
 
+      sig { void }
+      def test_does_not_mutate_arguments
+        includes = []
+        options  = { includes: }
+        subject  = described_class.new(type_name, **options)
+
+        subject.freeze
+
+        # Argument is not mutated
+        refute_operator(includes, :frozen?)
+        assert_operator(subject.includes, :frozen?)
+
+        # Argument state is copied
+        refute_same(includes, subject.includes)
+        assert_equal(includes, subject.includes)
+      end
+
+      sig { void }
+      def test_idempotent
+        subject = described_class.new(type_name)
+
+        assert_same(subject.freeze, subject.freeze)
+      end
+
     private
 
       sig { params(object: Object).returns(T::Hash[Symbol, Object]) }
@@ -406,6 +430,55 @@ module Support
         object.instance_variables.to_h do |ivar|
           [ivar, T.let(object.instance_variable_get(ivar), Object)]
         end
+      end
+    end
+
+    module Parse
+      extend T::Helpers
+      extend T::Sig
+
+      requires_ancestor { Setup }
+
+      abstract!
+
+      sig { params(descendant: MutantCoverage).void }
+      def self.included(descendant)
+        descendant.cover('Boa::Type.parse')
+      end
+
+      sig { abstract.returns(T.nilable(Object)) }
+      def valid_value; end
+
+      sig { abstract.returns(T.nilable(Object)) }
+      def invalid_value; end
+
+      sig { overridable.returns(T.nilable(T::Array[T.untyped])) }
+      def includes
+        @includes ||= T.let([valid_value], T.nilable(T::Array[T.untyped]))
+      end
+
+      sig { void }
+      def test_when_includes_is_not_set
+        subject = described_class.new(type_name)
+
+        assert_equal(Boa::Success.new(valid_value), subject.parse(valid_value))
+      end
+
+      sig { void }
+      def test_when_includes_is_set_and_value_is_valid
+        subject = described_class.new(type_name, includes:)
+
+        assert_equal(Boa::Success.new(valid_value), subject.parse(valid_value))
+      end
+
+      sig { void }
+      def test_when_includes_is_set_and_value_is_invalid
+        subject = described_class.new(type_name, includes:)
+
+        assert_equal(
+          Boa::Failure.new("must be one of #{includes.inspect}, but was #{invalid_value.inspect}"),
+          subject.parse(invalid_value)
+        )
       end
     end
   end
