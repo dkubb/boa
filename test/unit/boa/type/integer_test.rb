@@ -35,7 +35,7 @@ module Boa
         sig { void }
         def test_class_hierarchy
           assert_operator(Boa::Type, :>, described_class)
-          assert_equal(Boa::Type::Integer, described_class)
+          assert_same(Boa::Type::Integer, described_class)
         end
 
         class ElementReference < self
@@ -74,7 +74,7 @@ module Boa
 
             assert_same(type_name, subject.name)
             assert_equal(nil.., subject.range)
-            assert_operator(subject, :frozen?)
+            assert_predicate(subject, :frozen?)
           end
 
           sig { void }
@@ -83,7 +83,7 @@ module Boa
 
             assert_same(type_name, subject.name)
             assert_equal(0..10, subject.range)
-            assert_operator(subject, :frozen?)
+            assert_predicate(subject, :frozen?)
           end
 
           sig { void }
@@ -92,7 +92,7 @@ module Boa
 
             assert_same(type_name, subject.name)
             assert_equal(..10, subject.range)
-            assert_operator(subject, :frozen?)
+            assert_predicate(subject, :frozen?)
           end
 
           sig { void }
@@ -101,7 +101,7 @@ module Boa
 
             assert_same(type_name, subject.name)
             assert_equal(1..1, subject.range)
-            assert_operator(subject, :frozen?)
+            assert_predicate(subject, :frozen?)
           end
 
           sig { void }

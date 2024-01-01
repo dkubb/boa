@@ -35,7 +35,7 @@ module Boa
         sig { void }
         def test_class_hierarchy
           assert_operator(Boa::Type, :>, described_class)
-          assert_equal(Boa::Type::String, described_class)
+          assert_same(Boa::Type::String, described_class)
         end
 
         class ElementReference < self
@@ -72,44 +72,44 @@ module Boa
           def test_with_no_length_option
             subject = described_class.new(type_name)
 
-            assert_equal(type_name, subject.name)
+            assert_same(type_name, subject.name)
             assert_equal(0.., subject.length)
-            assert_equal(0, subject.min_length)
+            assert_same(0, subject.min_length)
             assert_nil(subject.max_length)
-            assert_operator(subject, :frozen?)
+            assert_predicate(subject, :frozen?)
           end
 
           sig { void }
           def test_with_length_option
             subject = described_class.new(type_name, length: 2...10)
 
-            assert_equal(type_name, subject.name)
+            assert_same(type_name, subject.name)
             assert_equal(2..9, subject.length)
-            assert_equal(2, subject.min_length)
-            assert_equal(9, subject.max_length)
-            assert_operator(subject, :frozen?)
+            assert_same(2, subject.min_length)
+            assert_same(9, subject.max_length)
+            assert_predicate(subject, :frozen?)
           end
 
           sig { void }
           def test_with_length_option_and_nil_minimum_length
             subject = described_class.new(type_name, length: ..10)
 
-            assert_equal(type_name, subject.name)
+            assert_same(type_name, subject.name)
             assert_equal(0..10, subject.length)
-            assert_equal(0, subject.min_length)
-            assert_equal(10, subject.max_length)
-            assert_operator(subject, :frozen?)
+            assert_same(0, subject.min_length)
+            assert_same(10, subject.max_length)
+            assert_predicate(subject, :frozen?)
           end
 
           sig { void }
           def test_with_length_option_and_singleton_range
             subject = described_class.new(type_name, length: 1..1)
 
-            assert_equal(type_name, subject.name)
+            assert_same(type_name, subject.name)
             assert_equal(1..1, subject.length)
-            assert_equal(1, subject.min_length)
-            assert_equal(1, subject.max_length)
-            assert_operator(subject, :frozen?)
+            assert_same(1, subject.min_length)
+            assert_same(1, subject.max_length)
+            assert_predicate(subject, :frozen?)
           end
 
           sig { void }

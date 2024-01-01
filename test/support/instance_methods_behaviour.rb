@@ -206,7 +206,7 @@ module Support
         subject = new_object(described_class)
         other   = subject.dup
 
-        assert_equal(subject.hash, other.hash)
+        assert_same(subject.hash, other.hash)
       end
 
       sig { override.void }

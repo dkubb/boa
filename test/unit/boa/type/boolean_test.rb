@@ -35,7 +35,7 @@ module Boa
         sig { void }
         def test_class_hierarchy
           assert_operator(Boa::Type, :>, described_class)
-          assert_equal(Boa::Type::Boolean, described_class)
+          assert_same(Boa::Type::Boolean, described_class)
         end
 
         class ElementReference < self
