@@ -250,6 +250,15 @@ module Support
       end
 
       sig { void }
+      def test_with_nil_includes_option
+        subject = described_class.new(type_name, includes: nil)
+
+        assert_same(type_name, subject.name)
+        assert_nil(subject.includes)
+        assert_predicate(subject, :frozen?)
+      end
+
+      sig { void }
       def test_with_includes_option
         subject = described_class.new(type_name, includes: [])
 
