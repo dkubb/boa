@@ -120,6 +120,8 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-23
+  universal-darwin
   x86_64-linux
 
 DEPENDENCIES
@@ -145,7 +147,7 @@ DEPENDENCIES
   yardstick (~> 0.9.9)
 
 RUBY VERSION
-   ruby 3.2.2p53
+   ruby 3.3.0p0
 
 BUNDLED WITH
-   2.4.22
+   2.5.3
