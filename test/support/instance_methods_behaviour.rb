@@ -55,6 +55,9 @@ module Support
 
       sig { abstract.void }
       def test_objects_similar_but_not_equal_state; end
+
+      sig { abstract.void }
+      def test_non_instance_method_object; end
     end
 
     module Equality
@@ -111,6 +114,15 @@ module Support
       rescue NotImplementedError
         # skip if state_ineql impossible to define for this type
       end
+
+      sig { override.void }
+      def test_non_instance_method_object
+        subject = new_object(described_class)
+        other   = BasicObject.new
+
+        # refute_equal(...) is not strict enough to kill mutation
+        assert_same(subject == other, false)
+      end
     end
 
     module Eql
@@ -166,6 +178,15 @@ module Support
       rescue NotImplementedError
         # skip if state_ineql impossible to define for this type
       end
+
+      sig { override.void }
+      def test_non_instance_method_object
+        subject = new_object(described_class)
+        other   = BasicObject.new
+
+        # refute(...) is not strict enough to kill mutation
+        assert_same(subject.eql?(other), false)
+      end
     end
 
     module Hash
@@ -218,6 +239,14 @@ module Support
         refute_equal(subject.hash, state_ineql.hash)
       rescue NotImplementedError
         # skip if state_ineql impossible to define for this type
+      end
+
+      sig { override.void }
+      def test_non_instance_method_object
+        subject = new_object(described_class)
+        other   = Object.new # BasicObject#hash does not exist
+
+        refute_equal(subject.hash, other.hash)
       end
     end
 

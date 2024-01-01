@@ -19,15 +19,20 @@ module Boa
     # @example when the objects are not equal
     #   instance == other # => false
     #
-    # @param [InstanceMethods] other
+    # @param [BasicObject] other
     #   the other object to compare with
     #
     # @return [Boolean]
     #
     # @api public
-    sig { params(other: InstanceMethods).returns(T::Boolean) }
+    sig { params(other: T.anything).returns(T::Boolean) }
     def ==(other)
-      other.is_a?(self.class) && cmp?(other, :==)
+      case other
+      when InstanceMethods
+        other.is_a?(self.class) && cmp?(other, :==)
+      else
+        false
+      end
     end
 
     # Compare the object with other object for equality
@@ -38,15 +43,20 @@ module Boa
     # @example when the objects are not equal
     #   instance.eql?(other) # => false
     #
-    # @param [InstanceMethods] other
+    # @param [BasicObject] other
     #   the other object to compare with
     #
     # @return [Boolean]
     #
     # @api public
-    sig { params(other: InstanceMethods).returns(T::Boolean) }
+    sig { params(other: T.anything).returns(T::Boolean) }
     def eql?(other)
-      other.instance_of?(self.class) && cmp?(other, :eql?)
+      case other
+      when InstanceMethods
+        other.instance_of?(self.class) && cmp?(other, :eql?)
+      else
+        false
+      end
     end
 
     # The hash value of the object
