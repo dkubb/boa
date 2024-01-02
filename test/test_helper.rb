@@ -5,6 +5,7 @@ require 'simplecov' unless defined?(Mutant)
 
 require 'minitest/autorun'
 require 'mutant/minitest/coverage'
+require 'prop_check'
 require 'sorbet-runtime'
 
 require_relative 'support/instance_methods_behaviour'
@@ -18,3 +19,5 @@ ROOT_PATH = T.let(Pathname.new(__dir__).parent, Pathname)
 
 Minitest::Test.extend(MutantCoverage)
 Minitest::Assertions.prepend(StrictMatchers)
+
+G = PropCheck::Generators
