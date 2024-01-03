@@ -33,13 +33,16 @@ module Boa
 
         sig { void }
         def test_properties
-          subject = Class.new(described_class)
+          PropCheck.forall(PropertyGenerators::Type.instance) do |type|
+            type    = T.let(type, Boa::Type)
+            subject = Class.new(described_class)
 
-          assert_empty(subject.properties)
+            assert_empty(subject.properties)
 
-          type = subject.properties[type_name] = Boa::Type::String.new(type_name)
+            subject.properties[type.name] = type
 
-          assert_equal({ name: type }, subject.properties)
+            assert_equal({ type.name => type }, subject.properties)
+          end
         end
       end
 

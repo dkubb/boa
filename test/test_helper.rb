@@ -12,6 +12,7 @@ require_relative 'support/instance_methods_behaviour'
 require_relative 'support/mutant_coverage'
 require_relative 'support/strict_matchers'
 require_relative 'support/type_behaviour'
+require_relative 'support/property_generators'
 
 require 'boa'
 

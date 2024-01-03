@@ -93,6 +93,7 @@ Sorbet/ForbidTUntyped:
   Exclude:
     - lib/boa/class_methods.rb
     - lib/boa/type.rb
+    - test/support/property_generators.rb
     - test/support/type_behaviour.rb
     - test/unit/boa/result_test.rb
 
