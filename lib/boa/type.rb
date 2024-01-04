@@ -80,7 +80,6 @@ module Boa
     def self.class_types
       @class_types ||= T.let({}, T.nilable(T::Hash[ClassType, T.class_of(Type)]))
     end
-    private_class_method(:class_types)
 
     # Hook called when a descendant inherits from this class
     #

@@ -7,8 +7,10 @@ module PropertyGenerators
 
     sig { returns(PropCheck::Generator) }
     def self.instance
+      subclasses = Boa::Type.subclasses.select(&:name)
+
       instance =
-        one_of(Boa::Type.subclasses.map { |klass| constant(klass) }).bind do |klass|
+        one_of(constant_values(subclasses)).bind do |klass|
           klass = T.let(klass, T.class_of(Boa::Type))
 
           G.instance(klass, name, includes: includes(klass))

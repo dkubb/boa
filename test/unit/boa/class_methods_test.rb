@@ -53,31 +53,56 @@ module Boa
 
         sig { void }
         def test_prop_sets_the_property
-          subject = Class.new(described_class)
+          PropCheck.forall(PropertyGenerators::Type.instance) do |type|
+            type       = T.let(type, Boa::Type)
+            subject    = Class.new(described_class)
+            class_type = class_types.fetch(type.class)
 
-          assert_empty(subject.properties)
+            assert_empty(subject.properties)
 
-          subject.prop(type_name, String)
+            subject.prop(type.name, class_type, includes: type.includes)
 
-          assert_equal({ name: Boa::Type::String.new(type_name) }, subject.properties)
+            assert_equal({ type.name => type }, subject.properties)
+          end
         end
 
         sig { void }
         def test_prop_returns_self
-          subject = Class.new(described_class)
+          PropCheck.forall(PropertyGenerators::Type.instance) do |type|
+            type       = T.let(type, Boa::Type)
+            subject    = Class.new(described_class)
+            class_type = class_types.fetch(type.class)
 
-          assert_same(subject, subject.prop(type_name, String))
+            assert_same(subject, subject.prop(type.name, class_type))
+          end
         end
 
         sig { void }
         def test_passes_through_the_options
-          subject = Class.new(described_class)
+          PropCheck.forall(PropertyGenerators::Type.instance) do |type|
+            type       = T.let(type, Boa::Type)
+            subject    = Class.new(described_class)
+            class_type = T.let(class_types.fetch(type.class), Boa::Type::ClassType)
 
-          subject.prop(type_name, String, immutable: true)
+            refute_operator(subject, :public_method_defined?, type.name)
+            refute_operator(subject, :public_method_defined?, :"#{type.name}=")
 
-          # assert the immutable true option is passed through
-          assert_respond_to(subject.new(type_name => 'Test Name'), type_name)
-          refute_respond_to(subject.new(type_name => 'Test Name'), :"#{type_name}=")
+            subject.prop(type.name, class_type, immutable: true)
+
+            # assert the immutable true option prevents the setter from being defined
+            assert_operator(subject, :public_method_defined?, type.name)
+            refute_operator(subject, :public_method_defined?, :"#{type.name}=")
+          end
+        end
+
+      private
+
+        sig { returns(T::Hash[T.class_of(Boa::Type), Boa::Type::ClassType]) }
+        def class_types
+          @class_types ||= T.let(
+            Boa::Type.class_types.invert,
+            T.nilable(T::Hash[T.class_of(Boa::Type), Boa::Type::ClassType])
+          )
         end
       end
 

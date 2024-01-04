@@ -52,6 +52,7 @@ Lint/UnreachableLoop:
 Metrics/AbcSize:
   Exclude:
     - test/support/**/*.rb
+    - test/unit/boa/class_methods_test.rb
     - test/unit/boa/util_test.rb
 
 Metrics/BlockLength:
