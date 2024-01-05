@@ -22,20 +22,45 @@ module Boa
 
       sig { void }
       def test_normalize_integer_range
-        assert_normalize_integer_range(nil..,  nil..)
-        assert_normalize_integer_range(..10,   ..10)
-        assert_normalize_integer_range(...10,  ..9)
-        assert_normalize_integer_range(1..,    1..)
-        assert_normalize_integer_range(1...,   1..)
-        assert_normalize_integer_range(1..10,  1..10)
-        assert_normalize_integer_range(1...10, 1..9)
+        PropCheck.forall(integer_range_generator) do |range|
+          range      = T.let(range, T::Range[T.nilable(Integer)])
+          normalized = described_class.normalize_integer_range(range)
+
+          if range.exclude_end?
+            refute_equal(range,          normalized)
+            assert_same(range.begin,     normalized.begin)
+            assert_same(range.end&.pred, normalized.end)
+            refute_predicate(normalized, :exclude_end?)
+          else
+            assert_same(normalized, range)
+          end
+        end
       end
 
     private
 
-      sig { params(input: T::Range[T.nilable(::Integer)], expected: T::Range[T.nilable(::Integer)]).void }
-      def assert_normalize_integer_range(input, expected)
-        assert_equal(expected, described_class.normalize_integer_range(input))
+      sig { returns(PropCheck::Generator) }
+      def integer_range_generator
+        tuple_generator =
+          T.let(
+            G.tuple(
+              G.nillable(G.integer),
+              G.nillable(G.integer),
+              G.boolean
+            ),
+            PropCheck::Generator
+          )
+
+        range_generator =
+          tuple_generator.bind do |range_begin, range_end, range_exclusive|
+            range_begin     = T.let(range_begin,     T.nilable(Integer))
+            range_end       = T.let(range_end,       T.nilable(Integer))
+            range_exclusive = T.let(range_exclusive, T::Boolean)
+
+            G.constant(Range.new(range_begin, range_end, range_exclusive))
+          end
+
+        T.let(range_generator, PropCheck::Generator)
       end
     end
   end

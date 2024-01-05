@@ -52,6 +52,8 @@ Lint/UnreachableLoop:
 Metrics/AbcSize:
   Exclude:
     - test/support/**/*.rb
+    - test/unit/boa/class_methods_test.rb
+    - test/unit/boa/util_test.rb
 
 Metrics/BlockLength:
   Exclude:
@@ -62,6 +64,7 @@ Metrics/MethodLength:
   Exclude:
     - spec/doctest_helper.rb
     - test/support/**/*.rb
+    - test/unit/boa/util_test.rb
 
 Metrics/ModuleLength:
   Exclude:
@@ -91,6 +94,7 @@ Sorbet/ForbidTUntyped:
   Exclude:
     - lib/boa/class_methods.rb
     - lib/boa/type.rb
+    - test/support/property_generators.rb
     - test/support/type_behaviour.rb
     - test/unit/boa/result_test.rb
 
