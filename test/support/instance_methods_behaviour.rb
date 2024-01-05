@@ -55,6 +55,9 @@ module Support
 
       sig { abstract.void }
       def test_objects_similar_but_not_equal_state; end
+
+      sig { abstract.void }
+      def test_non_instance_method_object; end
     end
 
     module Equality
@@ -111,6 +114,14 @@ module Support
       rescue NotImplementedError
         # skip if state_ineql impossible to define for this type
       end
+
+      sig { override.void }
+      def test_non_instance_method_object
+        subject = new_object(described_class)
+        other   = BasicObject.new
+
+        refute_equal(subject, other)
+      end
     end
 
     module Eql
@@ -166,6 +177,15 @@ module Support
       rescue NotImplementedError
         # skip if state_ineql impossible to define for this type
       end
+
+      sig { override.void }
+      def test_non_instance_method_object
+        subject = new_object(described_class)
+        other   = BasicObject.new
+
+        # refute_operator does not work with BasicObject and sorbet
+        refute(subject.eql?(other))
+      end
     end
 
     module Hash
@@ -185,7 +205,7 @@ module Support
         subject = new_object(described_class)
         other   = subject.dup
 
-        assert_equal(subject.hash, other.hash)
+        assert_same(subject.hash, other.hash)
       end
 
       sig { override.void }
@@ -218,6 +238,14 @@ module Support
         refute_equal(subject.hash, state_ineql.hash)
       rescue NotImplementedError
         # skip if state_ineql impossible to define for this type
+      end
+
+      sig { override.void }
+      def test_non_instance_method_object
+        subject = new_object(described_class)
+        other   = Object.new # BasicObject#hash does not exist
+
+        refute_equal(subject.hash, other.hash)
       end
     end
 
@@ -257,6 +285,16 @@ module Support
 
         assert_empty(subject.deconstruct_keys(%i[invalid]))
       end
+
+      sig { void }
+      def test_pattern_matching
+        subject  = new_object(described_class)
+        expected = T.let(expected_object_state, T::Hash[Symbol, T.anything])
+
+        assert_pattern do
+          T.unsafe(subject => expected) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Sorbet/ForbidTUnsafe
+        end
+      end
     end
 
     module Deconstruct
@@ -280,6 +318,16 @@ module Support
         subject = new_object(described_class)
 
         assert_equal(expected_object_state.values, subject.deconstruct)
+      end
+
+      sig { void }
+      def test_pattern_matching
+        subject  = new_object(described_class)
+        expected = T.let(expected_object_state.values, T::Array[T.anything])
+
+        assert_pattern do
+          T.unsafe(subject => expected) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Sorbet/ForbidTUnsafe
+        end
       end
     end
   end

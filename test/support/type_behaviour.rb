@@ -222,7 +222,7 @@ module Support
 
         assert_same(type_name, subject.name)
         assert_nil(subject.default)
-        assert_operator(subject, :frozen?)
+        assert_predicate(subject, :frozen?)
       end
 
       sig { void }
@@ -231,14 +231,14 @@ module Support
 
         assert_same(type_name, subject.name)
         assert_same(non_nil_default, subject.default)
-        assert_operator(subject, :frozen?)
+        assert_predicate(subject, :frozen?)
       end
 
       sig { void }
       def test_with_no_includes_option
         subject = described_class.new(type_name)
 
-        assert_equal(type_name, subject.name)
+        assert_same(type_name, subject.name)
 
         if default_includes.nil?
           assert_nil(subject.includes)
@@ -246,16 +246,25 @@ module Support
           assert_equal(default_includes, subject.includes)
         end
 
-        assert_operator(subject, :frozen?)
+        assert_predicate(subject, :frozen?)
+      end
+
+      sig { void }
+      def test_with_nil_includes_option
+        subject = described_class.new(type_name, includes: nil)
+
+        assert_same(type_name, subject.name)
+        assert_nil(subject.includes)
+        assert_predicate(subject, :frozen?)
       end
 
       sig { void }
       def test_with_includes_option
         subject = described_class.new(type_name, includes: [])
 
-        assert_equal(type_name, subject.name)
+        assert_same(type_name, subject.name)
         assert_empty(subject.includes)
-        assert_operator(subject, :frozen?)
+        assert_predicate(subject, :frozen?)
       end
     end
 
@@ -375,13 +384,13 @@ module Support
         subject.instance_variable_set(:@options,  {})
 
         ivars(subject).each_value do |value|
-          refute_operator(value, :frozen?) unless value.equal?(type_name)
+          refute_predicate(value, :frozen?) unless value.equal?(type_name)
         end
 
         subject.freeze
 
         ivars(subject).each_value do |value|
-          assert_operator(value, :frozen?)
+          assert_predicate(value, :frozen?)
         end
       end
 
@@ -389,7 +398,7 @@ module Support
       def test_freezes_the_type
         subject = described_class.new(type_name)
 
-        assert_operator(subject.freeze, :frozen?)
+        assert_predicate(subject.freeze, :frozen?)
       end
 
       sig { void }
@@ -408,8 +417,8 @@ module Support
         subject.freeze
 
         # Argument is not mutated
-        refute_operator(includes, :frozen?)
-        assert_operator(subject.includes, :frozen?)
+        refute_predicate(includes, :frozen?)
+        assert_predicate(subject.includes, :frozen?)
 
         # Argument state is copied
         refute_same(includes, subject.includes)

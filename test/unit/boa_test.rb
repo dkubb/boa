@@ -60,7 +60,7 @@ module Boa
     sig { void }
     def test_class_hierarchy
       assert_operator(Boa, :>, described_class)
-      assert_equal(Person, described_class)
+      assert_same(Person, described_class)
     end
 
     class New < self
@@ -69,7 +69,7 @@ module Boa
         subject = described_class.new(name: name_value)
 
         assert_instance_of(described_class, subject)
-        assert_equal(name_value, subject.name)
+        assert_same(name_value, subject.name)
       end
     end
 

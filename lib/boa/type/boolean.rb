@@ -19,13 +19,13 @@ module Boa
       #   type.name   # => :admin?
       #
       # @param _name [Symbol] the name of the type
-      # @param includes [Enumerable<Boolean>] the object to check inclusion against
+      # @param includes [Enumerable<Boolean>, nil] the object to check inclusion against
       # @param options [Hash] the options to initialize with
       #
       # @return [void]
       #
       # @api public
-      sig { params(_name: Symbol, includes: T::Array[T::Boolean], options: ::Object).void }
+      sig { params(_name: Symbol, includes: T.nilable(T::Array[T::Boolean]), options: ::Object).void }
       def initialize(_name, includes: DEFAULT_INCLUDES, **options)
         super
       end

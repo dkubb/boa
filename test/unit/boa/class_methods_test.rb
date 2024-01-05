@@ -88,13 +88,13 @@ module Boa
           subject = Class.new(described_class)
 
           ivars(subject).each_value do |value|
-            refute_operator(value, :frozen?)
+            refute_predicate(value, :frozen?)
           end
 
           subject.freeze
 
           ivars(subject).each_value do |value|
-            assert_operator(value, :frozen?)
+            assert_predicate(value, :frozen?)
           end
         end
 
@@ -102,7 +102,7 @@ module Boa
         def test_freezes_the_class
           subject = Class.new(described_class)
 
-          assert_operator(subject.freeze, :frozen?)
+          assert_predicate(subject.freeze, :frozen?)
         end
 
         sig { void }

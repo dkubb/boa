@@ -143,8 +143,8 @@ module Boa
           unwrapped = subject.unwrap
 
           assert_same(value, unwrapped)
-          assert_operator(subject, :frozen?)
-          assert_operator(unwrapped, :frozen?)
+          assert_predicate(subject, :frozen?)
+          assert_predicate(unwrapped, :frozen?)
         end
 
         sig { override.void }
@@ -154,8 +154,8 @@ module Boa
 
           refute_same(value, unwrapped)
           assert_equal(value, unwrapped)
-          assert_operator(subject, :frozen?)
-          assert_operator(unwrapped, :frozen?)
+          assert_predicate(subject, :frozen?)
+          assert_predicate(unwrapped, :frozen?)
         end
 
         sig { override.void }
@@ -290,7 +290,7 @@ module Boa
             RuntimeError
           )
 
-          assert_equal('Cannot unwrap failure from success', exception.message)
+          assert_same('Cannot unwrap failure from success', exception.message)
         end
       end
 
@@ -370,8 +370,8 @@ module Boa
           unwrapped = subject.unwrap_failure
 
           assert_same(error, unwrapped)
-          assert_operator(subject, :frozen?)
-          assert_operator(unwrapped, :frozen?)
+          assert_predicate(subject, :frozen?)
+          assert_predicate(unwrapped, :frozen?)
         end
 
         sig { override.void }
@@ -381,8 +381,8 @@ module Boa
 
           refute_same(error, unwrapped)
           assert_equal(error, unwrapped)
-          assert_operator(subject, :frozen?)
-          assert_operator(unwrapped, :frozen?)
+          assert_predicate(subject, :frozen?)
+          assert_predicate(unwrapped, :frozen?)
         end
 
         sig { override.void }
