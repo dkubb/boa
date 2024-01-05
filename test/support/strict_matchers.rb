@@ -14,6 +14,11 @@ module StrictMatchers
     T.let(super, T::Boolean)
   end
 
+  sig { params(test: T::Boolean, msg: T.nilable(T.any(String, Proc))).returns(T::Boolean) }
+  def refute(test, msg = nil)
+    T.let(super, T::Boolean)
+  end
+
   sig { params(exp: T.nilable(Object), act: T.nilable(Object), msg: T.nilable(T.any(String, Proc))).returns(T::Boolean) }
   def assert_equal(exp, act, msg = nil)
     T.let(super, T::Boolean)

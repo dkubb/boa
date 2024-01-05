@@ -120,8 +120,7 @@ module Support
         subject = new_object(described_class)
         other   = BasicObject.new
 
-        # refute_equal(...) is not strict enough to kill mutation
-        assert_same(subject == other, false)
+        refute_equal(subject, other)
       end
     end
 
@@ -184,8 +183,8 @@ module Support
         subject = new_object(described_class)
         other   = BasicObject.new
 
-        # refute(...) is not strict enough to kill mutation
-        assert_same(subject.eql?(other), false)
+        # refute_operator does not work with BasicObject and sorbet
+        refute(subject.eql?(other))
       end
     end
 
