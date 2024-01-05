@@ -285,6 +285,16 @@ module Support
 
         assert_empty(subject.deconstruct_keys(%i[invalid]))
       end
+
+      sig { void }
+      def test_pattern_matching
+        subject  = new_object(described_class)
+        expected = T.let(expected_object_state, T::Hash[Symbol, T.anything])
+
+        assert_pattern do
+          T.unsafe(subject => expected) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Sorbet/ForbidTUnsafe
+        end
+      end
     end
 
     module Deconstruct
@@ -308,6 +318,16 @@ module Support
         subject = new_object(described_class)
 
         assert_equal(expected_object_state.values, subject.deconstruct)
+      end
+
+      sig { void }
+      def test_pattern_matching
+        subject  = new_object(described_class)
+        expected = T.let(expected_object_state.values, T::Array[T.anything])
+
+        assert_pattern do
+          T.unsafe(subject => expected) # rubocop:disable Style/DisableCopsWithinSourceCodeDirective,Sorbet/ForbidTUnsafe
+        end
       end
     end
   end
