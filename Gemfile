@@ -19,7 +19,7 @@ group :development, :test do
   gem 'rubocop-sorbet',      '~> 0.7.6', require: false   # Add Sorbet support to RuboCop
   gem 'rubocop-yard',        '~> 0.9.2'                   # RuboCop extension for YARD
   gem 'simplecov',           '~> 0.22.0'                  # Code coverage analysis for Ruby
-  gem 'sorbet',              '~> 0.5.11164'               # Type checker for Ruby
+  gem 'sorbet',              '~> 0.5.11176'               # Type checker for Ruby
   gem 'tapioca',             '~> 0.11.14', require: false # Generate RBI files for gems and standard library
   gem 'unparser',            '~> 0.6.10', require: false  # Library for unparsing Ruby expressions
   gem 'yard-doctest',        '~> 0.1.17'                  # Run doctests via YARD
