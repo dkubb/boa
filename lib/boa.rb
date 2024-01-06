@@ -8,6 +8,7 @@ require_relative 'boa/class_methods'
 require_relative 'boa/result'
 require_relative 'boa/util'
 
+require_relative 'boa/invalid_object'
 require_relative 'boa/type'
 require_relative 'boa/type/object'
 require_relative 'boa/type/boolean'
@@ -26,4 +27,11 @@ module Boa
   requires_ancestor { T::InexactStruct }
 
   abstract!
+
+  sig { params(descendant: T::Class[Boa]).void }
+  def self.included(descendant)
+    descendant.const_set(:Invalid, Class.new(InvalidObject))
+
+    super
+  end
 end
