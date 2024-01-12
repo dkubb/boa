@@ -14,7 +14,7 @@ group :development, :test do
   gem 'rake',                '~> 13.1.0'                  # Scripting utility similar to Make
   gem 'rubocop',             '~> 1.59.0'                  # Linter for enforcing Ruby coding style
   gem 'rubocop-minitest',    '~> 0.34.3'                  # RuboCop extension specific to Minitest
-  gem 'rubocop-performance', '~> 1.20.1'                  # RuboCop extension for enforcing performance best practices
+  gem 'rubocop-performance', '~> 1.20.2'                  # RuboCop extension for enforcing performance best practices
   gem 'rubocop-rake',        '~> 0.6.0'                   # RuboCop rules for Rake tasks
   gem 'rubocop-sorbet',      '~> 0.7.6', require: false   # Add Sorbet support to RuboCop
   gem 'rubocop-yard',        '~> 0.9.2'                   # RuboCop extension for YARD
