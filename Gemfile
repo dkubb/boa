@@ -9,8 +9,8 @@ gemspec
 group :development, :test do
   gem 'bundler-audit',       '~> 0.9.1'                   # Audit dependencies in Gemfile for vulnerabilities
   gem 'minitest',            '~> 5.20.0'                  # Ruby testing framework
-  gem 'mutant',              '~> 0.11.26'                 # Mutation testing for Ruby
-  gem 'mutant-minitest',     '~> 0.11.26'                 # Minitest integration for Mutant
+  gem 'mutant',              '~> 0.11.27'                 # Mutation testing for Ruby
+  gem 'mutant-minitest',     '~> 0.11.27'                 # Minitest integration for Mutant
   gem 'rake',                '~> 13.1.0'                  # Scripting utility similar to Make
   gem 'rubocop',             '~> 1.59.0'                  # Linter for enforcing Ruby coding style
   gem 'rubocop-minitest',    '~> 0.34.3'                  # RuboCop extension specific to Minitest
