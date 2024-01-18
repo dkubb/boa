@@ -12,14 +12,14 @@ jobs:
       run: git fetch --depth 1 --quiet -- origin main
 
     - name: Cache Ruby Advisory Database
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.local/share/ruby-advisory-db
         key: ruby-advisory-db-${{ hashFiles('Gemfile.lock') }}
         restore-keys: ruby-advisory-db-
 
     - name: Cache sorbet files
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           sorbet/rbi
